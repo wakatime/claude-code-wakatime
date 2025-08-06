@@ -1,0 +1,44 @@
+{
+  "name": "claude-code-wakatime",
+  "version": "1.0.0",
+  "description": "WakaTime plugin for Claude Code",
+  "bin": {
+    "claude-code-wakatime": "dist/index.js"
+  },
+  "scripts": {
+    "postinstall": "node dist/install-hooks.js",
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "release:major": "npm version major && npm publish && git push && git push --tags",
+    "release:minor": "npm version minor && npm publish && git push && git push --tags",
+    "release:patch": "npm version patch && npm publish && git push && git push --tags"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wakatime/claude-code-wakatime.git"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "time-tracking",
+    "ai"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "@types/eslint": "^8.44.7",
+    "@types/node": "^20.9.2",
+    "@types/pidusage": "^2.0.5",
+    "@types/prettier": "^2.7.3",
+    "@typescript-eslint/eslint-plugin": "6.11.0",
+    "@typescript-eslint/parser": "6.11.0",
+    "eslint": "^8.54.0",
+    "prettier": "^3.1.0",
+    "typescript": "^5.2.2"
+  },
+  "author": "WakaTime",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/wakatime/claude-code-wakatime/issues"
+  },
+  "homepage": "https://github.com/wakatime/claude-code-wakatime#readme"
+}
