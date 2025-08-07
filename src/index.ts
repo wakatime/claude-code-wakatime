@@ -46,6 +46,55 @@ function parseInput() {
   return undefined;
 }
 
+function getLastHeartbeat() {
+  try {
+    const stateData = JSON.parse(fs.readFileSync(STATE_FILE, 'utf-8')) as State;
+    return stateData.lastHeartbeatAt ?? 0;
+  } catch {
+    return 0;
+  }
+}
+
+function calculateLineChanges(transcriptPath: string): number {
+  try {
+    if (!transcriptPath || !fs.existsSync(transcriptPath)) {
+      return 0;
+    }
+
+    const content = fs.readFileSync(transcriptPath, 'utf-8');
+    const lines = content.split('\n');
+    let totalLineChanges = 0;
+
+    const lastHeartbeatAt = getLastHeartbeat();
+    for (const line of lines) {
+      if (line.trim()) {
+        try {
+          const logEntry = JSON.parse(line);
+
+          // Only count changes since last heartbeat
+          if (logEntry.timestamp && logEntry.toolUseResult?.structuredPatch) {
+            const entryTimestamp = new Date(logEntry.timestamp).getTime() / 1000;
+            if (entryTimestamp >= lastHeartbeatAt) {
+              const patches = logEntry.toolUseResult.structuredPatch;
+              for (const patch of patches) {
+                if (patch.newLines !== undefined && patch.oldLines !== undefined) {
+                  totalLineChanges += patch.newLines - patch.oldLines;
+                }
+              }
+            }
+          }
+        } catch {
+          // ignore
+        }
+      }
+    }
+
+    return totalLineChanges;
+  } catch {
+    return 0;
+  }
+}
+
 function updateState() {
   fs.mkdirSync(path.dirname(STATE_FILE), { recursive: true });
   fs.writeFileSync(STATE_FILE, JSON.stringify({ lastHeartbeatAt: Utils.timestamp() } as State, null, 2));
@@ -68,6 +117,15 @@ function sendHeartbeat(inp: Input | undefined, logger: Logger) {
       args.push('--project-folder');
       args.push(projectFolder);
     }
+
+    if (inp?.transcript_path) {
+      const lineChanges = calculateLineChanges(inp.transcript_path);
+      if (lineChanges !== 0) {
+        args.push('--ai-line-changes');
+        args.push(lineChanges.toString());
+      }
+    }
+
     execFileSync(WAKATIME_CLI, args);
   } catch (err: any) {
     logger.errorException(err);
