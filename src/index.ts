@@ -6,10 +6,18 @@ import os from 'os';
 import { execFileSync } from 'child_process';
 
 const STATE_FILE = path.join(os.homedir(), '.wakatime', 'claude-code.json');
+const SESSION_LOG_FILE = path.join(os.homedir(), '.wakatime', 'claude-sessions.log');
 const WAKATIME_CLI = path.join(os.homedir(), '.wakatime', 'wakatime-cli');
 
 type State = {
   lastHeartbeatAt?: number;
+};
+
+type Input = {
+  session_id: string;
+  transcript_path: string;
+  cwd: string;
+  hook_event_name: string;
 };
 
 function timestamp() {
@@ -25,20 +33,58 @@ function shouldSendHeartbeat(): boolean {
   }
 }
 
+function parseInput() {
+  try {
+    const stdinData = fs.readFileSync(0, 'utf-8');
+    if (stdinData.trim()) {
+      const stdinData = fs.readFileSync(0, 'utf-8');
+      if (stdinData.trim()) {
+        const input: Input = JSON.parse(stdinData);
+        return input;
+      }
+    }
+  } catch (err) {
+    console.error(err);
+  }
+  return undefined;
+}
+
+function logSessionData(inp: Input) {
+  try {
+    fs.mkdirSync(path.dirname(SESSION_LOG_FILE), { recursive: true });
+    fs.appendFileSync(SESSION_LOG_FILE, JSON.stringify(inp, null, 2) + '\n\n');
+  } catch (err) {
+    // ignore
+  }
+}
+
 function updateState() {
   fs.mkdirSync(path.dirname(STATE_FILE), { recursive: true });
   fs.writeFileSync(STATE_FILE, JSON.stringify({ lastHeartbeatAt: timestamp() } as State, null, 2));
 }
 
-function sendHeartbeat() {
+function sendHeartbeat(inp?: Input) {
+  const projectFolder = inp?.cwd;
   try {
-    execFileSync(WAKATIME_CLI, ['--entity', 'claude code', '--entity-type', 'app', '--category', 'ai coding']);
+    const args: string[] = ['--entity', 'claude code', '--entity-type', 'app', '--category', 'ai coding'];
+    if (projectFolder) {
+      args.push('--project-folder');
+      args.push(projectFolder);
+    }
+    execFileSync(WAKATIME_CLI, args);
   } catch (err: any) {
     console.error('Failed to send WakaTime heartbeat:', err.message);
   }
 }
 
-if (shouldSendHeartbeat()) {
-  sendHeartbeat();
-  updateState();
+function main() {
+  const inp = parseInput();
+  if (inp) logSessionData(inp);
+
+  if (shouldSendHeartbeat()) {
+    sendHeartbeat(inp);
+    updateState();
+  }
 }
+
+main();
