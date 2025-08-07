@@ -6,6 +6,7 @@ import os from 'os';
 import { execFileSync } from 'child_process';
 import { Options } from './options';
 
+const VERSION = '1.0.0';
 const STATE_FILE = path.join(os.homedir(), '.wakatime', 'claude-code.json');
 const SESSION_LOG_FILE = path.join(os.homedir(), '.wakatime', 'claude-sessions.log');
 const WAKATIME_CLI = path.join(os.homedir(), '.wakatime', 'wakatime-cli');
@@ -67,7 +68,16 @@ function updateState() {
 function sendHeartbeat(inp?: Input) {
   const projectFolder = inp?.cwd;
   try {
-    const args: string[] = ['--entity', 'claude code', '--entity-type', 'app', '--category', 'ai coding'];
+    const args: string[] = [
+      '--entity',
+      'claude code',
+      '--entity-type',
+      'app',
+      '--category',
+      'ai coding',
+      '--plugin',
+      `claude-code/${VERSION}`,
+    ];
     if (projectFolder) {
       args.push('--project-folder');
       args.push(projectFolder);
@@ -79,11 +89,12 @@ function sendHeartbeat(inp?: Input) {
 }
 
 function main() {
+  const inp = parseInput();
+
   const options = new Options();
   const debug = options.getSetting('settings', 'debug');
 
-  const inp = parseInput();
-  if (inp && debug?.value === 'true') logSessionData(inp);
+  if (inp && debug === 'true') logSessionData(inp);
 
   if (shouldSendHeartbeat()) {
     sendHeartbeat(inp);

@@ -34,7 +34,7 @@ export class Options {
     this.logFile = path.join(this.resourcesLocation, 'wakatime.log');
   }
 
-  public getSetting(section: string, key: string, internal?: boolean): Setting | undefined {
+  public getSetting(section: string, key: string, internal?: boolean): string | undefined {
     const content = fs.readFileSync(this.getConfigFile(internal ?? false), 'utf-8');
     if (content.trim()) {
       let currentSection = '';
@@ -50,12 +50,12 @@ export class Options {
           let parts = line.split('=');
           let currentKey = parts[0].trim();
           if (currentKey === key && parts.length > 1) {
-            return { key: key, value: this.removeNulls(parts[1].trim()) };
+            return this.removeNulls(parts[1].trim());
           }
         }
       }
 
-      return { key: key, value: '' };
+      return undefined;
     }
   }
 
