@@ -90,4 +90,8 @@ export class Utils {
     }
     return options;
   }
+
+  public static timestamp() {
+    return Date.now() / 1000;
+  }
 }

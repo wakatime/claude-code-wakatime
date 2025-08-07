@@ -6,8 +6,11 @@ import os from 'os';
 import { execFileSync } from 'child_process';
 import { Options } from './options';
 import { VERSION } from './version';
+import { Dependencies } from './dependencies';
+import { Utils } from './utils';
+import { Logger, LogLevel } from './logger';
+
 const STATE_FILE = path.join(os.homedir(), '.wakatime', 'claude-code.json');
-const SESSION_LOG_FILE = path.join(os.homedir(), '.wakatime', 'claude-sessions.log');
 const WAKATIME_CLI = path.join(os.homedir(), '.wakatime', 'wakatime-cli');
 
 type State = {
@@ -21,14 +24,10 @@ type Input = {
   hook_event_name: string;
 };
 
-function timestamp() {
-  return Date.now() / 1000;
-}
-
 function shouldSendHeartbeat(): boolean {
   try {
-    const last = (JSON.parse(fs.readFileSync(STATE_FILE, 'utf-8')) as State).lastHeartbeatAt ?? timestamp();
-    return timestamp() - last >= 60;
+    const last = (JSON.parse(fs.readFileSync(STATE_FILE, 'utf-8')) as State).lastHeartbeatAt ?? Utils.timestamp();
+    return Utils.timestamp() - last >= 60;
   } catch {
     return true;
   }
@@ -47,18 +46,9 @@ function parseInput() {
   return undefined;
 }
 
-function logSessionData(inp: Input) {
-  try {
-    fs.mkdirSync(path.dirname(SESSION_LOG_FILE), { recursive: true });
-    fs.appendFileSync(SESSION_LOG_FILE, JSON.stringify(inp, null, 2) + '\n\n');
-  } catch (err) {
-    // ignore
-  }
-}
-
 function updateState() {
   fs.mkdirSync(path.dirname(STATE_FILE), { recursive: true });
-  fs.writeFileSync(STATE_FILE, JSON.stringify({ lastHeartbeatAt: timestamp() } as State, null, 2));
+  fs.writeFileSync(STATE_FILE, JSON.stringify({ lastHeartbeatAt: Utils.timestamp() } as State, null, 2));
 }
 
 function sendHeartbeat(inp?: Input) {
@@ -89,8 +79,20 @@ function main() {
 
   const options = new Options();
   const debug = options.getSetting('settings', 'debug');
+  const logger = new Logger(debug === 'true' ? LogLevel.DEBUG : LogLevel.INFO);
+  const deps = new Dependencies(options, logger);
 
-  if (inp && debug === 'true') logSessionData(inp);
+  if (inp) {
+    try {
+      logger.debug(JSON.stringify(inp, null, 2));
+    } catch (err) {
+      // ignore
+    }
+  }
+
+  if (inp?.hook_event_name === 'SessionStart') {
+    deps.checkAndInstallCli();
+  }
 
   if (shouldSendHeartbeat()) {
     sendHeartbeat(inp);

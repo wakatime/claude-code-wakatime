@@ -13,8 +13,8 @@ export interface Setting {
 export class Options {
   private configFile: string;
   private internalConfigFile: string;
-  private resourcesLocation: string;
   private logFile: string;
+  public resourcesLocation: string;
 
   constructor() {
     const home = Utils.getHomeDirectory();
