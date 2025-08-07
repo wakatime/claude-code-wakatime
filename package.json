@@ -7,8 +7,9 @@
   },
   "scripts": {
     "postinstall": "node dist/install-hooks.js",
+    "prebuild": "node scripts/generate-version.js",
     "build": "tsc",
-    "watch": "tsc --watch",
+    "watch": "npm run prebuild && tsc --watch",
     "release:major": "npm version major && npm publish && git push && git push --tags",
     "release:minor": "npm version minor && npm publish && git push && git push --tags",
     "release:patch": "npm version patch && npm publish && git push && git push --tags"

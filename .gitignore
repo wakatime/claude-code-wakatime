@@ -24,3 +24,6 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+# auto-generated files
+src/version.ts

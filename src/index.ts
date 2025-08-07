@@ -5,8 +5,7 @@ import path from 'path';
 import os from 'os';
 import { execFileSync } from 'child_process';
 import { Options } from './options';
-
-const VERSION = '1.0.0';
+import { VERSION } from './version';
 const STATE_FILE = path.join(os.homedir(), '.wakatime', 'claude-code.json');
 const SESSION_LOG_FILE = path.join(os.homedir(), '.wakatime', 'claude-sessions.log');
 const WAKATIME_CLI = path.join(os.homedir(), '.wakatime', 'wakatime-cli');
