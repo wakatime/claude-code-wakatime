@@ -51,7 +51,7 @@ function updateState() {
   fs.writeFileSync(STATE_FILE, JSON.stringify({ lastHeartbeatAt: Utils.timestamp() } as State, null, 2));
 }
 
-function sendHeartbeat(inp?: Input) {
+function sendHeartbeat(inp: Input | undefined, logger: Logger) {
   const projectFolder = inp?.cwd;
   try {
     const args: string[] = [
@@ -70,7 +70,7 @@ function sendHeartbeat(inp?: Input) {
     }
     execFileSync(WAKATIME_CLI, args);
   } catch (err: any) {
-    console.error('Failed to send WakaTime heartbeat:', err.message);
+    logger.errorException(err);
   }
 }
 
@@ -95,7 +95,7 @@ function main() {
   }
 
   if (shouldSendHeartbeat()) {
-    sendHeartbeat(inp);
+    sendHeartbeat(inp, logger);
     updateState();
   }
 }
