@@ -73,7 +73,7 @@ function sendHeartbeat(inp?: Input) {
       '--category',
       'ai coding',
       '--plugin',
-      `claude-code/${VERSION}`,
+      `claude-code-wakatime/${VERSION}`,
     ];
     if (projectFolder) {
       args.push('--project-folder');
