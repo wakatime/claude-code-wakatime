@@ -11,7 +11,7 @@
     ```
     [settings]
     api_key = waka_123
-```
+    ```
 
 4. Use Claude Code and your AI coding activity will be displayed on your [WakaTime dashboard](https://wakatime.com)
 
