@@ -39,11 +39,8 @@ function parseInput() {
   try {
     const stdinData = fs.readFileSync(0, 'utf-8');
     if (stdinData.trim()) {
-      const stdinData = fs.readFileSync(0, 'utf-8');
-      if (stdinData.trim()) {
-        const input: Input = JSON.parse(stdinData);
-        return input;
-      }
+      const input: Input = JSON.parse(stdinData);
+      return input;
     }
   } catch (err) {
     console.error(err);
