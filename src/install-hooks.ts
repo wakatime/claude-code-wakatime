@@ -3,7 +3,7 @@ import path from 'path';
 import os from 'os';
 
 const CLAUDE_SETTINGS = path.join(os.homedir(), '.claude', 'settings.json');
-const HOOK_EVENTS = ['PreToolUse', 'PostToolUse', 'UserPromptSubmit', 'SessionStart'];
+const HOOK_EVENTS = ['PreToolUse', 'PostToolUse', 'UserPromptSubmit', 'SessionStart', 'Stop'];
 
 function loadSettings(): any {
   if (!fs.existsSync(CLAUDE_SETTINGS)) {
@@ -33,19 +33,18 @@ function installHooks(): void {
   };
 
   let hookAlreadyExists = true;
-  
+
   for (const event of HOOK_EVENTS) {
     settings.hooks[event] = settings.hooks[event] || [];
-    
+
     // Check if a hook with the same command already exists
-    const existingHook = settings.hooks[event].find((existingHook: any) =>
-      existingHook.hooks && 
-      Array.isArray(existingHook.hooks) &&
-      existingHook.hooks.some((hookItem: any) => 
-        hookItem.command === 'claude-code-wakatime'
-      )
+    const existingHook = settings.hooks[event].find(
+      (existingHook: any) =>
+        existingHook.hooks &&
+        Array.isArray(existingHook.hooks) &&
+        existingHook.hooks.some((hookItem: any) => hookItem.command === 'claude-code-wakatime'),
     );
-    
+
     if (!existingHook) {
       settings.hooks[event].push(hook);
       hookAlreadyExists = false;

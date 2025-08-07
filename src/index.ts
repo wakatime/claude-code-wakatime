@@ -24,7 +24,11 @@ type Input = {
   hook_event_name: string;
 };
 
-function shouldSendHeartbeat(): boolean {
+function shouldSendHeartbeat(inp?: Input): boolean {
+  if (inp?.hook_event_name === 'Stop') {
+    return true;
+  }
+
   try {
     const last = (JSON.parse(fs.readFileSync(STATE_FILE, 'utf-8')) as State).lastHeartbeatAt ?? Utils.timestamp();
     return Utils.timestamp() - last >= 60;
@@ -152,7 +156,7 @@ function main() {
     deps.checkAndInstallCli();
   }
 
-  if (shouldSendHeartbeat()) {
+  if (shouldSendHeartbeat(inp)) {
     sendHeartbeat(inp, logger);
     updateState();
   }
