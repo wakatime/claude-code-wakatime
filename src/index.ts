@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import { execFileSync } from 'child_process';
+import { Options } from './options';
 
 const STATE_FILE = path.join(os.homedir(), '.wakatime', 'claude-code.json');
 const SESSION_LOG_FILE = path.join(os.homedir(), '.wakatime', 'claude-sessions.log');
@@ -78,8 +79,11 @@ function sendHeartbeat(inp?: Input) {
 }
 
 function main() {
+  const options = new Options();
+  const debug = options.getSetting('settings', 'debug');
+
   const inp = parseInput();
-  if (inp) logSessionData(inp);
+  if (inp && debug?.value === 'true') logSessionData(inp);
 
   if (shouldSendHeartbeat()) {
     sendHeartbeat(inp);
