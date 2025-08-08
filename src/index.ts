@@ -162,7 +162,7 @@ function main() {
     }
   }
 
-  if (inp?.hook_event_name === 'SessionStart demo') {
+  if (inp?.hook_event_name === 'SessionStart') {
     deps.checkAndInstallCli();
   }
 
