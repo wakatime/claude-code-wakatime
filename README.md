@@ -1,5 +1,7 @@
 # WakaTime for Claude Code
 
+Track your AI usage, lines of code generated, time spent prompting AI, etc. using [claude-code-wakatime](https://www.npmjs.com/package/claude-code-wakatime).
+
 [WakaTime](https://wakatime.com/) is an open source VS Code plugin for metrics, insights, and time tracking automatically generated from your programming activity.
 
 ## Installation
