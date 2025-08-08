@@ -12,6 +12,7 @@ import { Logger, LogLevel } from './logger';
 
 const STATE_FILE = path.join(os.homedir(), '.wakatime', 'claude-code.json');
 const WAKATIME_CLI = path.join(os.homedir(), '.wakatime', 'wakatime-cli');
+const logger = new Logger();
 
 type State = {
   lastHeartbeatAt?: number;
@@ -104,7 +105,7 @@ function updateState() {
   fs.writeFileSync(STATE_FILE, JSON.stringify({ lastHeartbeatAt: Utils.timestamp() } as State, null, 2));
 }
 
-function sendHeartbeat(inp: Input | undefined, logger: Logger) {
+function sendHeartbeat(inp: Input | undefined) {
   const projectFolder = inp?.cwd;
   try {
     const args: string[] = [
@@ -124,7 +125,7 @@ function sendHeartbeat(inp: Input | undefined, logger: Logger) {
 
     if (inp?.transcript_path) {
       const lineChanges = calculateLineChanges(inp.transcript_path);
-      if (lineChanges !== 0) {
+      if (lineChanges) {
         args.push('--ai-line-changes');
         args.push(lineChanges.toString());
       }
@@ -141,7 +142,7 @@ function main() {
 
   const options = new Options();
   const debug = options.getSetting('settings', 'debug');
-  const logger = new Logger(debug === 'true' ? LogLevel.DEBUG : LogLevel.INFO);
+  logger.setLevel(debug === 'true' ? LogLevel.DEBUG : LogLevel.INFO);
   const deps = new Dependencies(options, logger);
 
   if (inp) {
@@ -152,12 +153,12 @@ function main() {
     }
   }
 
-  if (inp?.hook_event_name === 'SessionStart') {
+  if (inp?.hook_event_name === 'SessionStart demo') {
     deps.checkAndInstallCli();
   }
 
   if (shouldSendHeartbeat(inp)) {
-    sendHeartbeat(inp, logger);
+    sendHeartbeat(inp);
     updateState();
   }
 }

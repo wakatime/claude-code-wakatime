@@ -16,7 +16,7 @@ export class Logger {
   private level: LogLevel = LogLevel.INFO;
 
   constructor(level?: LogLevel) {
-    if (level) this.setLevel(level);
+    if (level !== undefined) this.setLevel(level);
   }
 
   public getLevel(): LogLevel {
@@ -29,7 +29,7 @@ export class Logger {
 
   public log(level: LogLevel, msg: string): void {
     if (level >= this.level) {
-      msg = `[${Utils.timestamp()}][${LogLevel[level]}] ${msg}\n`;
+      msg = `[${new Date().toISOString()}][${LogLevel[level]}] ${msg}\n`;
       fs.mkdirSync(path.dirname(LOG_FILE), { recursive: true });
       fs.appendFileSync(LOG_FILE, msg);
     }
