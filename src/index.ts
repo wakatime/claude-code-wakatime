@@ -3,7 +3,7 @@
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
-import { execFileSync } from 'child_process';
+import { execFile } from 'child_process';
 import { Options } from './options';
 import { VERSION } from './version';
 import { Dependencies } from './dependencies';
@@ -131,7 +131,16 @@ function sendHeartbeat(inp: Input | undefined) {
       }
     }
 
-    execFileSync(WAKATIME_CLI, args);
+    const options = Utils.buildOptions();
+    execFile(WAKATIME_CLI, args, options, (error, _stdout, stderr) => {
+      const output = _stdout.toString().trim() + stderr.toString().trim();
+      if (output) {
+        logger.error(output);
+      }
+      if (!(error != null)) {
+        logger.debug(`Sending heartbeat: ${args}`);
+      }
+    });
   } catch (err: any) {
     logger.errorException(err);
   }
