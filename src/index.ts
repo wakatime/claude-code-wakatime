@@ -60,6 +60,81 @@ function getLastHeartbeat() {
   }
 }
 
+function getModifiedFile(transcriptPath: string): string | undefined {
+  try {
+    if (!transcriptPath || !fs.existsSync(transcriptPath)) {
+      return undefined;
+    }
+
+    const content = fs.readFileSync(transcriptPath, 'utf-8');
+    const lines = content.split('\n');
+    const fileLineChanges = new Map<string, number>();
+
+    const lastHeartbeatAt = getLastHeartbeat();
+    for (const line of lines) {
+      if (line.trim()) {
+        try {
+          const logEntry = JSON.parse(line);
+          if (!logEntry.timestamp) continue;
+
+          const entryTimestamp = new Date(logEntry.timestamp).getTime() / 1000;
+          if (entryTimestamp >= lastHeartbeatAt) {
+            let filePath: string | undefined;
+
+            // Check for file paths in tool use results
+            if (logEntry.toolUse?.parameters?.file_path) {
+              filePath = logEntry.toolUse.parameters.file_path;
+            }
+
+            // Check for file paths in tool use results for multi-edit
+            if (logEntry.toolUse?.parameters?.edits) {
+              filePath = logEntry.toolUse.parameters.file_path;
+            }
+
+            // Check for file paths and line changes in structured patch
+            if (logEntry.toolUseResult?.structuredPatch) {
+              const patches = logEntry.toolUseResult.structuredPatch;
+              for (const patch of patches) {
+                if (patch.file) {
+                  filePath = patch.file;
+                  if (patch.newLines !== undefined && patch.oldLines !== undefined) {
+                    const lineChanges = Math.abs(patch.newLines - patch.oldLines);
+                    fileLineChanges.set(filePath, (fileLineChanges.get(filePath) || 0) + lineChanges);
+                  }
+                }
+              }
+            }
+
+            if (filePath && !fileLineChanges.has(filePath)) {
+              fileLineChanges.set(filePath, 0);
+            }
+          }
+        } catch {
+          // ignore
+        }
+      }
+    }
+
+    if (fileLineChanges.size === 0) {
+      return undefined;
+    }
+
+    // Find file with most line changes
+    let maxChanges = 0;
+    let mostChangedFile: string | undefined;
+    for (const [file, changes] of fileLineChanges.entries()) {
+      if (changes > maxChanges) {
+        maxChanges = changes;
+        mostChangedFile = file;
+      }
+    }
+
+    return mostChangedFile;
+  } catch {
+    return undefined;
+  }
+}
+
 function calculateLineChanges(transcriptPath: string): number {
   try {
     if (!transcriptPath || !fs.existsSync(transcriptPath)) {
@@ -108,11 +183,19 @@ function updateState() {
 function sendHeartbeat(inp: Input | undefined) {
   const projectFolder = inp?.cwd;
   try {
+    let entity = 'claude code';
+    if (inp?.transcript_path) {
+      const modifiedFile = getModifiedFile(inp.transcript_path);
+      if (modifiedFile) {
+        entity = modifiedFile;
+      }
+    }
+
     const args: string[] = [
       '--entity',
-      'claude code',
+      entity,
       '--entity-type',
-      'app',
+      entity === 'claude code' ? 'app' : 'file',
       '--category',
       'ai coding',
       '--plugin',
