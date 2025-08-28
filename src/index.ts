@@ -96,7 +96,7 @@ function getModifiedFile(transcriptPath: string): string | undefined {
               const patches = logEntry.toolUseResult.structuredPatch;
               for (const patch of patches) {
                 if (patch.file) {
-                  filePath = patch.file;
+                  filePath = patch.file as string;
                   if (patch.newLines !== undefined && patch.oldLines !== undefined) {
                     const lineChanges = Math.abs(patch.newLines - patch.oldLines);
                     fileLineChanges.set(filePath, (fileLineChanges.get(filePath) || 0) + lineChanges);
