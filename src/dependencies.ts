@@ -153,7 +153,7 @@ export class Dependencies {
       url: this.githubReleasesUrl,
       json: true,
       headers: {
-        'User-Agent': 'github.com/wakatime/vscode-wakatime',
+        'User-Agent': 'github.com/wakatime/claude-code-wakatime',
       },
     };
     this.logger.debug(`Fetching latest wakatime-cli version from GitHub API: ${options.url}`);
@@ -378,7 +378,7 @@ export class Dependencies {
   }
 
   private reportMissingPlatformSupport(osname: string, architecture: string): void {
-    const url = `https://api.wakatime.com/api/v1/cli-missing?osname=${osname}&architecture=${architecture}&plugin=vscode`;
+    const url = `https://api.wakatime.com/api/v1/cli-missing?osname=${osname}&architecture=${architecture}&plugin=claude-code`;
     const proxy = this.options.getSetting('settings', 'proxy');
     const noSSLVerify = this.options.getSetting('settings', 'no_ssl_verify');
     let options: request.CoreOptions & { url: string } = { url: url };
