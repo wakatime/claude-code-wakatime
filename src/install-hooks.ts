@@ -3,7 +3,16 @@ import path from 'path';
 import os from 'os';
 
 const CLAUDE_SETTINGS = path.join(os.homedir(), '.claude', 'settings.json');
-const HOOK_EVENTS = ['PreToolUse', 'PostToolUse', 'UserPromptSubmit', 'SessionStart', 'Stop'];
+const HOOK_EVENTS = [
+  'PreToolUse',
+  'PostToolUse',
+  'SessionStart',
+  'SessionEnd',
+  'UserPromptSubmit',
+  'PreCompact',
+  'SubagentStop',
+  'Stop',
+];
 
 function loadSettings(): any {
   if (!fs.existsSync(CLAUDE_SETTINGS)) {

@@ -1,5 +1,5 @@
 {
-  "name": "claude-code-wakatime",
+  "name": "wakatime",
   "owner": {
     "name": "WakaTime"
   },
@@ -7,18 +7,19 @@
     {
       "name": "claude-code-wakatime",
       "source": "./",
-      "description": "WakaTime plugin for Claude Code, metrics about your claude code usage",
+      "description": "Track your AI usage, lines of code generated, and time spent prompting AI",
       "version": "2.2.0",
       "homepage": "https://github.com/wakatime/claude-code-wakatime",
       "repository": "https://github.com/wakatime/claude-code-wakatime",
-      "license": "BSD",
+      "license": "BSD-3-Clause",
       "keywords": [
         "time-tracking",
         "hooks",
-        "productivity"
+        "productivity",
+        "metrics"
       ],
       "category": "productivity",
-      "tags": ["productivity"]
+      "tags": ["productivity", "metrics"]
     }
   ]
 }
