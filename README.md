@@ -50,6 +50,12 @@ Diagnostic tool for troubleshooting the installation and health of Claude Code a
 claude doctor
 ```
 
+Make sure you have node.js installed and in your `$PATH`:
+
+```bash
+node -v
+```
+
 Run claude with verbose logging to see any plugin load errors:
 
 ```bash
