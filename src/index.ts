@@ -214,15 +214,13 @@ function sendHeartbeat(inp: Input | undefined) {
       }
     }
 
+    logger.debug(`Sending heartbeat: ${args}`);
+
     const options = Utils.buildOptions();
-    execFile(WAKATIME_CLI, args, options, (error, _stdout, stderr) => {
-      const output = _stdout.toString().trim() + stderr.toString().trim();
-      if (output) {
-        logger.error(output);
-      }
-      if (!(error != null)) {
-        logger.debug(`Sending heartbeat: ${args}`);
-      }
+    execFile(WAKATIME_CLI, args, options, (error, stdout, stderr) => {
+      const output = stdout.toString().trim() + stderr.toString().trim();
+      if (output) logger.error(output);
+      if (error) logger.error(error.toString());
     });
   } catch (err: any) {
     logger.errorException(err);
