@@ -42,5 +42,26 @@ Visit [https://wakatime.com][wakatime.com] to see your coding activity.
 npm run watch
 ```
 
+## Troubleshooting
+
+Diagnostic tool for troubleshooting the installation and health of Claude Code and plugins:
+
+```bash
+claude doctor
+```
+
+Run claude with verbose logging to see any plugin load errors:
+
+```bash
+claude --debug
+```
+
+Look for errors in the [wakatime-cli][wakatime-cli] log file:
+
+```bash
+grep error ~/.wakatime/wakatime.log | grep -v backoff
+```
+
 [wakatime.com]: https://wakatime.com
 [api-key]: https://wakatime.com/api-key
+[wakatime-cli]: https://github.com/wakatime/wakatime-cli
