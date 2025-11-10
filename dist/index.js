@@ -41020,7 +41020,7 @@ var Options = class {
 };
 
 // src/version.ts
-var VERSION = "2.2.0";
+var VERSION = "3.0.0";
 
 // src/dependencies.ts
 var import_adm_zip = __toESM(require_adm_zip());
@@ -41566,21 +41566,20 @@ function updateState() {
   import_fs2.default.mkdirSync(import_path2.default.dirname(STATE_FILE), { recursive: true });
   import_fs2.default.writeFileSync(STATE_FILE, JSON.stringify({ lastHeartbeatAt: Utils.timestamp() }, null, 2));
 }
+function getEntityFile(inp) {
+  if (!inp?.transcript_path) return;
+  return getModifiedFile(inp.transcript_path);
+}
 function sendHeartbeat(inp) {
   const projectFolder = inp?.cwd;
   try {
-    let entity = "claude code";
-    if (inp?.transcript_path) {
-      const modifiedFile = getModifiedFile(inp.transcript_path);
-      if (modifiedFile) {
-        entity = modifiedFile;
-      }
-    }
+    const entity = getEntityFile(inp);
+    if (!entity) return;
     const args = [
       "--entity",
       entity,
       "--entity-type",
-      entity === "claude code" ? "app" : "file",
+      "file",
       "--category",
       "ai coding",
       "--plugin",
