@@ -180,22 +180,22 @@ function updateState() {
   fs.writeFileSync(STATE_FILE, JSON.stringify({ lastHeartbeatAt: Utils.timestamp() } as State, null, 2));
 }
 
+function getEntityFile(inp: Input | undefined): string | undefined {
+  if (!inp?.transcript_path) return;
+  return getModifiedFile(inp.transcript_path);
+}
+
 function sendHeartbeat(inp: Input | undefined) {
   const projectFolder = inp?.cwd;
   try {
-    let entity = 'claude code';
-    if (inp?.transcript_path) {
-      const modifiedFile = getModifiedFile(inp.transcript_path);
-      if (modifiedFile) {
-        entity = modifiedFile;
-      }
-    }
+    const entity = getEntityFile(inp);
+    if (!entity) return;
 
     const args: string[] = [
       '--entity',
       entity,
       '--entity-type',
-      entity === 'claude code' ? 'app' : 'file',
+      'file',
       '--category',
       'ai coding',
       '--plugin',
