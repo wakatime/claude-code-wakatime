@@ -12,7 +12,10 @@ const HOOK_EVENTS = [
   'PreCompact',
   'SubagentStop',
   'Stop',
-];
+].filter(event => {
+  // Skip SessionStart on Windows to prevent UI freeze
+  return !(event === 'SessionStart' && os.platform() === 'win32');
+});
 
 function loadSettings(): any {
   if (!fs.existsSync(CLAUDE_SETTINGS)) {

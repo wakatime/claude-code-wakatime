@@ -41020,7 +41020,7 @@ var Options = class {
 };
 
 // src/version.ts
-var VERSION = "3.0.0";
+var VERSION = "3.0.1";
 
 // src/dependencies.ts
 var import_adm_zip = __toESM(require_adm_zip());
@@ -41437,7 +41437,6 @@ var Logger = class {
 
 // src/index.ts
 var STATE_FILE = import_path2.default.join(import_os2.default.homedir(), ".wakatime", "claude-code.json");
-var WAKATIME_CLI = import_path2.default.join(import_os2.default.homedir(), ".wakatime", "wakatime-cli");
 var logger = new Logger();
 function shouldSendHeartbeat(inp) {
   if (inp?.hook_event_name === "Stop") {
@@ -41570,7 +41569,7 @@ function getEntityFile(inp) {
   if (!inp?.transcript_path) return;
   return getModifiedFile(inp.transcript_path);
 }
-function sendHeartbeat(inp) {
+function sendHeartbeat(inp, deps) {
   const projectFolder = inp?.cwd;
   try {
     const entity = getEntityFile(inp);
@@ -41596,9 +41595,14 @@ function sendHeartbeat(inp) {
         args.push(lineChanges.toString());
       }
     }
+    const wakatimeCli = deps.getCliLocation();
+    if (!wakatimeCli) {
+      logger.error("WakaTime CLI location not found");
+      return;
+    }
     logger.debug(`Sending heartbeat: ${args}`);
     const options = Utils.buildOptions();
-    (0, import_child_process.execFile)(WAKATIME_CLI, args, options, (error, stdout, stderr) => {
+    (0, import_child_process.execFile)(wakatimeCli, args, options, (error, stdout, stderr) => {
       const output = stdout.toString().trim() + stderr.toString().trim();
       if (output) logger.error(output);
       if (error) logger.error(error.toString());
@@ -41619,11 +41623,14 @@ function main() {
     } catch (err) {
     }
   }
-  if (inp?.hook_event_name === "SessionStart") {
+  if (inp?.hook_event_name === "SessionStart" && !Utils.isWindows()) {
     deps.checkAndInstallCli();
   }
   if (shouldSendHeartbeat(inp)) {
-    sendHeartbeat(inp);
+    if (!deps.isCliInstalled()) {
+      deps.checkAndInstallCli();
+    }
+    sendHeartbeat(inp, deps);
     updateState();
   }
 }

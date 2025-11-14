@@ -11,7 +11,6 @@ import { Utils } from './utils';
 import { Logger, LogLevel } from './logger';
 
 const STATE_FILE = path.join(os.homedir(), '.wakatime', 'claude-code.json');
-const WAKATIME_CLI = path.join(os.homedir(), '.wakatime', 'wakatime-cli');
 const logger = new Logger();
 
 type State = {
@@ -185,7 +184,7 @@ function getEntityFile(inp: Input | undefined): string | undefined {
   return getModifiedFile(inp.transcript_path);
 }
 
-function sendHeartbeat(inp: Input | undefined) {
+function sendHeartbeat(inp: Input | undefined, deps: Dependencies) {
   const projectFolder = inp?.cwd;
   try {
     const entity = getEntityFile(inp);
@@ -214,10 +213,16 @@ function sendHeartbeat(inp: Input | undefined) {
       }
     }
 
+    const wakatimeCli = deps.getCliLocation();
+    if (!wakatimeCli) {
+      logger.error('WakaTime CLI location not found');
+      return;
+    }
+
     logger.debug(`Sending heartbeat: ${args}`);
 
     const options = Utils.buildOptions();
-    execFile(WAKATIME_CLI, args, options, (error, stdout, stderr) => {
+    execFile(wakatimeCli, args, options, (error, stdout, stderr) => {
       const output = stdout.toString().trim() + stderr.toString().trim();
       if (output) logger.error(output);
       if (error) logger.error(error.toString());
@@ -243,12 +248,16 @@ function main() {
     }
   }
 
-  if (inp?.hook_event_name === 'SessionStart') {
+  // Windows: skip SessionStart to prevent UI hang
+  if (inp?.hook_event_name === 'SessionStart' && !Utils.isWindows()) {
     deps.checkAndInstallCli();
   }
 
   if (shouldSendHeartbeat(inp)) {
-    sendHeartbeat(inp);
+    if (!deps.isCliInstalled()) {
+      deps.checkAndInstallCli();
+    }
+    sendHeartbeat(inp, deps);
     updateState();
   }
 }
