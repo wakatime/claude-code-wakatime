@@ -41020,7 +41020,7 @@ var Options = class {
 };
 
 // src/version.ts
-var VERSION = "3.0.1";
+var VERSION = "3.0.0";
 
 // src/dependencies.ts
 var import_adm_zip = __toESM(require_adm_zip());
