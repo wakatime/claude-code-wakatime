@@ -11,8 +11,9 @@ import { Utils } from './utils';
 import { Logger, LogLevel } from './logger';
 
 const STATE_FILE = path.join(os.homedir(), '.wakatime', 'claude-code.json');
-const WAKATIME_CLI = path.join(os.homedir(), '.wakatime', 'wakatime-cli');
 const logger = new Logger();
+const options = new Options();
+const deps = new Dependencies(options, logger);
 
 type State = {
   lastHeartbeatAt?: number;
@@ -191,6 +192,8 @@ function sendHeartbeat(inp: Input | undefined) {
     const entity = getEntityFile(inp);
     if (!entity) return;
 
+    const wakatime_cli = deps.getCliLocation();
+
     const args: string[] = [
       '--entity',
       entity,
@@ -214,10 +217,10 @@ function sendHeartbeat(inp: Input | undefined) {
       }
     }
 
-    logger.debug(`Sending heartbeat: ${args}`);
+    logger.debug(`Sending heartbeat: ${wakatime_cli} ${args}`);
 
-    const options = Utils.buildOptions();
-    execFile(WAKATIME_CLI, args, options, (error, stdout, stderr) => {
+    const execOptions = Utils.buildOptions();
+    execFile(wakatime_cli, args, execOptions, (error, stdout, stderr) => {
       const output = stdout.toString().trim() + stderr.toString().trim();
       if (output) logger.error(output);
       if (error) logger.error(error.toString());
@@ -230,10 +233,8 @@ function sendHeartbeat(inp: Input | undefined) {
 function main() {
   const inp = parseInput();
 
-  const options = new Options();
   const debug = options.getSetting('settings', 'debug');
   logger.setLevel(debug === 'true' ? LogLevel.DEBUG : LogLevel.INFO);
-  const deps = new Dependencies(options, logger);
 
   if (inp) {
     try {
@@ -243,9 +244,7 @@ function main() {
     }
   }
 
-  if (inp?.hook_event_name === 'SessionStart') {
-    deps.checkAndInstallCli();
-  }
+  deps.checkAndInstallCli();
 
   if (shouldSendHeartbeat(inp)) {
     sendHeartbeat(inp);

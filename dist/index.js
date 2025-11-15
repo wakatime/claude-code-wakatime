@@ -1222,9 +1222,9 @@ var require_zipEntry = __commonJS({
     var Headers = require_headers();
     var Constants = Utils2.Constants;
     var Methods = require_methods();
-    module2.exports = function(options, input) {
+    module2.exports = function(options2, input) {
       var _centralHeader = new Headers.EntryHeader(), _entryName = Buffer.alloc(0), _comment = Buffer.alloc(0), _isDirectory = false, uncompressedData = null, _extra = Buffer.alloc(0), _extralocal = Buffer.alloc(0), _efs = true;
-      const opts = options;
+      const opts = options2;
       const decoder = typeof opts.decoder === "object" ? opts.decoder : Utils2.decoder;
       _efs = decoder.hasOwnProperty("efs") ? decoder.efs : false;
       function getCompressedDataFromZip() {
@@ -1552,11 +1552,11 @@ var require_zipFile = __commonJS({
     var ZipEntry = require_zipEntry();
     var Headers = require_headers();
     var Utils2 = require_util();
-    module2.exports = function(inBuffer, options) {
+    module2.exports = function(inBuffer, options2) {
       var entryList = [], entryTable = {}, _comment = Buffer.alloc(0), mainHeader = new Headers.MainHeader(), loadedEntries = false;
       var password = null;
       const temporary = /* @__PURE__ */ new Set();
-      const opts = options;
+      const opts = options2;
       const { noSort, decoder } = opts;
       if (inBuffer) {
         readMainHeader(opts.readEntries);
@@ -1912,7 +1912,7 @@ var require_adm_zip = __commonJS({
       // file system
       fs: null
     };
-    module2.exports = function(input, options) {
+    module2.exports = function(input, options2) {
       let inBuffer = null;
       const opts = Object.assign(/* @__PURE__ */ Object.create(null), defaultOptions);
       if (input && "object" === typeof input) {
@@ -1927,7 +1927,7 @@ var require_adm_zip = __commonJS({
           input = void 0;
         }
       }
-      Object.assign(opts, options);
+      Object.assign(opts, options2);
       const filetools = new Utils2(opts);
       if (typeof opts.decoder !== "object" || typeof opts.decoder.encode !== "function" || typeof opts.decoder.decode !== "function") {
         opts.decoder = Utils2.decoder;
@@ -2171,11 +2171,11 @@ var require_adm_zip = __commonJS({
          * @param {string} [options.zipName] - Optional name for the file
          * @param {doneCallback} callback - The callback that handles the response.
          */
-        addLocalFileAsync: function(options2, callback) {
-          options2 = typeof options2 === "object" ? options2 : { localPath: options2 };
-          const localPath2 = pth.resolve(options2.localPath);
-          const { comment } = options2;
-          let { zipPath, zipName } = options2;
+        addLocalFileAsync: function(options3, callback) {
+          options3 = typeof options3 === "object" ? options3 : { localPath: options3 };
+          const localPath2 = pth.resolve(options3.localPath);
+          const { comment } = options3;
+          let { zipPath, zipName } = options3;
           const self2 = this;
           filetools.fs.stat(localPath2, function(err, stats) {
             if (err) return callback(err, false);
@@ -2289,11 +2289,11 @@ var require_adm_zip = __commonJS({
          * @param {doneCallback} callback - The callback that handles the response.
          *
          */
-        addLocalFolderAsync2: function(options2, callback) {
+        addLocalFolderAsync2: function(options3, callback) {
           const self2 = this;
-          options2 = typeof options2 === "object" ? options2 : { localPath: options2 };
-          localPath = pth.resolve(fixPath(options2.localPath));
-          let { zipPath, filter, namefix } = options2;
+          options3 = typeof options3 === "object" ? options3 : { localPath: options3 };
+          localPath = pth.resolve(fixPath(options3.localPath));
+          let { zipPath, filter, namefix } = options3;
           if (filter instanceof RegExp) {
             filter = /* @__PURE__ */ (function(rx) {
               return function(filename) {
@@ -2710,16 +2710,16 @@ var require_extend = __commonJS({
       }
       return typeof key === "undefined" || hasOwn.call(obj, key);
     };
-    var setProperty = function setProperty2(target, options) {
-      if (defineProperty && options.name === "__proto__") {
-        defineProperty(target, options.name, {
+    var setProperty = function setProperty2(target, options2) {
+      if (defineProperty && options2.name === "__proto__") {
+        defineProperty(target, options2.name, {
           enumerable: true,
           configurable: true,
-          value: options.newValue,
+          value: options2.newValue,
           writable: true
         });
       } else {
-        target[options.name] = options.newValue;
+        target[options2.name] = options2.newValue;
       }
     };
     var getProperty = function getProperty2(obj, name) {
@@ -2733,7 +2733,7 @@ var require_extend = __commonJS({
       return obj[name];
     };
     module2.exports = function extend() {
-      var options, name, src, copy, copyIsArray, clone;
+      var options2, name, src, copy, copyIsArray, clone;
       var target = arguments[0];
       var i = 1;
       var length = arguments.length;
@@ -2747,11 +2747,11 @@ var require_extend = __commonJS({
         target = {};
       }
       for (; i < length; ++i) {
-        options = arguments[i];
-        if (options != null) {
-          for (name in options) {
+        options2 = arguments[i];
+        if (options2 != null) {
+          for (name in options2) {
             src = getProperty(target, name);
-            copy = getProperty(options, name);
+            copy = getProperty(options2, name);
             if (target !== copy) {
               if (deep && copy && (isPlainObject(copy) || (copyIsArray = isArray(copy)))) {
                 if (copyIsArray) {
@@ -3427,14 +3427,14 @@ var require_cookie = __commonJS({
       c.value = cookieValue;
       return c;
     }
-    function parse(str, options) {
-      if (!options || typeof options !== "object") {
-        options = {};
+    function parse(str, options2) {
+      if (!options2 || typeof options2 !== "object") {
+        options2 = {};
       }
       str = str.trim();
       var firstSemi = str.indexOf(";");
       var cookiePair = firstSemi === -1 ? str : str.substr(0, firstSemi);
-      var c = parseCookiePair(cookiePair, !!options.loose);
+      var c = parseCookiePair(cookiePair, !!options2.loose);
       if (!c) {
         return;
       }
@@ -3592,11 +3592,11 @@ var require_cookie = __commonJS({
       }
       return urlParse(url);
     }
-    function Cookie(options) {
-      options = options || {};
-      Object.keys(options).forEach(function(prop) {
-        if (Cookie.prototype.hasOwnProperty(prop) && Cookie.prototype[prop] !== options[prop] && prop.substr(0, 1) !== "_") {
-          this[prop] = options[prop];
+    function Cookie(options2) {
+      options2 = options2 || {};
+      Object.keys(options2).forEach(function(prop) {
+        if (Cookie.prototype.hasOwnProperty(prop) && Cookie.prototype[prop] !== options2[prop] && prop.substr(0, 1) !== "_") {
+          this[prop] = options2[prop];
         }
       }, this);
       this.creation = this.creation || /* @__PURE__ */ new Date();
@@ -3798,17 +3798,17 @@ var require_cookie = __commonJS({
       }
       return canonicalDomain(this.domain);
     };
-    function CookieJar(store, options) {
-      if (typeof options === "boolean") {
-        options = { rejectPublicSuffixes: options };
-      } else if (options == null) {
-        options = {};
+    function CookieJar(store, options2) {
+      if (typeof options2 === "boolean") {
+        options2 = { rejectPublicSuffixes: options2 };
+      } else if (options2 == null) {
+        options2 = {};
       }
-      if (options.rejectPublicSuffixes != null) {
-        this.rejectPublicSuffixes = options.rejectPublicSuffixes;
+      if (options2.rejectPublicSuffixes != null) {
+        this.rejectPublicSuffixes = options2.rejectPublicSuffixes;
       }
-      if (options.looseMode != null) {
-        this.enableLooseMode = options.looseMode;
+      if (options2.looseMode != null) {
+        this.enableLooseMode = options2.looseMode;
       }
       if (!store) {
         store = new MemoryCookieStore();
@@ -3820,37 +3820,37 @@ var require_cookie = __commonJS({
     CookieJar.prototype.enableLooseMode = false;
     var CAN_BE_SYNC = [];
     CAN_BE_SYNC.push("setCookie");
-    CookieJar.prototype.setCookie = function(cookie, url, options, cb) {
+    CookieJar.prototype.setCookie = function(cookie, url, options2, cb) {
       var err;
       var context = getCookieContext(url);
-      if (options instanceof Function) {
-        cb = options;
-        options = {};
+      if (options2 instanceof Function) {
+        cb = options2;
+        options2 = {};
       }
       var host = canonicalDomain(context.hostname);
       var loose = this.enableLooseMode;
-      if (options.loose != null) {
-        loose = options.loose;
+      if (options2.loose != null) {
+        loose = options2.loose;
       }
       if (!(cookie instanceof Cookie)) {
         cookie = Cookie.parse(cookie, { loose });
       }
       if (!cookie) {
         err = new Error("Cookie failed to parse");
-        return cb(options.ignoreError ? null : err);
+        return cb(options2.ignoreError ? null : err);
       }
-      var now = options.now || /* @__PURE__ */ new Date();
+      var now = options2.now || /* @__PURE__ */ new Date();
       if (this.rejectPublicSuffixes && cookie.domain) {
         var suffix = pubsuffix.getPublicSuffix(cookie.cdomain());
         if (suffix == null) {
           err = new Error("Cookie has domain set to a public suffix");
-          return cb(options.ignoreError ? null : err);
+          return cb(options2.ignoreError ? null : err);
         }
       }
       if (cookie.domain) {
         if (!domainMatch(host, cookie.cdomain(), false)) {
           err = new Error("Cookie not in this host's domain. Cookie:" + cookie.cdomain() + " Request:" + host);
-          return cb(options.ignoreError ? null : err);
+          return cb(options2.ignoreError ? null : err);
         }
         if (cookie.hostOnly == null) {
           cookie.hostOnly = false;
@@ -3863,9 +3863,9 @@ var require_cookie = __commonJS({
         cookie.path = defaultPath(context.pathname);
         cookie.pathIsDefault = true;
       }
-      if (options.http === false && cookie.httpOnly) {
+      if (options2.http === false && cookie.httpOnly) {
         err = new Error("Cookie is HttpOnly and this isn't an HTTP API");
-        return cb(options.ignoreError ? null : err);
+        return cb(options2.ignoreError ? null : err);
       }
       var store = this.store;
       if (!store.updateCookie) {
@@ -3885,9 +3885,9 @@ var require_cookie = __commonJS({
           }
         };
         if (oldCookie) {
-          if (options.http === false && oldCookie.httpOnly) {
+          if (options2.http === false && oldCookie.httpOnly) {
             err2 = new Error("old Cookie is HttpOnly and this isn't an HTTP API");
-            return cb(options.ignoreError ? null : err2);
+            return cb(options2.ignoreError ? null : err2);
           }
           cookie.creation = oldCookie.creation;
           cookie.creationIndex = oldCookie.creationIndex;
@@ -3901,25 +3901,25 @@ var require_cookie = __commonJS({
       store.findCookie(cookie.domain, cookie.path, cookie.key, withCookie);
     };
     CAN_BE_SYNC.push("getCookies");
-    CookieJar.prototype.getCookies = function(url, options, cb) {
+    CookieJar.prototype.getCookies = function(url, options2, cb) {
       var context = getCookieContext(url);
-      if (options instanceof Function) {
-        cb = options;
-        options = {};
+      if (options2 instanceof Function) {
+        cb = options2;
+        options2 = {};
       }
       var host = canonicalDomain(context.hostname);
       var path5 = context.pathname || "/";
-      var secure = options.secure;
+      var secure = options2.secure;
       if (secure == null && context.protocol && (context.protocol == "https:" || context.protocol == "wss:")) {
         secure = true;
       }
-      var http = options.http;
+      var http = options2.http;
       if (http == null) {
         http = true;
       }
-      var now = options.now || Date.now();
-      var expireCheck = options.expire !== false;
-      var allPaths = !!options.allPaths;
+      var now = options2.now || Date.now();
+      var expireCheck = options2.expire !== false;
+      var allPaths = !!options2.allPaths;
       var store = this.store;
       function matchingCookie(c) {
         if (c.hostOnly) {
@@ -3952,7 +3952,7 @@ var require_cookie = __commonJS({
           return cb(err);
         }
         cookies = cookies.filter(matchingCookie);
-        if (options.sort !== false) {
+        if (options2.sort !== false) {
           cookies = cookies.sort(cookieCompare);
         }
         var now2 = /* @__PURE__ */ new Date();
@@ -4199,9 +4199,9 @@ var require_cookies = __commonJS({
       var self2 = this;
       self2._jar = new CookieJar(store, { looseMode: true });
     }
-    RequestJar.prototype.setCookie = function(cookieOrStr, uri, options) {
+    RequestJar.prototype.setCookie = function(cookieOrStr, uri, options2) {
       var self2 = this;
-      return self2._jar.setCookieSync(cookieOrStr, uri, options || {});
+      return self2._jar.setCookieSync(cookieOrStr, uri, options2 || {});
     };
     RequestJar.prototype.getCookieString = function(uri) {
       var self2 = this;
@@ -4378,40 +4378,40 @@ var require_aws_sign2 = __commonJS({
       "versions",
       "website"
     ];
-    function authorization(options) {
-      return "AWS " + options.key + ":" + sign(options);
+    function authorization(options2) {
+      return "AWS " + options2.key + ":" + sign(options2);
     }
     module2.exports = authorization;
     module2.exports.authorization = authorization;
-    function hmacSha1(options) {
-      return crypto.createHmac("sha1", options.secret).update(options.message).digest("base64");
+    function hmacSha1(options2) {
+      return crypto.createHmac("sha1", options2.secret).update(options2.message).digest("base64");
     }
     module2.exports.hmacSha1 = hmacSha1;
-    function sign(options) {
-      options.message = stringToSign(options);
-      return hmacSha1(options);
+    function sign(options2) {
+      options2.message = stringToSign(options2);
+      return hmacSha1(options2);
     }
     module2.exports.sign = sign;
-    function signQuery(options) {
-      options.message = queryStringToSign(options);
-      return hmacSha1(options);
+    function signQuery(options2) {
+      options2.message = queryStringToSign(options2);
+      return hmacSha1(options2);
     }
     module2.exports.signQuery = signQuery;
-    function stringToSign(options) {
-      var headers = options.amazonHeaders || "";
+    function stringToSign(options2) {
+      var headers = options2.amazonHeaders || "";
       if (headers) headers += "\n";
       var r = [
-        options.verb,
-        options.md5,
-        options.contentType,
-        options.date ? options.date.toUTCString() : "",
-        headers + options.resource
+        options2.verb,
+        options2.md5,
+        options2.contentType,
+        options2.date ? options2.date.toUTCString() : "",
+        headers + options2.resource
       ];
       return r.join("\n");
     }
     module2.exports.stringToSign = stringToSign;
-    function queryStringToSign(options) {
-      return "GET\n\n\n" + options.date + "\n" + options.resource;
+    function queryStringToSign(options2) {
+      return "GET\n\n\n" + options2.date + "\n" + options2.resource;
     }
     module2.exports.queryStringToSign = queryStringToSign;
     function canonicalizeHeaders(headers) {
@@ -5475,12 +5475,12 @@ var require_writer = __commonJS({
       });
       return to;
     }
-    function Writer(options) {
-      options = merge(DEFAULT_OPTS, options || {});
-      this._buf = Buffer2.alloc(options.size || 1024);
+    function Writer(options2) {
+      options2 = merge(DEFAULT_OPTS, options2 || {});
+      this._buf = Buffer2.alloc(options2.size || 1024);
       this._size = this._buf.length;
       this._offset = 0;
-      this._options = options;
+      this._options = options2;
       this._seq = [];
     }
     Object.defineProperty(Writer.prototype, "buffer", {
@@ -10989,11 +10989,11 @@ var require_pkcs8 = __commonJS({
     var Key = require_key();
     var PrivateKey = require_private_key();
     var pem = require_pem();
-    function read(buf, options) {
-      return pem.read(buf, options, "pkcs8");
+    function read(buf, options2) {
+      return pem.read(buf, options2, "pkcs8");
     }
-    function write(key, options) {
-      return pem.write(key, options, "pkcs8");
+    function write(key, options2) {
+      return pem.write(key, options2, "pkcs8");
     }
     function readMPInt(der, nm) {
       assert.strictEqual(
@@ -11518,11 +11518,11 @@ var require_pkcs1 = __commonJS({
     var pem = require_pem();
     var pkcs8 = require_pkcs8();
     var readECDSACurve = pkcs8.readECDSACurve;
-    function read(buf, options) {
-      return pem.read(buf, options, "pkcs1");
+    function read(buf, options2) {
+      return pem.read(buf, options2, "pkcs1");
     }
-    function write(key, options) {
-      return pem.write(key, options, "pkcs1");
+    function write(key, options2) {
+      return pem.write(key, options2, "pkcs1");
     }
     function readMPInt(der, nm) {
       assert.strictEqual(
@@ -11860,7 +11860,7 @@ var require_rfc4253 = __commonJS({
       else
         throw new Error("Unknown key type " + key.type);
     }
-    function read(partial, type, buf, options) {
+    function read(partial, type, buf, options2) {
       if (typeof buf === "string")
         buf = Buffer2.from(buf);
       assert.buffer(buf, "buf");
@@ -11924,7 +11924,7 @@ var require_rfc4253 = __commonJS({
       }
       return new Constructor(key);
     }
-    function write(key, options) {
+    function write(key, options2) {
       assert.object(key);
       var alg = keyTypeToAlg(key);
       var i;
@@ -13225,11 +13225,11 @@ var require_ssh_private = __commonJS({
     var SSHBuffer = require_ssh_buffer();
     var errors = require_errors2();
     var bcrypt;
-    function read(buf, options) {
-      return pem.read(buf, options);
+    function read(buf, options2) {
+      return pem.read(buf, options2);
     }
     var MAGIC = "openssh-key-v1";
-    function readSSHPrivate(type, buf, options) {
+    function readSSHPrivate(type, buf, options2) {
       buf = new SSHBuffer({ buffer: buf });
       var magic = buf.readCString();
       assert.strictEqual(magic, MAGIC, "bad magic string");
@@ -13261,19 +13261,19 @@ var require_ssh_private = __commonJS({
           if (bcrypt === void 0) {
             bcrypt = require_bcrypt_pbkdf();
           }
-          if (typeof options.passphrase === "string") {
-            options.passphrase = Buffer2.from(
-              options.passphrase,
+          if (typeof options2.passphrase === "string") {
+            options2.passphrase = Buffer2.from(
+              options2.passphrase,
               "utf-8"
             );
           }
-          if (!Buffer2.isBuffer(options.passphrase)) {
+          if (!Buffer2.isBuffer(options2.passphrase)) {
             throw new errors.KeyEncryptedError(
-              options.filename,
+              options2.filename,
               "OpenSSH"
             );
           }
-          var pass = new Uint8Array(options.passphrase);
+          var pass = new Uint8Array(options2.passphrase);
           var salti = new Uint8Array(salt);
           var out = new Uint8Array(cinf.keySize + cinf.blockSize);
           var res = bcrypt.pbkdf(
@@ -13328,7 +13328,7 @@ var require_ssh_private = __commonJS({
       key.comment = comment;
       return key;
     }
-    function write(key, options) {
+    function write(key, options2) {
       var pubKey;
       if (PrivateKey.isPrivateKey(key))
         pubKey = key.toPublic();
@@ -13339,14 +13339,14 @@ var require_ssh_private = __commonJS({
       var kdfopts = Buffer2.alloc(0);
       var cinf = { blockSize: 8 };
       var passphrase;
-      if (options !== void 0) {
-        passphrase = options.passphrase;
+      if (options2 !== void 0) {
+        passphrase = options2.passphrase;
         if (typeof passphrase === "string")
           passphrase = Buffer2.from(passphrase, "utf-8");
         if (passphrase !== void 0) {
           assert.buffer(passphrase, "options.passphrase");
-          assert.optionalString(options.cipher, "options.cipher");
-          cipher = options.cipher;
+          assert.optionalString(options2.cipher, "options.cipher");
+          cipher = options2.cipher;
           if (cipher === void 0)
             cipher = "aes128-ctr";
           cinf = utils.opensshCipherInfo(cipher);
@@ -13490,7 +13490,7 @@ var require_pem = __commonJS({
     Object.keys(OID_TO_HASH).forEach(function(k) {
       HASH_TO_OID[OID_TO_HASH[k]] = k;
     });
-    function read(buf, options, forceType) {
+    function read(buf, options2, forceType) {
       var input = buf;
       if (typeof buf !== "string") {
         assert.buffer(buf, "buf");
@@ -13540,15 +13540,15 @@ var require_pem = __commonJS({
       if (headers["proc-type"]) {
         var parts = headers["proc-type"].split(",");
         if (parts[0] === "4" && parts[1] === "ENCRYPTED") {
-          if (typeof options.passphrase === "string") {
-            options.passphrase = Buffer2.from(
-              options.passphrase,
+          if (typeof options2.passphrase === "string") {
+            options2.passphrase = Buffer2.from(
+              options2.passphrase,
               "utf-8"
             );
           }
-          if (!Buffer2.isBuffer(options.passphrase)) {
+          if (!Buffer2.isBuffer(options2.passphrase)) {
             throw new errors.KeyEncryptedError(
-              options.filename,
+              options2.filename,
               "PEM"
             );
           } else {
@@ -13559,7 +13559,7 @@ var require_pem = __commonJS({
             key = utils.opensslKeyDeriv(
               cipher,
               iv,
-              options.passphrase,
+              options2.passphrase,
               1
             ).key;
           }
@@ -13603,15 +13603,15 @@ var require_pem = __commonJS({
         iv = eder.readString(asn1.Ber.OctetString, true);
         eder._offset = pbesEnd;
         buf = eder.readString(asn1.Ber.OctetString, true);
-        if (typeof options.passphrase === "string") {
-          options.passphrase = Buffer2.from(
-            options.passphrase,
+        if (typeof options2.passphrase === "string") {
+          options2.passphrase = Buffer2.from(
+            options2.passphrase,
             "utf-8"
           );
         }
-        if (!Buffer2.isBuffer(options.passphrase)) {
+        if (!Buffer2.isBuffer(options2.passphrase)) {
           throw new errors.KeyEncryptedError(
-            options.filename,
+            options2.filename,
             "PEM"
           );
         }
@@ -13622,7 +13622,7 @@ var require_pem = __commonJS({
           salt,
           iterations,
           cinfo.keySize,
-          options.passphrase
+          options2.passphrase
         );
         alg = void 0;
       }
@@ -13642,9 +13642,9 @@ var require_pem = __commonJS({
         buf = Buffer2.concat(chunks);
       }
       if (alg && alg.toLowerCase() === "openssh")
-        return sshpriv.readSSHPrivate(type, buf, options);
+        return sshpriv.readSSHPrivate(type, buf, options2);
       if (alg && alg.toLowerCase() === "ssh2")
-        return rfc4253.readType(type, buf, options);
+        return rfc4253.readType(type, buf, options2);
       var der = new asn1.BerReader(buf);
       der.originalInput = input;
       der.readSequence();
@@ -13658,7 +13658,7 @@ var require_pem = __commonJS({
         return pkcs8.readPkcs8(alg, type, der);
       }
     }
-    function write(key, options, type) {
+    function write(key, options2, type) {
       assert.object(key);
       var alg = {
         "ecdsa": "EC",
@@ -13726,7 +13726,7 @@ var require_ssh = __commonJS({
     var sshpriv = require_ssh_private();
     var SSHKEY_RE = /^([a-z0-9-]+)[ \t]+([a-zA-Z0-9+\/]+[=]*)([ \t]+([^ \t][^\n]*[\n]*)?)?$/;
     var SSHKEY_RE2 = /^([a-z0-9-]+)[ \t\n]+([a-zA-Z0-9+\/][a-zA-Z0-9+\/ \t\n=]*)([^a-zA-Z0-9+\/ \t\n=].*)?$/;
-    function read(buf, options) {
+    function read(buf, options2) {
       if (typeof buf !== "string") {
         assert.buffer(buf, "buf");
         buf = buf.toString("ascii");
@@ -13771,7 +13771,7 @@ var require_ssh = __commonJS({
       }
       return key;
     }
-    function write(key, options) {
+    function write(key, options2) {
       assert.object(key);
       if (!Key.isKey(key))
         throw new Error("Must be a public key");
@@ -13817,7 +13817,7 @@ var require_dnssec = __commonJS({
     Object.keys(supportedAlgos).forEach(function(k) {
       supportedAlgosById[supportedAlgos[k]] = k.toUpperCase();
     });
-    function read(buf, options) {
+    function read(buf, options2) {
       if (typeof buf !== "string") {
         assert.buffer(buf, "buf");
         buf = buf.toString("ascii");
@@ -13975,13 +13975,13 @@ var require_dnssec = __commonJS({
       else
         throw new Error("Unknown or unsupported hash: " + opts.hashAlgo);
     }
-    function writeRSA(key, options) {
+    function writeRSA(key, options2) {
       if (!key.part.dmodp || !key.part.dmodq) {
         utils.addRSAMissing(key);
       }
       var out = "";
       out += "Private-key-format: v1.3\n";
-      out += "Algorithm: " + rsaAlgFromOptions(options) + "\n";
+      out += "Algorithm: " + rsaAlgFromOptions(options2) + "\n";
       var n = utils.mpDenormalize(key.part["n"].data);
       out += "Modulus: " + n.toString("base64") + "\n";
       var e = utils.mpDenormalize(key.part["e"].data);
@@ -14004,7 +14004,7 @@ var require_dnssec = __commonJS({
       out += "Activate: " + dnssecTimestamp(timestamp) + "\n";
       return Buffer2.from(out, "ascii");
     }
-    function writeECDSA(key, options) {
+    function writeECDSA(key, options2) {
       var out = "";
       out += "Private-key-format: v1.3\n";
       if (key.curve === "nistp256") {
@@ -14022,12 +14022,12 @@ var require_dnssec = __commonJS({
       out += "Activate: " + dnssecTimestamp(timestamp) + "\n";
       return Buffer2.from(out, "ascii");
     }
-    function write(key, options) {
+    function write(key, options2) {
       if (PrivateKey.isPrivateKey(key)) {
         if (key.type === "rsa") {
-          return writeRSA(key, options);
+          return writeRSA(key, options2);
         } else if (key.type === "ecdsa") {
-          return writeECDSA(key, options);
+          return writeECDSA(key, options2);
         } else {
           throw new Error("Unsupported algorithm: " + key.type);
         }
@@ -14055,7 +14055,7 @@ var require_putty = __commonJS({
     var crypto = require("crypto");
     var PrivateKey = require_private_key();
     var errors = require_errors2();
-    function read(buf, options) {
+    function read(buf, options2) {
       var lines = buf.toString("ascii").split(/[\r\n]+/);
       var found = false;
       var parts;
@@ -14115,16 +14115,16 @@ var require_putty = __commonJS({
           throw new Error("Encrypted keys arenot supported for PuTTY format version 3");
         }
         if (encryption === "aes256-cbc") {
-          if (!options.passphrase) {
+          if (!options2.passphrase) {
             throw new errors.KeyEncryptedError(
-              options.filename,
+              options2.filename,
               "PEM"
             );
           }
           var iv = Buffer2.alloc(16, 0);
           var decipher = crypto.createDecipheriv(
             "aes-256-cbc",
-            derivePPK2EncryptionKey(options.passphrase),
+            derivePPK2EncryptionKey(options2.passphrase),
             iv
           );
           decipher.setAutoPadding(false);
@@ -14194,7 +14194,7 @@ var require_putty = __commonJS({
       var rest = line.slice(idx);
       return [header, rest];
     }
-    function write(key, options) {
+    function write(key, options2) {
       assert.object(key);
       if (!Key.isKey(key))
         throw new Error("Must be a public key");
@@ -14239,32 +14239,32 @@ var require_auto = __commonJS({
     var dnssec = require_dnssec();
     var putty = require_putty();
     var DNSSEC_PRIVKEY_HEADER_PREFIX = "Private-key-format: v1";
-    function read(buf, options) {
+    function read(buf, options2) {
       if (typeof buf === "string") {
         if (buf.trim().match(/^[-]+[ ]*BEGIN/))
-          return pem.read(buf, options);
+          return pem.read(buf, options2);
         if (buf.match(/^\s*ssh-[a-z]/))
-          return ssh.read(buf, options);
+          return ssh.read(buf, options2);
         if (buf.match(/^\s*ecdsa-/))
-          return ssh.read(buf, options);
+          return ssh.read(buf, options2);
         if (buf.match(/^putty-user-key-file-2:/i))
-          return putty.read(buf, options);
+          return putty.read(buf, options2);
         if (findDNSSECHeader(buf))
-          return dnssec.read(buf, options);
+          return dnssec.read(buf, options2);
         buf = Buffer2.from(buf, "binary");
       } else {
         assert.buffer(buf);
         if (findPEMHeader(buf))
-          return pem.read(buf, options);
+          return pem.read(buf, options2);
         if (findSSHHeader(buf))
-          return ssh.read(buf, options);
+          return ssh.read(buf, options2);
         if (findPuTTYHeader(buf))
-          return putty.read(buf, options);
+          return putty.read(buf, options2);
         if (findDNSSECHeader(buf))
-          return dnssec.read(buf, options);
+          return dnssec.read(buf, options2);
       }
       if (buf.readUInt32BE(0) < buf.length)
-        return rfc4253.read(buf, options);
+        return rfc4253.read(buf, options2);
       throw new Error("Failed to auto-detect format of key");
     }
     function findPuTTYHeader(buf) {
@@ -14318,7 +14318,7 @@ var require_auto = __commonJS({
         return true;
       return false;
     }
-    function write(key, options) {
+    function write(key, options2) {
       throw new Error('"auto" format cannot be used for writing');
     }
   }
@@ -14364,13 +14364,13 @@ var require_private_key = __commonJS({
     }
     util.inherits(PrivateKey, Key);
     PrivateKey.formats = formats;
-    PrivateKey.prototype.toBuffer = function(format, options) {
+    PrivateKey.prototype.toBuffer = function(format, options2) {
       if (format === void 0)
         format = "pkcs1";
       assert.string(format, "format");
       assert.object(formats[format], "formats[format]");
-      assert.optionalObject(options, "options");
-      return formats[format].write(this, options);
+      assert.optionalObject(options2, "options");
+      return formats[format].write(this, options2);
     };
     PrivateKey.prototype.hash = function(algo, type) {
       return this.toPublic().hash(algo, type);
@@ -14467,46 +14467,46 @@ var require_private_key = __commonJS({
       };
       return v;
     };
-    PrivateKey.parse = function(data, format, options) {
+    PrivateKey.parse = function(data, format, options2) {
       if (typeof data !== "string")
         assert.buffer(data, "data");
       if (format === void 0)
         format = "auto";
       assert.string(format, "format");
-      if (typeof options === "string")
-        options = { filename: options };
-      assert.optionalObject(options, "options");
-      if (options === void 0)
-        options = {};
-      assert.optionalString(options.filename, "options.filename");
-      if (options.filename === void 0)
-        options.filename = "(unnamed)";
+      if (typeof options2 === "string")
+        options2 = { filename: options2 };
+      assert.optionalObject(options2, "options");
+      if (options2 === void 0)
+        options2 = {};
+      assert.optionalString(options2.filename, "options.filename");
+      if (options2.filename === void 0)
+        options2.filename = "(unnamed)";
       assert.object(formats[format], "formats[format]");
       try {
-        var k = formats[format].read(data, options);
+        var k = formats[format].read(data, options2);
         assert.ok(k instanceof PrivateKey, "key is not a private key");
         if (!k.comment)
-          k.comment = options.filename;
+          k.comment = options2.filename;
         return k;
       } catch (e) {
         if (e.name === "KeyEncryptedError")
           throw e;
-        throw new KeyParseError(options.filename, format, e);
+        throw new KeyParseError(options2.filename, format, e);
       }
     };
     PrivateKey.isPrivateKey = function(obj, ver) {
       return utils.isCompatible(obj, PrivateKey, ver);
     };
-    PrivateKey.generate = function(type, options) {
-      if (options === void 0)
-        options = {};
-      assert.object(options, "options");
+    PrivateKey.generate = function(type, options2) {
+      if (options2 === void 0)
+        options2 = {};
+      assert.object(options2, "options");
       switch (type) {
         case "ecdsa":
-          if (options.curve === void 0)
-            options.curve = "nistp256";
-          assert.string(options.curve, "options.curve");
-          return generateECDSA(options.curve);
+          if (options2.curve === void 0)
+            options2.curve = "nistp256";
+          assert.string(options2.curve, "options.curve");
+          return generateECDSA(options2.curve);
         case "ed25519":
           return generateED25519();
         default:
@@ -14872,7 +14872,7 @@ var require_openssh_cert = __commonJS({
       TYPES[TYPES[k]] = k;
     });
     var ECDSA_ALGO = /^ecdsa-sha2-([^@-]+)-cert-v01@openssh.com$/;
-    function read(buf, options) {
+    function read(buf, options2) {
       if (Buffer2.isBuffer(buf))
         buf = buf.toString("ascii");
       var parts = buf.trim().split(/[ \t\n]+/g);
@@ -15027,13 +15027,13 @@ var require_openssh_cert = __commonJS({
         done();
       });
     }
-    function write(cert, options) {
-      if (options === void 0)
-        options = {};
+    function write(cert, options2) {
+      if (options2 === void 0)
+        options2 = {};
       var blob = toBuffer(cert);
       var out = getCertType(cert.subjectKey) + " " + blob.toString("base64");
-      if (options.comment)
-        out = out + " " + options.comment;
+      if (options2.comment)
+        out = out + " " + options2.comment;
       return out;
     }
     function toBuffer(cert, noSig) {
@@ -15200,7 +15200,7 @@ var require_x509 = __commonJS({
       "keyUsage": "2.5.29.15",
       "extKeyUsage": "2.5.29.37"
     };
-    function read(buf, options) {
+    function read(buf, options2) {
       if (typeof buf === "string") {
         buf = Buffer2.from(buf, "binary");
       }
@@ -15550,7 +15550,7 @@ var require_x509 = __commonJS({
         done();
       });
     }
-    function write(cert, options) {
+    function write(cert, options2) {
       var sig = cert.signatures.x509;
       assert.object(sig, "x509 signature");
       var der = new asn1.BerWriter();
@@ -15774,7 +15774,7 @@ var require_x509_pem = __commonJS({
     var Identity = require_identity();
     var Signature = require_signature();
     var Certificate = require_certificate();
-    function read(buf, options) {
+    function read(buf, options2) {
       if (typeof buf !== "string") {
         assert.buffer(buf, "buf");
         buf = buf.toString("ascii");
@@ -15812,10 +15812,10 @@ var require_x509_pem = __commonJS({
       }
       lines = lines.slice(0, -1).join("");
       buf = Buffer2.from(lines, "base64");
-      return x509.read(buf, options);
+      return x509.read(buf, options2);
     }
-    function write(cert, options) {
-      var dbuf = x509.write(cert, options);
+    function write(cert, options2) {
+      var dbuf = x509.write(cert, options2);
       var header = "CERTIFICATE";
       var tmp = dbuf.toString("base64");
       var len = tmp.length + tmp.length / 64 + 18 + 16 + header.length * 2 + 10;
@@ -15899,18 +15899,18 @@ var require_certificate = __commonJS({
       this.purposes = opts.purposes;
     }
     Certificate.formats = formats;
-    Certificate.prototype.toBuffer = function(format, options) {
+    Certificate.prototype.toBuffer = function(format, options2) {
       if (format === void 0)
         format = "x509";
       assert.string(format, "format");
       assert.object(formats[format], "formats[format]");
-      assert.optionalObject(options, "options");
-      return formats[format].write(this, options);
+      assert.optionalObject(options2, "options");
+      return formats[format].write(this, options2);
     };
-    Certificate.prototype.toString = function(format, options) {
+    Certificate.prototype.toString = function(format, options2) {
       if (format === void 0)
         format = "pem";
-      return this.toBuffer(format, options).toString();
+      return this.toBuffer(format, options2).toString();
     };
     Certificate.prototype.fingerprint = function(algo) {
       if (algo === void 0)
@@ -16003,7 +16003,7 @@ var require_certificate = __commonJS({
         throw new Error("Failed to sign the certificate for any available certificate formats");
       }
     };
-    Certificate.createSelfSigned = function(subjectOrSubjects, key, options) {
+    Certificate.createSelfSigned = function(subjectOrSubjects, key, options2) {
       var subjects;
       if (Array.isArray(subjectOrSubjects))
         subjects = subjectOrSubjects;
@@ -16014,28 +16014,28 @@ var require_certificate = __commonJS({
         utils.assertCompatible(subject, Identity, [1, 0], "subject");
       });
       utils.assertCompatible(key, PrivateKey, [1, 2], "private key");
-      assert.optionalObject(options, "options");
-      if (options === void 0)
-        options = {};
-      assert.optionalObject(options.validFrom, "options.validFrom");
-      assert.optionalObject(options.validUntil, "options.validUntil");
-      var validFrom = options.validFrom;
-      var validUntil = options.validUntil;
+      assert.optionalObject(options2, "options");
+      if (options2 === void 0)
+        options2 = {};
+      assert.optionalObject(options2.validFrom, "options.validFrom");
+      assert.optionalObject(options2.validUntil, "options.validUntil");
+      var validFrom = options2.validFrom;
+      var validUntil = options2.validUntil;
       if (validFrom === void 0)
         validFrom = /* @__PURE__ */ new Date();
       if (validUntil === void 0) {
-        assert.optionalNumber(options.lifetime, "options.lifetime");
-        var lifetime = options.lifetime;
+        assert.optionalNumber(options2.lifetime, "options.lifetime");
+        var lifetime = options2.lifetime;
         if (lifetime === void 0)
           lifetime = 10 * 365 * 24 * 3600;
         validUntil = /* @__PURE__ */ new Date();
         validUntil.setTime(validUntil.getTime() + lifetime * 1e3);
       }
-      assert.optionalBuffer(options.serial, "options.serial");
-      var serial = options.serial;
+      assert.optionalBuffer(options2.serial, "options.serial");
+      var serial = options2.serial;
       if (serial === void 0)
         serial = Buffer2.from("0000000000000001", "hex");
-      var purposes = options.purposes;
+      var purposes = options2.purposes;
       if (purposes === void 0)
         purposes = [];
       if (purposes.indexOf("signature") === -1)
@@ -16080,7 +16080,7 @@ var require_certificate = __commonJS({
       cert.signWith(key);
       return cert;
     };
-    Certificate.create = function(subjectOrSubjects, key, issuer, issuerKey, options) {
+    Certificate.create = function(subjectOrSubjects, key, issuer, issuerKey, options2) {
       var subjects;
       if (Array.isArray(subjectOrSubjects))
         subjects = subjectOrSubjects;
@@ -16095,33 +16095,33 @@ var require_certificate = __commonJS({
         key = key.toPublic();
       utils.assertCompatible(issuer, Identity, [1, 0], "issuer");
       utils.assertCompatible(issuerKey, PrivateKey, [1, 2], "issuer key");
-      assert.optionalObject(options, "options");
-      if (options === void 0)
-        options = {};
-      assert.optionalObject(options.validFrom, "options.validFrom");
-      assert.optionalObject(options.validUntil, "options.validUntil");
-      var validFrom = options.validFrom;
-      var validUntil = options.validUntil;
+      assert.optionalObject(options2, "options");
+      if (options2 === void 0)
+        options2 = {};
+      assert.optionalObject(options2.validFrom, "options.validFrom");
+      assert.optionalObject(options2.validUntil, "options.validUntil");
+      var validFrom = options2.validFrom;
+      var validUntil = options2.validUntil;
       if (validFrom === void 0)
         validFrom = /* @__PURE__ */ new Date();
       if (validUntil === void 0) {
-        assert.optionalNumber(options.lifetime, "options.lifetime");
-        var lifetime = options.lifetime;
+        assert.optionalNumber(options2.lifetime, "options.lifetime");
+        var lifetime = options2.lifetime;
         if (lifetime === void 0)
           lifetime = 10 * 365 * 24 * 3600;
         validUntil = /* @__PURE__ */ new Date();
         validUntil.setTime(validUntil.getTime() + lifetime * 1e3);
       }
-      assert.optionalBuffer(options.serial, "options.serial");
-      var serial = options.serial;
+      assert.optionalBuffer(options2.serial, "options.serial");
+      var serial = options2.serial;
       if (serial === void 0)
         serial = Buffer2.from("0000000000000001", "hex");
-      var purposes = options.purposes;
+      var purposes = options2.purposes;
       if (purposes === void 0)
         purposes = [];
       if (purposes.indexOf("signature") === -1)
         purposes.push("signature");
-      if (options.ca === true) {
+      if (options2.ca === true) {
         if (purposes.indexOf("ca") === -1)
           purposes.push("ca");
         if (purposes.indexOf("crl") === -1)
@@ -16161,26 +16161,26 @@ var require_certificate = __commonJS({
       cert.signWith(issuerKey);
       return cert;
     };
-    Certificate.parse = function(data, format, options) {
+    Certificate.parse = function(data, format, options2) {
       if (typeof data !== "string")
         assert.buffer(data, "data");
       if (format === void 0)
         format = "auto";
       assert.string(format, "format");
-      if (typeof options === "string")
-        options = { filename: options };
-      assert.optionalObject(options, "options");
-      if (options === void 0)
-        options = {};
-      assert.optionalString(options.filename, "options.filename");
-      if (options.filename === void 0)
-        options.filename = "(unnamed)";
+      if (typeof options2 === "string")
+        options2 = { filename: options2 };
+      assert.optionalObject(options2, "options");
+      if (options2 === void 0)
+        options2 = {};
+      assert.optionalString(options2.filename, "options.filename");
+      if (options2.filename === void 0)
+        options2.filename = "(unnamed)";
       assert.object(formats[format], "formats[format]");
       try {
-        var k = formats[format].read(data, options);
+        var k = formats[format].read(data, options2);
         return k;
       } catch (e) {
-        throw new CertificateParseError(options.filename, format, e);
+        throw new CertificateParseError(options2.filename, format, e);
       }
     };
     Certificate.isCertificate = function(obj, ver) {
@@ -16274,24 +16274,24 @@ var require_fingerprint = __commonJS({
     };
     var base64RE = /^[A-Za-z0-9+\/=]+$/;
     var hexRE = /^[a-fA-F0-9]+$/;
-    Fingerprint.parse = function(fp, options) {
+    Fingerprint.parse = function(fp, options2) {
       assert.string(fp, "fingerprint");
       var alg, hash, enAlgs;
-      if (Array.isArray(options)) {
-        enAlgs = options;
-        options = {};
+      if (Array.isArray(options2)) {
+        enAlgs = options2;
+        options2 = {};
       }
-      assert.optionalObject(options, "options");
-      if (options === void 0)
-        options = {};
-      if (options.enAlgs !== void 0)
-        enAlgs = options.enAlgs;
-      if (options.algorithms !== void 0)
-        enAlgs = options.algorithms;
+      assert.optionalObject(options2, "options");
+      if (options2 === void 0)
+        options2 = {};
+      if (options2.enAlgs !== void 0)
+        enAlgs = options2.enAlgs;
+      if (options2.algorithms !== void 0)
+        enAlgs = options2.algorithms;
       assert.optionalArrayOfString(enAlgs, "algorithms");
       var hashType = "ssh";
-      if (options.hashType !== void 0)
-        hashType = options.hashType;
+      if (options2.hashType !== void 0)
+        hashType = options2.hashType;
       assert.string(hashType, "options.hashType");
       var parts = fp.split(":");
       if (parts.length == 2) {
@@ -16346,7 +16346,7 @@ var require_fingerprint = __commonJS({
           default:
             throw new FingerprintFormatError(fp);
         }
-        if (options.hashType === void 0)
+        if (options2.hashType === void 0)
           hashType = "spki";
       }
       if (alg === void 0)
@@ -16363,7 +16363,7 @@ var require_fingerprint = __commonJS({
       return new Fingerprint({
         algorithm: alg,
         hash,
-        type: options.type || "key",
+        type: options2.type || "key",
         hashType
       });
     };
@@ -16457,21 +16457,21 @@ var require_key = __commonJS({
       this.size = sz;
     }
     Key.formats = formats;
-    Key.prototype.toBuffer = function(format, options) {
+    Key.prototype.toBuffer = function(format, options2) {
       if (format === void 0)
         format = "ssh";
       assert.string(format, "format");
       assert.object(formats[format], "formats[format]");
-      assert.optionalObject(options, "options");
+      assert.optionalObject(options2, "options");
       if (format === "rfc4253") {
         if (this._rfc4253Cache === void 0)
           this._rfc4253Cache = formats["rfc4253"].write(this);
         return this._rfc4253Cache;
       }
-      return formats[format].write(this, options);
+      return formats[format].write(this, options2);
     };
-    Key.prototype.toString = function(format, options) {
-      return this.toBuffer(format, options).toString();
+    Key.prototype.toString = function(format, options2) {
+      return this.toBuffer(format, options2).toString();
     };
     Key.prototype.hash = function(algo, type) {
       assert.string(algo, "algorithm");
@@ -16579,32 +16579,32 @@ var require_key = __commonJS({
       return new DiffieHellman(this);
     };
     Key.prototype.createDH = Key.prototype.createDiffieHellman;
-    Key.parse = function(data, format, options) {
+    Key.parse = function(data, format, options2) {
       if (typeof data !== "string")
         assert.buffer(data, "data");
       if (format === void 0)
         format = "auto";
       assert.string(format, "format");
-      if (typeof options === "string")
-        options = { filename: options };
-      assert.optionalObject(options, "options");
-      if (options === void 0)
-        options = {};
-      assert.optionalString(options.filename, "options.filename");
-      if (options.filename === void 0)
-        options.filename = "(unnamed)";
+      if (typeof options2 === "string")
+        options2 = { filename: options2 };
+      assert.optionalObject(options2, "options");
+      if (options2 === void 0)
+        options2 = {};
+      assert.optionalString(options2.filename, "options.filename");
+      if (options2.filename === void 0)
+        options2.filename = "(unnamed)";
       assert.object(formats[format], "formats[format]");
       try {
-        var k = formats[format].read(data, options);
+        var k = formats[format].read(data, options2);
         if (k instanceof PrivateKey)
           k = k.toPublic();
         if (!k.comment)
-          k.comment = options.filename;
+          k.comment = options2.filename;
         return k;
       } catch (e) {
         if (e.name === "KeyEncryptedError")
           throw e;
-        throw new KeyParseError(options.filename, format, e);
+        throw new KeyParseError(options2.filename, format, e);
       }
     };
     Key.isKey = function(obj, ver) {
@@ -16844,23 +16844,23 @@ var require_parser = __commonJS({
        *                              mode.
        * @throws {ExpiredRequestError} if the value of date or x-date exceeds skew.
        */
-      parseRequest: function parseRequest(request2, options) {
+      parseRequest: function parseRequest(request2, options2) {
         assert.object(request2, "request");
         assert.object(request2.headers, "request.headers");
-        if (options === void 0) {
-          options = {};
+        if (options2 === void 0) {
+          options2 = {};
         }
-        if (options.headers === void 0) {
-          options.headers = [request2.headers["x-date"] ? "x-date" : "date"];
+        if (options2.headers === void 0) {
+          options2.headers = [request2.headers["x-date"] ? "x-date" : "date"];
         }
-        assert.object(options, "options");
-        assert.arrayOfString(options.headers, "options.headers");
-        assert.optionalFinite(options.clockSkew, "options.clockSkew");
-        var authzHeaderName = options.authorizationHeaderName || "authorization";
+        assert.object(options2, "options");
+        assert.arrayOfString(options2.headers, "options.headers");
+        assert.optionalFinite(options2.clockSkew, "options.clockSkew");
+        var authzHeaderName = options2.authorizationHeaderName || "authorization";
         if (!request2.headers[authzHeaderName]) {
           throw new MissingHeaderError("no " + authzHeaderName + " header present in the request");
         }
-        options.clockSkew = options.clockSkew || 300;
+        options2.clockSkew = options2.clockSkew || 300;
         var i = 0;
         var state = State.New;
         var substate = ParamsState.Name;
@@ -16956,7 +16956,7 @@ var require_parser = __commonJS({
           var h = parsed.params.headers[i].toLowerCase();
           parsed.params.headers[i] = h;
           if (h === "request-line") {
-            if (!options.strict) {
+            if (!options2.strict) {
               parsed.signingString += request2.method + " " + request2.url + " HTTP/" + request2.httpVersion;
             } else {
               throw new StrictParsingError("request-line is not a valid header with strict parsing enabled.");
@@ -16981,16 +16981,16 @@ var require_parser = __commonJS({
           }
           var now = /* @__PURE__ */ new Date();
           var skew = Math.abs(now.getTime() - date.getTime());
-          if (skew > options.clockSkew * 1e3) {
-            throw new ExpiredRequestError("clock skew of " + skew / 1e3 + "s was greater than " + options.clockSkew + "s");
+          if (skew > options2.clockSkew * 1e3) {
+            throw new ExpiredRequestError("clock skew of " + skew / 1e3 + "s was greater than " + options2.clockSkew + "s");
           }
         }
-        options.headers.forEach(function(hdr) {
+        options2.headers.forEach(function(hdr) {
           if (parsed.params.headers.indexOf(hdr.toLowerCase()) < 0)
             throw new MissingHeaderError(hdr + " was not a signed header");
         });
-        if (options.algorithms) {
-          if (options.algorithms.indexOf(parsed.params.algorithm) === -1)
+        if (options2.algorithms) {
+          if (options2.algorithms.indexOf(parsed.params.algorithm) === -1)
             throw new InvalidParamsError(parsed.params.algorithm + " is not a supported algorithm");
         }
         parsed.algorithm = parsed.params.algorithm.toUpperCase();
@@ -17220,21 +17220,21 @@ var require_verror = __commonJS({
     VError.WError = WError;
     VError.MultiError = MultiError;
     function parseConstructorArguments(args) {
-      var argv, options, sprintf_args, shortmessage, k;
+      var argv, options2, sprintf_args, shortmessage, k;
       mod_assertplus.object(args, "args");
       mod_assertplus.bool(args.strict, "args.strict");
       mod_assertplus.array(args.argv, "args.argv");
       argv = args.argv;
       if (argv.length === 0) {
-        options = {};
+        options2 = {};
         sprintf_args = [];
       } else if (mod_isError(argv[0])) {
-        options = { "cause": argv[0] };
+        options2 = { "cause": argv[0] };
         sprintf_args = argv.slice(1);
       } else if (typeof argv[0] === "object") {
-        options = {};
+        options2 = {};
         for (k in argv[0]) {
-          options[k] = argv[0][k];
+          options2[k] = argv[0][k];
         }
         sprintf_args = argv.slice(1);
       } else {
@@ -17242,11 +17242,11 @@ var require_verror = __commonJS({
           argv[0],
           "first argument to VError, SError, or WError constructor must be a string, object, or Error"
         );
-        options = {};
+        options2 = {};
         sprintf_args = argv;
       }
-      mod_assertplus.object(options);
-      if (!options.strict && !args.strict) {
+      mod_assertplus.object(options2);
+      if (!options2.strict && !args.strict) {
         sprintf_args = sprintf_args.map(function(a) {
           return a === null ? "null" : a === void 0 ? "undefined" : a;
         });
@@ -17257,7 +17257,7 @@ var require_verror = __commonJS({
         shortmessage = sprintf.apply(null, sprintf_args);
       }
       return {
-        "options": options,
+        "options": options2,
         "shortmessage": shortmessage
       };
     }
@@ -17385,7 +17385,7 @@ var require_verror = __commonJS({
       }
     };
     function SError() {
-      var args, obj, parsed, options;
+      var args, obj, parsed, options2;
       args = Array.prototype.slice.call(arguments, 0);
       if (!(this instanceof SError)) {
         obj = Object.create(SError.prototype);
@@ -17396,8 +17396,8 @@ var require_verror = __commonJS({
         "argv": args,
         "strict": true
       });
-      options = parsed.options;
-      VError.call(this, options, "%s", parsed.shortmessage);
+      options2 = parsed.options;
+      VError.call(this, options2, "%s", parsed.shortmessage);
       return this;
     }
     mod_util.inherits(SError, VError);
@@ -17415,7 +17415,7 @@ var require_verror = __commonJS({
       return this.ase_errors.slice(0);
     };
     function WError() {
-      var args, obj, parsed, options;
+      var args, obj, parsed, options2;
       args = Array.prototype.slice.call(arguments, 0);
       if (!(this instanceof WError)) {
         obj = Object.create(WError.prototype);
@@ -17426,9 +17426,9 @@ var require_verror = __commonJS({
         "argv": args,
         "strict": false
       });
-      options = parsed.options;
-      options["skipCauseMessage"] = true;
-      VError.call(this, options, "%s", parsed.shortmessage);
+      options2 = parsed.options;
+      options2["skipCauseMessage"] = true;
+      VError.call(this, options2, "%s", parsed.shortmessage);
       return this;
     }
     mod_util.inherits(WError, VError);
@@ -17481,9 +17481,9 @@ var require_validate = __commonJS({
       exports3.checkPropertyChange = function(value, schema, property) {
         return validate(value, schema, { changing: property || "property" });
       };
-      var validate = exports3._validate = function(instance, schema, options) {
-        if (!options) options = {};
-        var _changing = options.changing;
+      var validate = exports3._validate = function(instance, schema, options2) {
+        if (!options2) options2 = {};
+        var _changing = options2.changing;
         function getType(schema2) {
           return schema2.type || primitiveConstructors[schema2.name] == schema2 && schema2.name.toLowerCase();
         }
@@ -17553,8 +17553,8 @@ var require_validate = __commonJS({
                   for (i = 0, l = value.length; i < l; i += 1) {
                     if (itemsIsArray)
                       propDef = schema2.items[i];
-                    if (options.coerce)
-                      value[i] = options.coerce(value[i], propDef);
+                    if (options2.coerce)
+                      value[i] = options2.coerce(value[i], propDef);
                     errors.concat(checkProp(value[i], propDef, path5, i));
                   }
                 }
@@ -17611,13 +17611,13 @@ var require_validate = __commonJS({
             for (var i in objTypeDef) {
               if (objTypeDef.hasOwnProperty(i) && i != "__proto__" && i != "constructor") {
                 var value = instance2.hasOwnProperty(i) ? instance2[i] : void 0;
-                if (value === void 0 && options.existingOnly) continue;
+                if (value === void 0 && options2.existingOnly) continue;
                 var propDef = objTypeDef[i];
                 if (value === void 0 && propDef["default"]) {
                   value = instance2[i] = propDef["default"];
                 }
-                if (options.coerce && i in instance2) {
-                  value = instance2[i] = options.coerce(value, propDef);
+                if (options2.coerce && i in instance2) {
+                  value = instance2[i] = options2.coerce(value, propDef);
                 }
                 checkProp(value, propDef, path5, i);
               }
@@ -17625,7 +17625,7 @@ var require_validate = __commonJS({
           }
           for (i in instance2) {
             if (instance2.hasOwnProperty(i) && !(i.charAt(0) == "_" && i.charAt(1) == "_") && objTypeDef && !objTypeDef[i] && additionalProp === false) {
-              if (options.filter) {
+              if (options2.filter) {
                 delete instance2[i];
                 continue;
               } else {
@@ -17638,8 +17638,8 @@ var require_validate = __commonJS({
             }
             value = instance2[i];
             if (additionalProp && (!(objTypeDef && typeof objTypeDef == "object") || !(i in objTypeDef))) {
-              if (options.coerce) {
-                value = instance2[i] = options.coerce(value, additionalProp);
+              if (options2.coerce) {
+                value = instance2[i] = options2.coerce(value, additionalProp);
               }
               checkProp(value, additionalProp, path5, i);
             }
@@ -17920,32 +17920,32 @@ var require_jsprim = __commonJS({
       mod_assert.string(str, "str");
       mod_assert.optionalObject(uopts, "options");
       var baseOverride = false;
-      var options = PI_DEFAULTS;
+      var options2 = PI_DEFAULTS;
       if (uopts) {
         baseOverride = hasKey(uopts, "base");
-        options = mergeObjects(options, uopts);
-        mod_assert.number(options.base, "options.base");
-        mod_assert.ok(options.base >= 2, "options.base >= 2");
-        mod_assert.ok(options.base <= 36, "options.base <= 36");
-        mod_assert.bool(options.allowSign, "options.allowSign");
-        mod_assert.bool(options.allowPrefix, "options.allowPrefix");
+        options2 = mergeObjects(options2, uopts);
+        mod_assert.number(options2.base, "options.base");
+        mod_assert.ok(options2.base >= 2, "options.base >= 2");
+        mod_assert.ok(options2.base <= 36, "options.base <= 36");
+        mod_assert.bool(options2.allowSign, "options.allowSign");
+        mod_assert.bool(options2.allowPrefix, "options.allowPrefix");
         mod_assert.bool(
-          options.allowTrailing,
+          options2.allowTrailing,
           "options.allowTrailing"
         );
         mod_assert.bool(
-          options.allowImprecise,
+          options2.allowImprecise,
           "options.allowImprecise"
         );
         mod_assert.bool(
-          options.trimWhitespace,
+          options2.trimWhitespace,
           "options.trimWhitespace"
         );
         mod_assert.bool(
-          options.leadingZeroIsOctal,
+          options2.leadingZeroIsOctal,
           "options.leadingZeroIsOctal"
         );
-        if (options.leadingZeroIsOctal) {
+        if (options2.leadingZeroIsOctal) {
           mod_assert.ok(
             !baseOverride,
             '"base" and "leadingZeroIsOctal" are mutually exclusive'
@@ -17954,18 +17954,18 @@ var require_jsprim = __commonJS({
       }
       var c;
       var pbase = -1;
-      var base = options.base;
+      var base = options2.base;
       var start;
       var mult = 1;
       var value = 0;
       var idx = 0;
       var len = str.length;
-      if (options.trimWhitespace) {
+      if (options2.trimWhitespace) {
         while (idx < len && isSpace(str.charCodeAt(idx))) {
           ++idx;
         }
       }
-      if (options.allowSign) {
+      if (options2.allowSign) {
         if (str[idx] === "-") {
           idx += 1;
           mult = -1;
@@ -17974,14 +17974,14 @@ var require_jsprim = __commonJS({
         }
       }
       if (str[idx] === "0") {
-        if (options.allowPrefix) {
+        if (options2.allowPrefix) {
           pbase = prefixToBase(str.charCodeAt(idx + 1));
           if (pbase !== -1 && (!baseOverride || pbase === base)) {
             base = pbase;
             idx += 2;
           }
         }
-        if (pbase === -1 && options.leadingZeroIsOctal) {
+        if (pbase === -1 && options2.leadingZeroIsOctal) {
           base = 8;
         }
       }
@@ -17997,19 +17997,19 @@ var require_jsprim = __commonJS({
       if (start === idx) {
         return new Error("invalid number: " + JSON.stringify(str));
       }
-      if (options.trimWhitespace) {
+      if (options2.trimWhitespace) {
         while (idx < len && isSpace(str.charCodeAt(idx))) {
           ++idx;
         }
       }
-      if (idx < len && !options.allowTrailing) {
+      if (idx < len && !options2.allowTrailing) {
         return new Error("trailing characters after number: " + JSON.stringify(str.slice(idx)));
       }
       if (value === 0) {
         return 0;
       }
       var result = value * mult;
-      if (!options.allowImprecise && (value > MAX_SAFE_INTEGER || result < MIN_SAFE_INTEGER)) {
+      if (!options2.allowImprecise && (value > MAX_SAFE_INTEGER || result < MIN_SAFE_INTEGER)) {
         return new Error("number is outside of the supported range: " + JSON.stringify(str.slice(start, idx)));
       }
       return result;
@@ -18183,23 +18183,23 @@ var require_signer = __commonJS({
       HttpSignatureError.call(this, message, StrictParsingError);
     }
     util.inherits(StrictParsingError, HttpSignatureError);
-    function RequestSigner(options) {
-      assert.object(options, "options");
+    function RequestSigner(options2) {
+      assert.object(options2, "options");
       var alg = [];
-      if (options.algorithm !== void 0) {
-        assert.string(options.algorithm, "options.algorithm");
-        alg = validateAlgorithm(options.algorithm);
+      if (options2.algorithm !== void 0) {
+        assert.string(options2.algorithm, "options.algorithm");
+        alg = validateAlgorithm(options2.algorithm);
       }
       this.rs_alg = alg;
-      if (options.sign !== void 0) {
-        assert.func(options.sign, "options.sign");
-        this.rs_signFunc = options.sign;
-      } else if (alg[0] === "hmac" && options.key !== void 0) {
-        assert.string(options.keyId, "options.keyId");
-        this.rs_keyId = options.keyId;
-        if (typeof options.key !== "string" && !Buffer.isBuffer(options.key))
+      if (options2.sign !== void 0) {
+        assert.func(options2.sign, "options.sign");
+        this.rs_signFunc = options2.sign;
+      } else if (alg[0] === "hmac" && options2.key !== void 0) {
+        assert.string(options2.keyId, "options.keyId");
+        this.rs_keyId = options2.keyId;
+        if (typeof options2.key !== "string" && !Buffer.isBuffer(options2.key))
           throw new TypeError("options.key for HMAC must be a string or Buffer");
-        this.rs_signer = crypto.createHmac(alg[1].toUpperCase(), options.key);
+        this.rs_signer = crypto.createHmac(alg[1].toUpperCase(), options2.key);
         this.rs_signer.sign = function() {
           var digest = this.digest("base64");
           return {
@@ -18209,8 +18209,8 @@ var require_signer = __commonJS({
             }
           };
         };
-      } else if (options.key !== void 0) {
-        var key = options.key;
+      } else if (options2.key !== void 0) {
+        var key = options2.key;
         if (typeof key === "string" || Buffer.isBuffer(key))
           key = sshpk.parsePrivateKey(key);
         assert.ok(
@@ -18218,8 +18218,8 @@ var require_signer = __commonJS({
           "options.key must be a sshpk.PrivateKey"
         );
         this.rs_key = key;
-        assert.string(options.keyId, "options.keyId");
-        this.rs_keyId = options.keyId;
+        assert.string(options2.keyId, "options.keyId");
+        this.rs_keyId = options2.keyId;
         if (!PK_ALGOS[key.type]) {
           throw new InvalidAlgorithmError(key.type.toUpperCase() + " type keys are not supported");
         }
@@ -18332,8 +18332,8 @@ var require_signer = __commonJS({
        *                   - {Func} sign (data, cb)
        * @return {RequestSigner}
        */
-      createSigner: function createSigner(options) {
-        return new RequestSigner(options);
+      createSigner: function createSigner(options2) {
+        return new RequestSigner(options2);
       },
       /**
        * Adds an 'Authorization' header to an http.ClientRequest object.
@@ -18368,33 +18368,33 @@ var require_signer = __commonJS({
        * @throws {MissingHeaderError} if a header to be signed was specified but
        *                              was not present.
        */
-      signRequest: function signRequest(request2, options) {
+      signRequest: function signRequest(request2, options2) {
         assert.object(request2, "request");
-        assert.object(options, "options");
-        assert.optionalString(options.algorithm, "options.algorithm");
-        assert.string(options.keyId, "options.keyId");
-        assert.optionalArrayOfString(options.headers, "options.headers");
-        assert.optionalString(options.httpVersion, "options.httpVersion");
+        assert.object(options2, "options");
+        assert.optionalString(options2.algorithm, "options.algorithm");
+        assert.string(options2.keyId, "options.keyId");
+        assert.optionalArrayOfString(options2.headers, "options.headers");
+        assert.optionalString(options2.httpVersion, "options.httpVersion");
         if (!request2.getHeader("Date"))
           request2.setHeader("Date", jsprim.rfc1123(/* @__PURE__ */ new Date()));
-        if (!options.headers)
-          options.headers = ["date"];
-        if (!options.httpVersion)
-          options.httpVersion = "1.1";
+        if (!options2.headers)
+          options2.headers = ["date"];
+        if (!options2.httpVersion)
+          options2.httpVersion = "1.1";
         var alg = [];
-        if (options.algorithm) {
-          options.algorithm = options.algorithm.toLowerCase();
-          alg = validateAlgorithm(options.algorithm);
+        if (options2.algorithm) {
+          options2.algorithm = options2.algorithm.toLowerCase();
+          alg = validateAlgorithm(options2.algorithm);
         }
         var i;
         var stringToSign = "";
-        for (i = 0; i < options.headers.length; i++) {
-          if (typeof options.headers[i] !== "string")
+        for (i = 0; i < options2.headers.length; i++) {
+          if (typeof options2.headers[i] !== "string")
             throw new TypeError("options.headers must be an array of Strings");
-          var h = options.headers[i].toLowerCase();
+          var h = options2.headers[i].toLowerCase();
           if (h === "request-line") {
-            if (!options.strict) {
-              stringToSign += request2.method + " " + request2.path + " HTTP/" + options.httpVersion;
+            if (!options2.strict) {
+              stringToSign += request2.method + " " + request2.path + " HTTP/" + options2.httpVersion;
             } else {
               throw new StrictParsingError("request-line is not a valid header with strict parsing enabled.");
             }
@@ -18407,7 +18407,7 @@ var require_signer = __commonJS({
             }
             stringToSign += h + ": " + value;
           }
-          if (i + 1 < options.headers.length)
+          if (i + 1 < options2.headers.length)
             stringToSign += "\n";
         }
         if (request2.hasOwnProperty("_stringToSign")) {
@@ -18415,15 +18415,15 @@ var require_signer = __commonJS({
         }
         var signature;
         if (alg[0] === "hmac") {
-          if (typeof options.key !== "string" && !Buffer.isBuffer(options.key))
+          if (typeof options2.key !== "string" && !Buffer.isBuffer(options2.key))
             throw new TypeError("options.key must be a string or Buffer");
-          var hmac = crypto.createHmac(alg[1].toUpperCase(), options.key);
+          var hmac = crypto.createHmac(alg[1].toUpperCase(), options2.key);
           hmac.update(stringToSign);
           signature = hmac.digest("base64");
         } else {
-          var key = options.key;
+          var key = options2.key;
           if (typeof key === "string" || Buffer.isBuffer(key))
-            key = sshpk.parsePrivateKey(options.key);
+            key = sshpk.parsePrivateKey(options2.key);
           assert.ok(
             sshpk.PrivateKey.isPrivateKey(key, [1, 2]),
             "options.key must be a sshpk.PrivateKey"
@@ -18440,16 +18440,16 @@ var require_signer = __commonJS({
           if (!HASH_ALGOS[sigObj.hashAlgorithm]) {
             throw new InvalidAlgorithmError(sigObj.hashAlgorithm.toUpperCase() + " is not a supported hash algorithm");
           }
-          options.algorithm = key.type + "-" + sigObj.hashAlgorithm;
+          options2.algorithm = key.type + "-" + sigObj.hashAlgorithm;
           signature = sigObj.toString();
           assert.notStrictEqual(signature, "", "empty signature produced");
         }
-        var authzHeaderName = options.authorizationHeaderName || "Authorization";
+        var authzHeaderName = options2.authorizationHeaderName || "Authorization";
         request2.setHeader(authzHeaderName, sprintf(
           AUTHZ_FMT,
-          options.keyId,
-          options.algorithm,
-          options.headers.join(" "),
+          options2.keyId,
+          options2.algorithm,
+          options2.headers.join(" "),
           signature
         ));
         return true;
@@ -27264,9 +27264,9 @@ var require_forever_agent = __commonJS({
       }
       return name;
     }
-    function ForeverAgent(options) {
+    function ForeverAgent(options2) {
       var self2 = this;
-      self2.options = options || {};
+      self2.options = options2 || {};
       self2.requests = {};
       self2.sockets = {};
       self2.freeSockets = {};
@@ -27296,9 +27296,9 @@ var require_forever_agent = __commonJS({
     ForeverAgent.prototype.addRequest = function(req, host, port) {
       var name = getConnectionName(host, port);
       if (typeof host !== "string") {
-        var options = host;
-        port = options.port;
-        host = options.host;
+        var options2 = host;
+        port = options2.port;
+        host = options2.host;
       }
       if (this.freeSockets[name] && this.freeSockets[name].length > 0 && !req.useChunkedEncodingByDefault) {
         var idleSocket = this.freeSockets[name].pop();
@@ -27333,29 +27333,29 @@ var require_forever_agent = __commonJS({
         this.createSocket(name, host, port).emit("free");
       }
     };
-    function ForeverAgentSSL(options) {
-      ForeverAgent.call(this, options);
+    function ForeverAgentSSL(options2) {
+      ForeverAgent.call(this, options2);
     }
     util.inherits(ForeverAgentSSL, ForeverAgent);
     ForeverAgentSSL.prototype.createConnection = createConnectionSSL;
     ForeverAgentSSL.prototype.addRequestNoreuse = AgentSSL.prototype.addRequest;
-    function createConnectionSSL(port, host, options) {
+    function createConnectionSSL(port, host, options2) {
       if (typeof port === "object") {
-        options = port;
+        options2 = port;
       } else if (typeof host === "object") {
-        options = host;
-      } else if (typeof options === "object") {
-        options = options;
+        options2 = host;
+      } else if (typeof options2 === "object") {
+        options2 = options2;
       } else {
-        options = {};
+        options2 = {};
       }
       if (typeof port === "number") {
-        options.port = port;
+        options2.port = port;
       }
       if (typeof host === "string") {
-        options.host = host;
+        options2.host = host;
       }
-      return tls.connect(options);
+      return tls.connect(options2);
     }
   }
 });
@@ -27376,11 +27376,11 @@ var require_delayed_stream = __commonJS({
       this._bufferedEvents = [];
     }
     util.inherits(DelayedStream, Stream);
-    DelayedStream.create = function(source, options) {
+    DelayedStream.create = function(source, options2) {
       var delayedStream = new this();
-      options = options || {};
-      for (var option in options) {
-        delayedStream[option] = options[option];
+      options2 = options2 || {};
+      for (var option in options2) {
+        delayedStream[option] = options2[option];
       }
       delayedStream.source = source;
       var realEmit = source.emit;
@@ -27471,11 +27471,11 @@ var require_combined_stream = __commonJS({
       this._pendingNext = false;
     }
     util.inherits(CombinedStream, Stream);
-    CombinedStream.create = function(options) {
+    CombinedStream.create = function(options2) {
       var combinedStream = new this();
-      options = options || {};
-      for (var option in options) {
-        combinedStream[option] = options[option];
+      options2 = options2 || {};
+      for (var option in options2) {
+        combinedStream[option] = options2[option];
       }
       return combinedStream;
     };
@@ -27501,8 +27501,8 @@ var require_combined_stream = __commonJS({
       this._streams.push(stream);
       return this;
     };
-    CombinedStream.prototype.pipe = function(dest, options) {
-      Stream.prototype.pipe.call(this, dest, options);
+    CombinedStream.prototype.pipe = function(dest, options2) {
+      Stream.prototype.pipe.call(this, dest, options2);
       this.resume();
       return dest;
     };
@@ -27856,7 +27856,7 @@ var require_form_data = __commonJS({
     var populate = require_populate();
     module2.exports = FormData;
     util.inherits(FormData, CombinedStream);
-    function FormData(options) {
+    function FormData(options2) {
       if (!(this instanceof FormData)) {
         return new FormData();
       }
@@ -27864,17 +27864,17 @@ var require_form_data = __commonJS({
       this._valueLength = 0;
       this._valuesToMeasure = [];
       CombinedStream.call(this);
-      options = options || {};
-      for (var option in options) {
-        this[option] = options[option];
+      options2 = options2 || {};
+      for (var option in options2) {
+        this[option] = options2[option];
       }
     }
     FormData.LINE_BREAK = "\r\n";
     FormData.DEFAULT_CONTENT_TYPE = "application/octet-stream";
-    FormData.prototype.append = function(field, value, options) {
-      options = options || {};
-      if (typeof options == "string") {
-        options = { filename: options };
+    FormData.prototype.append = function(field, value, options2) {
+      options2 = options2 || {};
+      if (typeof options2 == "string") {
+        options2 = { filename: options2 };
       }
       var append = CombinedStream.prototype.append.bind(this);
       if (typeof value == "number") {
@@ -27884,17 +27884,17 @@ var require_form_data = __commonJS({
         this._error(new Error("Arrays are not supported."));
         return;
       }
-      var header = this._multiPartHeader(field, value, options);
+      var header = this._multiPartHeader(field, value, options2);
       var footer = this._multiPartFooter();
       append(header);
       append(value);
       append(footer);
-      this._trackLength(header, value, options);
+      this._trackLength(header, value, options2);
     };
-    FormData.prototype._trackLength = function(header, value, options) {
+    FormData.prototype._trackLength = function(header, value, options2) {
       var valueLength = 0;
-      if (options.knownLength != null) {
-        valueLength += +options.knownLength;
+      if (options2.knownLength != null) {
+        valueLength += +options2.knownLength;
       } else if (Buffer.isBuffer(value)) {
         valueLength = value.length;
       } else if (typeof value === "string") {
@@ -27905,7 +27905,7 @@ var require_form_data = __commonJS({
       if (!value || !value.path && !(value.readable && value.hasOwnProperty("httpVersion"))) {
         return;
       }
-      if (!options.knownLength) {
+      if (!options2.knownLength) {
         this._valuesToMeasure.push(value);
       }
     };
@@ -27936,12 +27936,12 @@ var require_form_data = __commonJS({
         callback("Unknown stream");
       }
     };
-    FormData.prototype._multiPartHeader = function(field, value, options) {
-      if (typeof options.header == "string") {
-        return options.header;
+    FormData.prototype._multiPartHeader = function(field, value, options2) {
+      if (typeof options2.header == "string") {
+        return options2.header;
       }
-      var contentDisposition = this._getContentDisposition(value, options);
-      var contentType = this._getContentType(value, options);
+      var contentDisposition = this._getContentDisposition(value, options2);
+      var contentType = this._getContentType(value, options2);
       var contents = "";
       var headers = {
         // add custom disposition as third element or keep it two elements if not
@@ -27949,8 +27949,8 @@ var require_form_data = __commonJS({
         // if no content type. allow it to be empty array
         "Content-Type": [].concat(contentType || [])
       };
-      if (typeof options.header == "object") {
-        populate(headers, options.header);
+      if (typeof options2.header == "object") {
+        populate(headers, options2.header);
       }
       var header;
       for (var prop in headers) {
@@ -27968,12 +27968,12 @@ var require_form_data = __commonJS({
       }
       return "--" + this.getBoundary() + FormData.LINE_BREAK + contents + FormData.LINE_BREAK;
     };
-    FormData.prototype._getContentDisposition = function(value, options) {
+    FormData.prototype._getContentDisposition = function(value, options2) {
       var filename, contentDisposition;
-      if (typeof options.filepath === "string") {
-        filename = path5.normalize(options.filepath).replace(/\\/g, "/");
-      } else if (options.filename || value.name || value.path) {
-        filename = path5.basename(options.filename || value.name || value.path);
+      if (typeof options2.filepath === "string") {
+        filename = path5.normalize(options2.filepath).replace(/\\/g, "/");
+      } else if (options2.filename || value.name || value.path) {
+        filename = path5.basename(options2.filename || value.name || value.path);
       } else if (value.readable && value.hasOwnProperty("httpVersion")) {
         filename = path5.basename(value.client._httpMessage.path);
       }
@@ -27982,8 +27982,8 @@ var require_form_data = __commonJS({
       }
       return contentDisposition;
     };
-    FormData.prototype._getContentType = function(value, options) {
-      var contentType = options.contentType;
+    FormData.prototype._getContentType = function(value, options2) {
+      var contentType = options2.contentType;
       if (!contentType && value.name) {
         contentType = mime.lookup(value.name);
       }
@@ -27993,8 +27993,8 @@ var require_form_data = __commonJS({
       if (!contentType && value.readable && value.hasOwnProperty("httpVersion")) {
         contentType = value.headers["content-type"];
       }
-      if (!contentType && (options.filepath || options.filename)) {
-        contentType = mime.lookup(options.filepath || options.filename);
+      if (!contentType && (options2.filepath || options2.filename)) {
+        contentType = mime.lookup(options2.filepath || options2.filename);
       }
       if (!contentType && typeof value == "object") {
         contentType = FormData.DEFAULT_CONTENT_TYPE;
@@ -28077,26 +28077,26 @@ var require_form_data = __commonJS({
       });
     };
     FormData.prototype.submit = function(params, cb) {
-      var request2, options, defaults = { method: "post" };
+      var request2, options2, defaults = { method: "post" };
       if (typeof params == "string") {
         params = parseUrl(params);
-        options = populate({
+        options2 = populate({
           port: params.port,
           path: params.pathname,
           host: params.hostname,
           protocol: params.protocol
         }, defaults);
       } else {
-        options = populate(params, defaults);
-        if (!options.port) {
-          options.port = options.protocol == "https:" ? 443 : 80;
+        options2 = populate(params, defaults);
+        if (!options2.port) {
+          options2.port = options2.protocol == "https:" ? 443 : 80;
         }
       }
-      options.headers = this.getHeaders(params.headers);
-      if (options.protocol == "https:") {
-        request2 = https.request(options);
+      options2.headers = this.getHeaders(params.headers);
+      if (options2.protocol == "https:") {
+        request2 = https.request(options2);
       } else {
-        request2 = http.request(options);
+        request2 = http.request(options2);
       }
       this.getLength(function(err, length) {
         if (err) {
@@ -28255,8 +28255,8 @@ var require_utils4 = __commonJS({
       }
       return obj;
     };
-    var arrayToObject = function arrayToObject2(source, options) {
-      var obj = options && options.plainObjects ? /* @__PURE__ */ Object.create(null) : {};
+    var arrayToObject = function arrayToObject2(source, options2) {
+      var obj = options2 && options2.plainObjects ? /* @__PURE__ */ Object.create(null) : {};
       for (var i = 0; i < source.length; ++i) {
         if (typeof source[i] !== "undefined") {
           obj[i] = source[i];
@@ -28264,7 +28264,7 @@ var require_utils4 = __commonJS({
       }
       return obj;
     };
-    var merge = function merge2(target, source, options) {
+    var merge = function merge2(target, source, options2) {
       if (!source) {
         return target;
       }
@@ -28272,7 +28272,7 @@ var require_utils4 = __commonJS({
         if (Array.isArray(target)) {
           target.push(source);
         } else if (target && typeof target === "object") {
-          if (options && (options.plainObjects || options.allowPrototypes) || !has.call(Object.prototype, source)) {
+          if (options2 && (options2.plainObjects || options2.allowPrototypes) || !has.call(Object.prototype, source)) {
             target[source] = true;
           }
         } else {
@@ -28285,14 +28285,14 @@ var require_utils4 = __commonJS({
       }
       var mergeTarget = target;
       if (Array.isArray(target) && !Array.isArray(source)) {
-        mergeTarget = arrayToObject(target, options);
+        mergeTarget = arrayToObject(target, options2);
       }
       if (Array.isArray(target) && Array.isArray(source)) {
         source.forEach(function(item, i) {
           if (has.call(target, i)) {
             var targetItem = target[i];
             if (targetItem && typeof targetItem === "object" && item && typeof item === "object") {
-              target[i] = merge2(targetItem, item, options);
+              target[i] = merge2(targetItem, item, options2);
             } else {
               target.push(item);
             }
@@ -28305,7 +28305,7 @@ var require_utils4 = __commonJS({
       return Object.keys(source).reduce(function(acc, key) {
         var value = source[key];
         if (has.call(acc, key)) {
-          acc[key] = merge2(acc[key], value, options);
+          acc[key] = merge2(acc[key], value, options2);
         } else {
           acc[key] = value;
         }
@@ -28523,32 +28523,32 @@ var require_stringify2 = __commonJS({
     };
     module2.exports = function(object, opts) {
       var obj = object;
-      var options = opts ? utils.assign({}, opts) : {};
-      if (options.encoder !== null && typeof options.encoder !== "undefined" && typeof options.encoder !== "function") {
+      var options2 = opts ? utils.assign({}, opts) : {};
+      if (options2.encoder !== null && typeof options2.encoder !== "undefined" && typeof options2.encoder !== "function") {
         throw new TypeError("Encoder has to be a function.");
       }
-      var delimiter = typeof options.delimiter === "undefined" ? defaults.delimiter : options.delimiter;
-      var strictNullHandling = typeof options.strictNullHandling === "boolean" ? options.strictNullHandling : defaults.strictNullHandling;
-      var skipNulls = typeof options.skipNulls === "boolean" ? options.skipNulls : defaults.skipNulls;
-      var encode = typeof options.encode === "boolean" ? options.encode : defaults.encode;
-      var encoder = typeof options.encoder === "function" ? options.encoder : defaults.encoder;
-      var sort = typeof options.sort === "function" ? options.sort : null;
-      var allowDots = typeof options.allowDots === "undefined" ? false : options.allowDots;
-      var serializeDate = typeof options.serializeDate === "function" ? options.serializeDate : defaults.serializeDate;
-      var encodeValuesOnly = typeof options.encodeValuesOnly === "boolean" ? options.encodeValuesOnly : defaults.encodeValuesOnly;
-      if (typeof options.format === "undefined") {
-        options.format = formats["default"];
-      } else if (!Object.prototype.hasOwnProperty.call(formats.formatters, options.format)) {
+      var delimiter = typeof options2.delimiter === "undefined" ? defaults.delimiter : options2.delimiter;
+      var strictNullHandling = typeof options2.strictNullHandling === "boolean" ? options2.strictNullHandling : defaults.strictNullHandling;
+      var skipNulls = typeof options2.skipNulls === "boolean" ? options2.skipNulls : defaults.skipNulls;
+      var encode = typeof options2.encode === "boolean" ? options2.encode : defaults.encode;
+      var encoder = typeof options2.encoder === "function" ? options2.encoder : defaults.encoder;
+      var sort = typeof options2.sort === "function" ? options2.sort : null;
+      var allowDots = typeof options2.allowDots === "undefined" ? false : options2.allowDots;
+      var serializeDate = typeof options2.serializeDate === "function" ? options2.serializeDate : defaults.serializeDate;
+      var encodeValuesOnly = typeof options2.encodeValuesOnly === "boolean" ? options2.encodeValuesOnly : defaults.encodeValuesOnly;
+      if (typeof options2.format === "undefined") {
+        options2.format = formats["default"];
+      } else if (!Object.prototype.hasOwnProperty.call(formats.formatters, options2.format)) {
         throw new TypeError("Unknown format option provided.");
       }
-      var formatter = formats.formatters[options.format];
+      var formatter = formats.formatters[options2.format];
       var objKeys;
       var filter;
-      if (typeof options.filter === "function") {
-        filter = options.filter;
+      if (typeof options2.filter === "function") {
+        filter = options2.filter;
         obj = filter("", obj);
-      } else if (isArray(options.filter)) {
-        filter = options.filter;
+      } else if (isArray(options2.filter)) {
+        filter = options2.filter;
         objKeys = filter;
       }
       var keys = [];
@@ -28556,10 +28556,10 @@ var require_stringify2 = __commonJS({
         return "";
       }
       var arrayFormat;
-      if (options.arrayFormat in arrayPrefixGenerators) {
-        arrayFormat = options.arrayFormat;
-      } else if ("indices" in options) {
-        arrayFormat = options.indices ? "indices" : "repeat";
+      if (options2.arrayFormat in arrayPrefixGenerators) {
+        arrayFormat = options2.arrayFormat;
+      } else if ("indices" in options2) {
+        arrayFormat = options2.indices ? "indices" : "repeat";
       } else {
         arrayFormat = "indices";
       }
@@ -28591,7 +28591,7 @@ var require_stringify2 = __commonJS({
         ));
       }
       var joined = keys.join(delimiter);
-      var prefix = options.addQueryPrefix === true ? "?" : "";
+      var prefix = options2.addQueryPrefix === true ? "?" : "";
       return joined.length > 0 ? prefix + joined : "";
     };
   }
@@ -28614,22 +28614,22 @@ var require_parse = __commonJS({
       plainObjects: false,
       strictNullHandling: false
     };
-    var parseValues = function parseQueryStringValues(str, options) {
+    var parseValues = function parseQueryStringValues(str, options2) {
       var obj = {};
-      var cleanStr = options.ignoreQueryPrefix ? str.replace(/^\?/, "") : str;
-      var limit = options.parameterLimit === Infinity ? void 0 : options.parameterLimit;
-      var parts = cleanStr.split(options.delimiter, limit);
+      var cleanStr = options2.ignoreQueryPrefix ? str.replace(/^\?/, "") : str;
+      var limit = options2.parameterLimit === Infinity ? void 0 : options2.parameterLimit;
+      var parts = cleanStr.split(options2.delimiter, limit);
       for (var i = 0; i < parts.length; ++i) {
         var part = parts[i];
         var bracketEqualsPos = part.indexOf("]=");
         var pos = bracketEqualsPos === -1 ? part.indexOf("=") : bracketEqualsPos + 1;
         var key, val;
         if (pos === -1) {
-          key = options.decoder(part, defaults.decoder);
-          val = options.strictNullHandling ? null : "";
+          key = options2.decoder(part, defaults.decoder);
+          val = options2.strictNullHandling ? null : "";
         } else {
-          key = options.decoder(part.slice(0, pos), defaults.decoder);
-          val = options.decoder(part.slice(pos + 1), defaults.decoder);
+          key = options2.decoder(part.slice(0, pos), defaults.decoder);
+          val = options2.decoder(part.slice(pos + 1), defaults.decoder);
         }
         if (has.call(obj, key)) {
           obj[key] = [].concat(obj[key]).concat(val);
@@ -28639,20 +28639,20 @@ var require_parse = __commonJS({
       }
       return obj;
     };
-    var parseObject = function(chain, val, options) {
+    var parseObject = function(chain, val, options2) {
       var leaf = val;
       for (var i = chain.length - 1; i >= 0; --i) {
         var obj;
         var root = chain[i];
-        if (root === "[]" && options.parseArrays) {
+        if (root === "[]" && options2.parseArrays) {
           obj = [].concat(leaf);
         } else {
-          obj = options.plainObjects ? /* @__PURE__ */ Object.create(null) : {};
+          obj = options2.plainObjects ? /* @__PURE__ */ Object.create(null) : {};
           var cleanRoot = root.charAt(0) === "[" && root.charAt(root.length - 1) === "]" ? root.slice(1, -1) : root;
           var index = parseInt(cleanRoot, 10);
-          if (!options.parseArrays && cleanRoot === "") {
+          if (!options2.parseArrays && cleanRoot === "") {
             obj = { 0: leaf };
-          } else if (!isNaN(index) && root !== cleanRoot && String(index) === cleanRoot && index >= 0 && (options.parseArrays && index <= options.arrayLimit)) {
+          } else if (!isNaN(index) && root !== cleanRoot && String(index) === cleanRoot && index >= 0 && (options2.parseArrays && index <= options2.arrayLimit)) {
             obj = [];
             obj[index] = leaf;
           } else if (cleanRoot !== "__proto__") {
@@ -28663,29 +28663,29 @@ var require_parse = __commonJS({
       }
       return leaf;
     };
-    var parseKeys = function parseQueryStringKeys(givenKey, val, options) {
+    var parseKeys = function parseQueryStringKeys(givenKey, val, options2) {
       if (!givenKey) {
         return;
       }
-      var key = options.allowDots ? givenKey.replace(/\.([^.[]+)/g, "[$1]") : givenKey;
+      var key = options2.allowDots ? givenKey.replace(/\.([^.[]+)/g, "[$1]") : givenKey;
       var brackets = /(\[[^[\]]*])/;
       var child = /(\[[^[\]]*])/g;
       var segment = brackets.exec(key);
       var parent = segment ? key.slice(0, segment.index) : key;
       var keys = [];
       if (parent) {
-        if (!options.plainObjects && has.call(Object.prototype, parent)) {
-          if (!options.allowPrototypes) {
+        if (!options2.plainObjects && has.call(Object.prototype, parent)) {
+          if (!options2.allowPrototypes) {
             return;
           }
         }
         keys.push(parent);
       }
       var i = 0;
-      while ((segment = child.exec(key)) !== null && i < options.depth) {
+      while ((segment = child.exec(key)) !== null && i < options2.depth) {
         i += 1;
-        if (!options.plainObjects && has.call(Object.prototype, segment[1].slice(1, -1))) {
-          if (!options.allowPrototypes) {
+        if (!options2.plainObjects && has.call(Object.prototype, segment[1].slice(1, -1))) {
+          if (!options2.allowPrototypes) {
             return;
           }
         }
@@ -28694,34 +28694,34 @@ var require_parse = __commonJS({
       if (segment) {
         keys.push("[" + key.slice(segment.index) + "]");
       }
-      return parseObject(keys, val, options);
+      return parseObject(keys, val, options2);
     };
     module2.exports = function(str, opts) {
-      var options = opts ? utils.assign({}, opts) : {};
-      if (options.decoder !== null && options.decoder !== void 0 && typeof options.decoder !== "function") {
+      var options2 = opts ? utils.assign({}, opts) : {};
+      if (options2.decoder !== null && options2.decoder !== void 0 && typeof options2.decoder !== "function") {
         throw new TypeError("Decoder has to be a function.");
       }
-      options.ignoreQueryPrefix = options.ignoreQueryPrefix === true;
-      options.delimiter = typeof options.delimiter === "string" || utils.isRegExp(options.delimiter) ? options.delimiter : defaults.delimiter;
-      options.depth = typeof options.depth === "number" ? options.depth : defaults.depth;
-      options.arrayLimit = typeof options.arrayLimit === "number" ? options.arrayLimit : defaults.arrayLimit;
-      options.parseArrays = options.parseArrays !== false;
-      options.decoder = typeof options.decoder === "function" ? options.decoder : defaults.decoder;
-      options.allowDots = typeof options.allowDots === "boolean" ? options.allowDots : defaults.allowDots;
-      options.plainObjects = typeof options.plainObjects === "boolean" ? options.plainObjects : defaults.plainObjects;
-      options.allowPrototypes = typeof options.allowPrototypes === "boolean" ? options.allowPrototypes : defaults.allowPrototypes;
-      options.parameterLimit = typeof options.parameterLimit === "number" ? options.parameterLimit : defaults.parameterLimit;
-      options.strictNullHandling = typeof options.strictNullHandling === "boolean" ? options.strictNullHandling : defaults.strictNullHandling;
+      options2.ignoreQueryPrefix = options2.ignoreQueryPrefix === true;
+      options2.delimiter = typeof options2.delimiter === "string" || utils.isRegExp(options2.delimiter) ? options2.delimiter : defaults.delimiter;
+      options2.depth = typeof options2.depth === "number" ? options2.depth : defaults.depth;
+      options2.arrayLimit = typeof options2.arrayLimit === "number" ? options2.arrayLimit : defaults.arrayLimit;
+      options2.parseArrays = options2.parseArrays !== false;
+      options2.decoder = typeof options2.decoder === "function" ? options2.decoder : defaults.decoder;
+      options2.allowDots = typeof options2.allowDots === "boolean" ? options2.allowDots : defaults.allowDots;
+      options2.plainObjects = typeof options2.plainObjects === "boolean" ? options2.plainObjects : defaults.plainObjects;
+      options2.allowPrototypes = typeof options2.allowPrototypes === "boolean" ? options2.allowPrototypes : defaults.allowPrototypes;
+      options2.parameterLimit = typeof options2.parameterLimit === "number" ? options2.parameterLimit : defaults.parameterLimit;
+      options2.strictNullHandling = typeof options2.strictNullHandling === "boolean" ? options2.strictNullHandling : defaults.strictNullHandling;
       if (str === "" || str === null || typeof str === "undefined") {
-        return options.plainObjects ? /* @__PURE__ */ Object.create(null) : {};
+        return options2.plainObjects ? /* @__PURE__ */ Object.create(null) : {};
       }
-      var tempObj = typeof str === "string" ? parseValues(str, options) : str;
-      var obj = options.plainObjects ? /* @__PURE__ */ Object.create(null) : {};
+      var tempObj = typeof str === "string" ? parseValues(str, options2) : str;
+      var obj = options2.plainObjects ? /* @__PURE__ */ Object.create(null) : {};
       var keys = Object.keys(tempObj);
       for (var i = 0; i < keys.length; ++i) {
         var key = keys[i];
-        var newObj = parseKeys(key, tempObj[key], options);
-        obj = utils.merge(obj, newObj, options);
+        var newObj = parseKeys(key, tempObj[key], options2);
+        obj = utils.merge(obj, newObj, options2);
       }
       return utils.compact(obj);
     };
@@ -28756,14 +28756,14 @@ var require_querystring = __commonJS({
       this.parseOptions = null;
       this.stringifyOptions = null;
     }
-    Querystring.prototype.init = function(options) {
+    Querystring.prototype.init = function(options2) {
       if (this.lib) {
         return;
       }
-      this.useQuerystring = options.useQuerystring;
+      this.useQuerystring = options2.useQuerystring;
       this.lib = this.useQuerystring ? querystring : qs;
-      this.parseOptions = options.qsParseOptions || {};
-      this.stringifyOptions = options.qsStringifyOptions || {};
+      this.parseOptions = options2.qsParseOptions || {};
+      this.stringifyOptions = options2.qsStringifyOptions || {};
     };
     Querystring.prototype.stringify = function(obj) {
       return this.useQuerystring ? this.rfc3986(this.lib.stringify(
@@ -29315,10 +29315,10 @@ var require_uri_all = __commonJS({
       var URI_PARSE = /^(?:([^:\/?#]+):)?(?:\/\/((?:([^\/?#@]*)@)?(\[[^\/?#\]]+\]|[^\/?#:]*)(?:\:(\d*))?))?([^?#]*)(?:\?([^#]*))?(?:#((?:.|\n|\r)*))?/i;
       var NO_MATCH_IS_UNDEFINED = "".match(/(){0}/)[1] === void 0;
       function parse(uriString) {
-        var options = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+        var options2 = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
         var components = {};
-        var protocol = options.iri !== false ? IRI_PROTOCOL : URI_PROTOCOL;
-        if (options.reference === "suffix") uriString = (options.scheme ? options.scheme + ":" : "") + "//" + uriString;
+        var protocol = options2.iri !== false ? IRI_PROTOCOL : URI_PROTOCOL;
+        if (options2.reference === "suffix") uriString = (options2.scheme ? options2.scheme + ":" : "") + "//" + uriString;
         var matches = uriString.match(URI_PARSE);
         if (matches) {
           if (NO_MATCH_IS_UNDEFINED) {
@@ -29356,12 +29356,12 @@ var require_uri_all = __commonJS({
           } else {
             components.reference = "uri";
           }
-          if (options.reference && options.reference !== "suffix" && options.reference !== components.reference) {
-            components.error = components.error || "URI is not a " + options.reference + " reference.";
+          if (options2.reference && options2.reference !== "suffix" && options2.reference !== components.reference) {
+            components.error = components.error || "URI is not a " + options2.reference + " reference.";
           }
-          var schemeHandler = SCHEMES[(options.scheme || components.scheme || "").toLowerCase()];
-          if (!options.unicodeSupport && (!schemeHandler || !schemeHandler.unicodeSupport)) {
-            if (components.host && (options.domainHost || schemeHandler && schemeHandler.domainHost)) {
+          var schemeHandler = SCHEMES[(options2.scheme || components.scheme || "").toLowerCase()];
+          if (!options2.unicodeSupport && (!schemeHandler || !schemeHandler.unicodeSupport)) {
+            if (components.host && (options2.domainHost || schemeHandler && schemeHandler.domainHost)) {
               try {
                 components.host = punycode.toASCII(components.host.replace(protocol.PCT_ENCODED, pctDecChars).toLowerCase());
               } catch (e) {
@@ -29373,15 +29373,15 @@ var require_uri_all = __commonJS({
             _normalizeComponentEncoding(components, protocol);
           }
           if (schemeHandler && schemeHandler.parse) {
-            schemeHandler.parse(components, options);
+            schemeHandler.parse(components, options2);
           }
         } else {
           components.error = components.error || "URI can not be parsed.";
         }
         return components;
       }
-      function _recomposeAuthority(components, options) {
-        var protocol = options.iri !== false ? IRI_PROTOCOL : URI_PROTOCOL;
+      function _recomposeAuthority(components, options2) {
+        var protocol = options2.iri !== false ? IRI_PROTOCOL : URI_PROTOCOL;
         var uriTokens = [];
         if (components.userinfo !== void 0) {
           uriTokens.push(components.userinfo);
@@ -29428,29 +29428,29 @@ var require_uri_all = __commonJS({
         return output.join("");
       }
       function serialize(components) {
-        var options = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
-        var protocol = options.iri ? IRI_PROTOCOL : URI_PROTOCOL;
+        var options2 = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+        var protocol = options2.iri ? IRI_PROTOCOL : URI_PROTOCOL;
         var uriTokens = [];
-        var schemeHandler = SCHEMES[(options.scheme || components.scheme || "").toLowerCase()];
-        if (schemeHandler && schemeHandler.serialize) schemeHandler.serialize(components, options);
+        var schemeHandler = SCHEMES[(options2.scheme || components.scheme || "").toLowerCase()];
+        if (schemeHandler && schemeHandler.serialize) schemeHandler.serialize(components, options2);
         if (components.host) {
           if (protocol.IPV6ADDRESS.test(components.host)) {
-          } else if (options.domainHost || schemeHandler && schemeHandler.domainHost) {
+          } else if (options2.domainHost || schemeHandler && schemeHandler.domainHost) {
             try {
-              components.host = !options.iri ? punycode.toASCII(components.host.replace(protocol.PCT_ENCODED, pctDecChars).toLowerCase()) : punycode.toUnicode(components.host);
+              components.host = !options2.iri ? punycode.toASCII(components.host.replace(protocol.PCT_ENCODED, pctDecChars).toLowerCase()) : punycode.toUnicode(components.host);
             } catch (e) {
-              components.error = components.error || "Host's domain name can not be converted to " + (!options.iri ? "ASCII" : "Unicode") + " via punycode: " + e;
+              components.error = components.error || "Host's domain name can not be converted to " + (!options2.iri ? "ASCII" : "Unicode") + " via punycode: " + e;
             }
           }
         }
         _normalizeComponentEncoding(components, protocol);
-        if (options.reference !== "suffix" && components.scheme) {
+        if (options2.reference !== "suffix" && components.scheme) {
           uriTokens.push(components.scheme);
           uriTokens.push(":");
         }
-        var authority = _recomposeAuthority(components, options);
+        var authority = _recomposeAuthority(components, options2);
         if (authority !== void 0) {
-          if (options.reference !== "suffix") {
+          if (options2.reference !== "suffix") {
             uriTokens.push("//");
           }
           uriTokens.push(authority);
@@ -29460,7 +29460,7 @@ var require_uri_all = __commonJS({
         }
         if (components.path !== void 0) {
           var s = components.path;
-          if (!options.absolutePath && (!schemeHandler || !schemeHandler.absolutePath)) {
+          if (!options2.absolutePath && (!schemeHandler || !schemeHandler.absolutePath)) {
             s = removeDotSegments(s);
           }
           if (authority === void 0) {
@@ -29479,15 +29479,15 @@ var require_uri_all = __commonJS({
         return uriTokens.join("");
       }
       function resolveComponents(base2, relative) {
-        var options = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {};
+        var options2 = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {};
         var skipNormalization = arguments[3];
         var target = {};
         if (!skipNormalization) {
-          base2 = parse(serialize(base2, options), options);
-          relative = parse(serialize(relative, options), options);
+          base2 = parse(serialize(base2, options2), options2);
+          relative = parse(serialize(relative, options2), options2);
         }
-        options = options || {};
-        if (!options.tolerant && relative.scheme) {
+        options2 = options2 || {};
+        if (!options2.tolerant && relative.scheme) {
           target.scheme = relative.scheme;
           target.userinfo = relative.userinfo;
           target.host = relative.host;
@@ -29533,47 +29533,47 @@ var require_uri_all = __commonJS({
         target.fragment = relative.fragment;
         return target;
       }
-      function resolve(baseURI, relativeURI, options) {
-        var schemelessOptions = assign({ scheme: "null" }, options);
+      function resolve(baseURI, relativeURI, options2) {
+        var schemelessOptions = assign({ scheme: "null" }, options2);
         return serialize(resolveComponents(parse(baseURI, schemelessOptions), parse(relativeURI, schemelessOptions), schemelessOptions, true), schemelessOptions);
       }
-      function normalize(uri, options) {
+      function normalize(uri, options2) {
         if (typeof uri === "string") {
-          uri = serialize(parse(uri, options), options);
+          uri = serialize(parse(uri, options2), options2);
         } else if (typeOf(uri) === "object") {
-          uri = parse(serialize(uri, options), options);
+          uri = parse(serialize(uri, options2), options2);
         }
         return uri;
       }
-      function equal(uriA, uriB, options) {
+      function equal(uriA, uriB, options2) {
         if (typeof uriA === "string") {
-          uriA = serialize(parse(uriA, options), options);
+          uriA = serialize(parse(uriA, options2), options2);
         } else if (typeOf(uriA) === "object") {
-          uriA = serialize(uriA, options);
+          uriA = serialize(uriA, options2);
         }
         if (typeof uriB === "string") {
-          uriB = serialize(parse(uriB, options), options);
+          uriB = serialize(parse(uriB, options2), options2);
         } else if (typeOf(uriB) === "object") {
-          uriB = serialize(uriB, options);
+          uriB = serialize(uriB, options2);
         }
         return uriA === uriB;
       }
-      function escapeComponent(str, options) {
-        return str && str.toString().replace(!options || !options.iri ? URI_PROTOCOL.ESCAPE : IRI_PROTOCOL.ESCAPE, pctEncChar);
+      function escapeComponent(str, options2) {
+        return str && str.toString().replace(!options2 || !options2.iri ? URI_PROTOCOL.ESCAPE : IRI_PROTOCOL.ESCAPE, pctEncChar);
       }
-      function unescapeComponent(str, options) {
-        return str && str.toString().replace(!options || !options.iri ? URI_PROTOCOL.PCT_ENCODED : IRI_PROTOCOL.PCT_ENCODED, pctDecChars);
+      function unescapeComponent(str, options2) {
+        return str && str.toString().replace(!options2 || !options2.iri ? URI_PROTOCOL.PCT_ENCODED : IRI_PROTOCOL.PCT_ENCODED, pctDecChars);
       }
       var handler = {
         scheme: "http",
         domainHost: true,
-        parse: function parse2(components, options) {
+        parse: function parse2(components, options2) {
           if (!components.host) {
             components.error = components.error || "HTTP URIs must have a host.";
           }
           return components;
         },
-        serialize: function serialize2(components, options) {
+        serialize: function serialize2(components, options2) {
           var secure = String(components.scheme).toLowerCase() === "https";
           if (components.port === (secure ? 443 : 80) || components.port === "") {
             components.port = void 0;
@@ -29596,7 +29596,7 @@ var require_uri_all = __commonJS({
       var handler$2 = {
         scheme: "ws",
         domainHost: true,
-        parse: function parse2(components, options) {
+        parse: function parse2(components, options2) {
           var wsComponents = components;
           wsComponents.secure = isSecure(wsComponents);
           wsComponents.resourceName = (wsComponents.path || "/") + (wsComponents.query ? "?" + wsComponents.query : "");
@@ -29604,7 +29604,7 @@ var require_uri_all = __commonJS({
           wsComponents.query = void 0;
           return wsComponents;
         },
-        serialize: function serialize2(wsComponents, options) {
+        serialize: function serialize2(wsComponents, options2) {
           if (wsComponents.port === (isSecure(wsComponents) ? 443 : 80) || wsComponents.port === "") {
             wsComponents.port = void 0;
           }
@@ -29648,7 +29648,7 @@ var require_uri_all = __commonJS({
       }
       var handler$4 = {
         scheme: "mailto",
-        parse: function parse$$1(components, options) {
+        parse: function parse$$1(components, options2) {
           var mailtoComponents = components;
           var to = mailtoComponents.to = mailtoComponents.path ? mailtoComponents.path.split(",") : [];
           mailtoComponents.path = void 0;
@@ -29666,14 +29666,14 @@ var require_uri_all = __commonJS({
                   }
                   break;
                 case "subject":
-                  mailtoComponents.subject = unescapeComponent(hfield[1], options);
+                  mailtoComponents.subject = unescapeComponent(hfield[1], options2);
                   break;
                 case "body":
-                  mailtoComponents.body = unescapeComponent(hfield[1], options);
+                  mailtoComponents.body = unescapeComponent(hfield[1], options2);
                   break;
                 default:
                   unknownHeaders = true;
-                  headers[unescapeComponent(hfield[0], options)] = unescapeComponent(hfield[1], options);
+                  headers[unescapeComponent(hfield[0], options2)] = unescapeComponent(hfield[1], options2);
                   break;
               }
             }
@@ -29683,20 +29683,20 @@ var require_uri_all = __commonJS({
           for (var _x2 = 0, _xl2 = to.length; _x2 < _xl2; ++_x2) {
             var addr = to[_x2].split("@");
             addr[0] = unescapeComponent(addr[0]);
-            if (!options.unicodeSupport) {
+            if (!options2.unicodeSupport) {
               try {
-                addr[1] = punycode.toASCII(unescapeComponent(addr[1], options).toLowerCase());
+                addr[1] = punycode.toASCII(unescapeComponent(addr[1], options2).toLowerCase());
               } catch (e) {
                 mailtoComponents.error = mailtoComponents.error || "Email address's domain name can not be converted to ASCII via punycode: " + e;
               }
             } else {
-              addr[1] = unescapeComponent(addr[1], options).toLowerCase();
+              addr[1] = unescapeComponent(addr[1], options2).toLowerCase();
             }
             to[_x2] = addr.join("@");
           }
           return mailtoComponents;
         },
-        serialize: function serialize$$1(mailtoComponents, options) {
+        serialize: function serialize$$1(mailtoComponents, options2) {
           var components = mailtoComponents;
           var to = toArray(mailtoComponents.to);
           if (to) {
@@ -29706,9 +29706,9 @@ var require_uri_all = __commonJS({
               var localPart = toAddr.slice(0, atIdx).replace(PCT_ENCODED, decodeUnreserved).replace(PCT_ENCODED, toUpperCase).replace(NOT_LOCAL_PART, pctEncChar);
               var domain = toAddr.slice(atIdx + 1);
               try {
-                domain = !options.iri ? punycode.toASCII(unescapeComponent(domain, options).toLowerCase()) : punycode.toUnicode(domain);
+                domain = !options2.iri ? punycode.toASCII(unescapeComponent(domain, options2).toLowerCase()) : punycode.toUnicode(domain);
               } catch (e) {
-                components.error = components.error || "Email address's domain name can not be converted to " + (!options.iri ? "ASCII" : "Unicode") + " via punycode: " + e;
+                components.error = components.error || "Email address's domain name can not be converted to " + (!options2.iri ? "ASCII" : "Unicode") + " via punycode: " + e;
               }
               to[x] = localPart + "@" + domain;
             }
@@ -29732,53 +29732,53 @@ var require_uri_all = __commonJS({
       var URN_PARSE = /^([^\:]+)\:(.*)/;
       var handler$5 = {
         scheme: "urn",
-        parse: function parse$$1(components, options) {
+        parse: function parse$$1(components, options2) {
           var matches = components.path && components.path.match(URN_PARSE);
           var urnComponents = components;
           if (matches) {
-            var scheme = options.scheme || urnComponents.scheme || "urn";
+            var scheme = options2.scheme || urnComponents.scheme || "urn";
             var nid = matches[1].toLowerCase();
             var nss = matches[2];
-            var urnScheme = scheme + ":" + (options.nid || nid);
+            var urnScheme = scheme + ":" + (options2.nid || nid);
             var schemeHandler = SCHEMES[urnScheme];
             urnComponents.nid = nid;
             urnComponents.nss = nss;
             urnComponents.path = void 0;
             if (schemeHandler) {
-              urnComponents = schemeHandler.parse(urnComponents, options);
+              urnComponents = schemeHandler.parse(urnComponents, options2);
             }
           } else {
             urnComponents.error = urnComponents.error || "URN can not be parsed.";
           }
           return urnComponents;
         },
-        serialize: function serialize$$1(urnComponents, options) {
-          var scheme = options.scheme || urnComponents.scheme || "urn";
+        serialize: function serialize$$1(urnComponents, options2) {
+          var scheme = options2.scheme || urnComponents.scheme || "urn";
           var nid = urnComponents.nid;
-          var urnScheme = scheme + ":" + (options.nid || nid);
+          var urnScheme = scheme + ":" + (options2.nid || nid);
           var schemeHandler = SCHEMES[urnScheme];
           if (schemeHandler) {
-            urnComponents = schemeHandler.serialize(urnComponents, options);
+            urnComponents = schemeHandler.serialize(urnComponents, options2);
           }
           var uriComponents = urnComponents;
           var nss = urnComponents.nss;
-          uriComponents.path = (nid || options.nid) + ":" + nss;
+          uriComponents.path = (nid || options2.nid) + ":" + nss;
           return uriComponents;
         }
       };
       var UUID = /^[0-9A-Fa-f]{8}(?:\-[0-9A-Fa-f]{4}){3}\-[0-9A-Fa-f]{12}$/;
       var handler$6 = {
         scheme: "urn:uuid",
-        parse: function parse2(urnComponents, options) {
+        parse: function parse2(urnComponents, options2) {
           var uuidComponents = urnComponents;
           uuidComponents.uuid = uuidComponents.nss;
           uuidComponents.nss = void 0;
-          if (!options.tolerant && (!uuidComponents.uuid || !uuidComponents.uuid.match(UUID))) {
+          if (!options2.tolerant && (!uuidComponents.uuid || !uuidComponents.uuid.match(UUID))) {
             uuidComponents.error = uuidComponents.error || "UUID is not valid.";
           }
           return uuidComponents;
         },
-        serialize: function serialize2(uuidComponents, options) {
+        serialize: function serialize2(uuidComponents, options2) {
           var urnComponents = uuidComponents;
           urnComponents.nss = (uuidComponents.uuid || "").toLowerCase();
           return urnComponents;
@@ -31104,11 +31104,11 @@ var require_compile = __commonJS({
       }
       function useCustomRule(rule, schema2, parentSchema, it) {
         if (self2._opts.validateSchema !== false) {
-          var deps = rule.definition.dependencies;
-          if (deps && !deps.every(function(keyword) {
+          var deps2 = rule.definition.dependencies;
+          if (deps2 && !deps2.every(function(keyword) {
             return Object.prototype.hasOwnProperty.call(parentSchema, keyword);
           }))
-            throw new Error("parent schema must have all required keywords: " + deps.join(","));
+            throw new Error("parent schema must have all required keywords: " + deps2.join(","));
           var validateSchema = rule.definition.validateSchema;
           if (validateSchema) {
             var valid = validateSchema(schema2);
@@ -34933,12 +34933,12 @@ var require_ajv = __commonJS({
         throw new Error("schema $id is different from id");
       return schema.$id || schema.id;
     }
-    function errorsText(errors, options) {
+    function errorsText(errors, options2) {
       errors = errors || this.errors;
       if (!errors) return "No errors";
-      options = options || {};
-      var separator = options.separator === void 0 ? ", " : options.separator;
-      var dataVar = options.dataVar === void 0 ? "data" : options.dataVar;
+      options2 = options2 || {};
+      var separator = options2.separator === void 0 ? ", " : options2.separator;
+      var dataVar = options2.dataVar === void 0 ? "data" : options2.dataVar;
       var text = "";
       for (var i = 0; i < errors.length; i++) {
         var e = errors[i];
@@ -36060,16 +36060,16 @@ var require_har2 = __commonJS({
       }
       return data;
     };
-    Har.prototype.options = function(options) {
-      if (!options.har) {
-        return options;
+    Har.prototype.options = function(options2) {
+      if (!options2.har) {
+        return options2;
       }
       var har = {};
-      extend(har, options.har);
+      extend(har, options2.har);
       if (har.log && har.log.entries) {
         har = har.log.entries[0];
       }
-      har.url = har.url || options.url || options.uri || options.baseUrl || "/";
+      har.url = har.url || options2.url || options2.uri || options2.baseUrl || "/";
       har.httpVersion = har.httpVersion || "HTTP/1.1";
       har.queryString = har.queryString || [];
       har.headers = har.headers || [];
@@ -36080,37 +36080,37 @@ var require_har2 = __commonJS({
       har.headersSize = 0;
       har.postData.size = 0;
       if (!validate.request(har)) {
-        return options;
+        return options2;
       }
       var req = this.prep(har);
       if (req.url) {
-        options.url = req.url;
+        options2.url = req.url;
       }
       if (req.method) {
-        options.method = req.method;
+        options2.method = req.method;
       }
       if (Object.keys(req.queryObj).length) {
-        options.qs = req.queryObj;
+        options2.qs = req.queryObj;
       }
       if (Object.keys(req.headersObj).length) {
-        options.headers = req.headersObj;
+        options2.headers = req.headersObj;
       }
       function test(type) {
         return req.postData.mimeType.indexOf(type) === 0;
       }
       if (test("application/x-www-form-urlencoded")) {
-        options.form = req.postData.paramsObj;
+        options2.form = req.postData.paramsObj;
       } else if (test("application/json")) {
         if (req.postData.jsonObj) {
-          options.body = req.postData.jsonObj;
-          options.json = true;
+          options2.body = req.postData.jsonObj;
+          options2.json = true;
         }
       } else if (test("multipart/form-data")) {
-        options.formData = {};
+        options2.formData = {};
         req.postData.params.forEach(function(param) {
           var attachment = {};
           if (!param.fileName && !param.contentType) {
-            options.formData[param.name] = param.value;
+            options2.formData[param.name] = param.value;
             return;
           }
           if (param.fileName && !param.value) {
@@ -36124,14 +36124,14 @@ var require_har2 = __commonJS({
               contentType: param.contentType ? param.contentType : null
             };
           }
-          options.formData[param.name] = attachment;
+          options2.formData[param.name] = attachment;
         });
       } else {
         if (req.postData.text) {
-          options.body = req.postData.text;
+          options2.body = req.postData.text;
         }
       }
-      return options;
+      return options2;
     };
     exports2.Har = Har;
   }
@@ -36190,14 +36190,14 @@ var require_v4 = __commonJS({
   "node_modules/uuid/v4.js"(exports2, module2) {
     var rng = require_rng();
     var bytesToUuid = require_bytesToUuid();
-    function v4(options, buf, offset) {
+    function v4(options2, buf, offset) {
       var i = buf && offset || 0;
-      if (typeof options == "string") {
-        buf = options === "binary" ? new Array(16) : null;
-        options = null;
+      if (typeof options2 == "string") {
+        buf = options2 === "binary" ? new Array(16) : null;
+        options2 = null;
       }
-      options = options || {};
-      var rnds = options.random || (options.rng || rng)();
+      options2 = options2 || {};
+      var rnds = options2.random || (options2.rng || rng)();
       rnds[6] = rnds[6] & 15 | 64;
       rnds[8] = rnds[8] & 63 | 128;
       if (buf) {
@@ -36658,15 +36658,15 @@ var require_multipart = __commonJS({
       this.chunked = false;
       this.body = null;
     }
-    Multipart.prototype.isChunked = function(options) {
+    Multipart.prototype.isChunked = function(options2) {
       var self2 = this;
       var chunked = false;
-      var parts = options.data || options;
+      var parts = options2.data || options2;
       if (!parts.forEach) {
         self2.request.emit("error", new Error("Argument error, options.multipart."));
       }
-      if (options.chunked !== void 0) {
-        chunked = options.chunked;
+      if (options2.chunked !== void 0) {
+        chunked = options2.chunked;
       }
       if (self2.request.getHeader("transfer-encoding") === "chunked") {
         chunked = true;
@@ -36730,10 +36730,10 @@ var require_multipart = __commonJS({
       }
       return body;
     };
-    Multipart.prototype.onRequest = function(options) {
+    Multipart.prototype.onRequest = function(options2) {
       var self2 = this;
-      var chunked = self2.isChunked(options);
-      var parts = options.data || options;
+      var chunked = self2.isChunked(options2);
+      var parts = options2.data || options2;
       self2.setHeaders(chunked);
       self2.chunked = chunked;
       self2.body = self2.build(parts, chunked);
@@ -36762,28 +36762,28 @@ var require_redirect = __commonJS({
       this.redirectsFollowed = 0;
       this.removeRefererHeader = false;
     }
-    Redirect.prototype.onRequest = function(options) {
+    Redirect.prototype.onRequest = function(options2) {
       var self2 = this;
-      if (options.maxRedirects !== void 0) {
-        self2.maxRedirects = options.maxRedirects;
+      if (options2.maxRedirects !== void 0) {
+        self2.maxRedirects = options2.maxRedirects;
       }
-      if (typeof options.followRedirect === "function") {
-        self2.allowRedirect = options.followRedirect;
+      if (typeof options2.followRedirect === "function") {
+        self2.allowRedirect = options2.followRedirect;
       }
-      if (options.followRedirect !== void 0) {
-        self2.followRedirects = !!options.followRedirect;
+      if (options2.followRedirect !== void 0) {
+        self2.followRedirects = !!options2.followRedirect;
       }
-      if (options.followAllRedirects !== void 0) {
-        self2.followAllRedirects = options.followAllRedirects;
+      if (options2.followAllRedirects !== void 0) {
+        self2.followAllRedirects = options2.followAllRedirects;
       }
       if (self2.followRedirects || self2.followAllRedirects) {
         self2.redirects = self2.redirects || [];
       }
-      if (options.removeRefererHeader !== void 0) {
-        self2.removeRefererHeader = options.removeRefererHeader;
+      if (options2.removeRefererHeader !== void 0) {
+        self2.removeRefererHeader = options2.removeRefererHeader;
       }
-      if (options.followOriginalHttpMethod !== void 0) {
-        self2.followOriginalHttpMethod = options.followOriginalHttpMethod;
+      if (options2.followOriginalHttpMethod !== void 0) {
+        self2.followOriginalHttpMethod = options2.followOriginalHttpMethod;
       }
     };
     Redirect.prototype.redirectTo = function(response) {
@@ -36886,33 +36886,33 @@ var require_tunnel_agent = __commonJS({
     exports2.httpsOverHttp = httpsOverHttp;
     exports2.httpOverHttps = httpOverHttps;
     exports2.httpsOverHttps = httpsOverHttps;
-    function httpOverHttp(options) {
-      var agent = new TunnelingAgent(options);
+    function httpOverHttp(options2) {
+      var agent = new TunnelingAgent(options2);
       agent.request = http.request;
       return agent;
     }
-    function httpsOverHttp(options) {
-      var agent = new TunnelingAgent(options);
+    function httpsOverHttp(options2) {
+      var agent = new TunnelingAgent(options2);
       agent.request = http.request;
       agent.createSocket = createSecureSocket;
       agent.defaultPort = 443;
       return agent;
     }
-    function httpOverHttps(options) {
-      var agent = new TunnelingAgent(options);
+    function httpOverHttps(options2) {
+      var agent = new TunnelingAgent(options2);
       agent.request = https.request;
       return agent;
     }
-    function httpsOverHttps(options) {
-      var agent = new TunnelingAgent(options);
+    function httpsOverHttps(options2) {
+      var agent = new TunnelingAgent(options2);
       agent.request = https.request;
       agent.createSocket = createSecureSocket;
       agent.defaultPort = 443;
       return agent;
     }
-    function TunnelingAgent(options) {
+    function TunnelingAgent(options2) {
       var self2 = this;
-      self2.options = options || {};
+      self2.options = options2 || {};
       self2.proxyOptions = self2.options.proxy || {};
       self2.maxSockets = self2.options.maxSockets || http.Agent.defaultMaxSockets;
       self2.requests = [];
@@ -36931,20 +36931,20 @@ var require_tunnel_agent = __commonJS({
       });
     }
     util.inherits(TunnelingAgent, events.EventEmitter);
-    TunnelingAgent.prototype.addRequest = function addRequest(req, options) {
+    TunnelingAgent.prototype.addRequest = function addRequest(req, options2) {
       var self2 = this;
-      if (typeof options === "string") {
-        options = {
-          host: options,
+      if (typeof options2 === "string") {
+        options2 = {
+          host: options2,
           port: arguments[2],
           path: arguments[3]
         };
       }
       if (self2.sockets.length >= this.maxSockets) {
-        self2.requests.push({ host: options.host, port: options.port, request: req });
+        self2.requests.push({ host: options2.host, port: options2.port, request: req });
         return;
       }
-      self2.createConnection({ host: options.host, port: options.port, request: req });
+      self2.createConnection({ host: options2.host, port: options2.port, request: req });
     };
     TunnelingAgent.prototype.createConnection = function createConnection(pending) {
       var self2 = this;
@@ -36964,7 +36964,7 @@ var require_tunnel_agent = __commonJS({
         }
       });
     };
-    TunnelingAgent.prototype.createSocket = function createSocket(options, cb) {
+    TunnelingAgent.prototype.createSocket = function createSocket(options2, cb) {
       var self2 = this;
       var placeholder = {};
       self2.sockets.push(placeholder);
@@ -36973,7 +36973,7 @@ var require_tunnel_agent = __commonJS({
         self2.proxyOptions,
         {
           method: "CONNECT",
-          path: options.host + ":" + options.port,
+          path: options2.host + ":" + options2.port,
           agent: false
         }
       );
@@ -37009,7 +37009,7 @@ var require_tunnel_agent = __commonJS({
           debug("tunneling socket could not be established, statusCode=%d", res.statusCode);
           var error = new Error("tunneling socket could not be established, statusCode=" + res.statusCode);
           error.code = "ECONNRESET";
-          options.request.emit("error", error);
+          options2.request.emit("error", error);
           self2.removeSocket(placeholder);
         }
       }
@@ -37018,7 +37018,7 @@ var require_tunnel_agent = __commonJS({
         debug("tunneling socket could not be established, cause=%s\n", cause.message, cause.stack);
         var error = new Error("tunneling socket could not be established, cause=" + cause.message);
         error.code = "ECONNRESET";
-        options.request.emit("error", error);
+        options2.request.emit("error", error);
         self2.removeSocket(placeholder);
       }
     };
@@ -37031,14 +37031,14 @@ var require_tunnel_agent = __commonJS({
         this.createConnection(pending);
       }
     };
-    function createSecureSocket(options, cb) {
+    function createSecureSocket(options2, cb) {
       var self2 = this;
-      TunnelingAgent.prototype.createSocket.call(self2, options, function(socket) {
+      TunnelingAgent.prototype.createSocket.call(self2, options2, function(socket) {
         var secureSocket = tls.connect(0, mergeOptions(
           {},
           self2.options,
           {
-            servername: options.host,
+            servername: options2.host,
             socket
           }
         ));
@@ -37189,21 +37189,21 @@ var require_tunnel = __commonJS({
       }
       return false;
     };
-    Tunnel.prototype.setup = function(options) {
+    Tunnel.prototype.setup = function(options2) {
       var self2 = this;
       var request2 = self2.request;
-      options = options || {};
+      options2 = options2 || {};
       if (typeof request2.proxy === "string") {
         request2.proxy = url.parse(request2.proxy);
       }
       if (!request2.proxy || !request2.tunnel) {
         return false;
       }
-      if (options.proxyHeaderWhiteList) {
-        self2.proxyHeaderWhiteList = options.proxyHeaderWhiteList;
+      if (options2.proxyHeaderWhiteList) {
+        self2.proxyHeaderWhiteList = options2.proxyHeaderWhiteList;
       }
-      if (options.proxyHeaderExclusiveList) {
-        self2.proxyHeaderExclusiveList = options.proxyHeaderExclusiveList;
+      if (options2.proxyHeaderExclusiveList) {
+        self2.proxyHeaderExclusiveList = options2.proxyHeaderExclusiveList;
       }
       var proxyHeaderExclusiveList = self2.proxyHeaderExclusiveList.concat(defaultProxyHeaderExclusiveList);
       var proxyHeaderWhiteList = self2.proxyHeaderWhiteList.concat(proxyHeaderExclusiveList);
@@ -37299,23 +37299,23 @@ var require_request2 = __commonJS({
     var version = helpers.version;
     var globalCookieJar = cookies.jar();
     var globalPool = {};
-    function filterForNonReserved(reserved, options) {
+    function filterForNonReserved(reserved, options2) {
       var object = {};
-      for (var i in options) {
+      for (var i in options2) {
         var notReserved = reserved.indexOf(i) === -1;
         if (notReserved) {
-          object[i] = options[i];
+          object[i] = options2[i];
         }
       }
       return object;
     }
-    function filterOutReservedFunctions(reserved, options) {
+    function filterOutReservedFunctions(reserved, options2) {
       var object = {};
-      for (var i in options) {
+      for (var i in options2) {
         var isReserved = !(reserved.indexOf(i) === -1);
-        var isFunction = typeof options[i] === "function";
+        var isFunction = typeof options2[i] === "function";
         if (!(isReserved && isFunction)) {
-          object[i] = options[i];
+          object[i] = options2[i];
         }
       }
       return object;
@@ -37337,20 +37337,20 @@ var require_request2 = __commonJS({
         request: requestToJSON.call(self2.request)
       };
     }
-    function Request(options) {
+    function Request(options2) {
       var self2 = this;
-      if (options.har) {
+      if (options2.har) {
         self2._har = new Har(self2);
-        options = self2._har.options(options);
+        options2 = self2._har.options(options2);
       }
       stream.Stream.call(self2);
       var reserved = Object.keys(Request.prototype);
-      var nonReserved = filterForNonReserved(reserved, options);
+      var nonReserved = filterForNonReserved(reserved, options2);
       extend(self2, nonReserved);
-      options = filterOutReservedFunctions(reserved, options);
+      options2 = filterOutReservedFunctions(reserved, options2);
       self2.readable = true;
       self2.writable = true;
-      if (options.method) {
+      if (options2.method) {
         self2.explicitMethod = true;
       }
       self2._qs = new Querystring(self2);
@@ -37359,7 +37359,7 @@ var require_request2 = __commonJS({
       self2._multipart = new Multipart(self2);
       self2._redirect = new Redirect(self2);
       self2._tunnel = new Tunnel(self2);
-      self2.init(options);
+      self2.init(options2);
     }
     util.inherits(Request, stream.Stream);
     Request.debug = process.env.NODE_DEBUG && /\brequest\b/.test(process.env.NODE_DEBUG);
@@ -37369,10 +37369,10 @@ var require_request2 = __commonJS({
       }
     }
     Request.prototype.debug = debug;
-    Request.prototype.init = function(options) {
+    Request.prototype.init = function(options2) {
       var self2 = this;
-      if (!options) {
-        options = {};
+      if (!options2) {
+        options2 = {};
       }
       self2.headers = self2.headers ? copy(self2.headers) : {};
       for (var headerName in self2.headers) {
@@ -37382,13 +37382,13 @@ var require_request2 = __commonJS({
       }
       caseless.httpify(self2, self2.headers);
       if (!self2.method) {
-        self2.method = options.method || "GET";
+        self2.method = options2.method || "GET";
       }
       if (!self2.localAddress) {
-        self2.localAddress = options.localAddress;
+        self2.localAddress = options2.localAddress;
       }
-      self2._qs.init(options);
-      debug(options);
+      self2._qs.init(options2);
+      debug(options2);
       if (!self2.pool && self2.pool !== false) {
         self2.pool = globalPool;
       }
@@ -37457,7 +37457,7 @@ var require_request2 = __commonJS({
       if (!(self2.uri.host || self2.uri.hostname && self2.uri.port) && !self2.uri.isUnix) {
         var faultyUri = url.format(self2.uri);
         var message = 'Invalid URI "' + faultyUri + '"';
-        if (Object.keys(options).length === 0) {
+        if (Object.keys(options2).length === 0) {
           message += ". This can be caused by a crappy redirection.";
         }
         self2.abort();
@@ -37468,9 +37468,9 @@ var require_request2 = __commonJS({
       }
       self2.tunnel = self2._tunnel.isEnabled();
       if (self2.proxy) {
-        self2._tunnel.setup(options);
+        self2._tunnel.setup(options2);
       }
-      self2._redirect.onRequest(options);
+      self2._redirect.onRequest(options2);
       self2.setHost = false;
       if (!self2.hasHeader("host")) {
         var hostHeaderName = self2.originalHostHeaderName || "host";
@@ -37482,7 +37482,7 @@ var require_request2 = __commonJS({
         }
         self2.setHost = true;
       }
-      self2.jar(self2._jar || options.jar);
+      self2.jar(self2._jar || options2.jar);
       if (!self2.uri.port) {
         if (self2.uri.protocol === "http:") {
           self2.uri.port = 80;
@@ -37497,11 +37497,11 @@ var require_request2 = __commonJS({
         self2.port = self2.uri.port;
         self2.host = self2.uri.hostname;
       }
-      if (options.form) {
-        self2.form(options.form);
+      if (options2.form) {
+        self2.form(options2.form);
       }
-      if (options.formData) {
-        var formData = options.formData;
+      if (options2.formData) {
+        var formData = options2.formData;
         var requestForm = self2.form();
         var appendFormValue = function(key, value) {
           if (value && value.hasOwnProperty("value") && value.hasOwnProperty("options")) {
@@ -37523,8 +37523,8 @@ var require_request2 = __commonJS({
           }
         }
       }
-      if (options.qs) {
-        self2.qs(options.qs);
+      if (options2.qs) {
+        self2.qs(options2.qs);
       }
       if (self2.uri.path) {
         self2.path = self2.uri.path;
@@ -37534,27 +37534,27 @@ var require_request2 = __commonJS({
       if (self2.path.length === 0) {
         self2.path = "/";
       }
-      if (options.aws) {
-        self2.aws(options.aws);
+      if (options2.aws) {
+        self2.aws(options2.aws);
       }
-      if (options.hawk) {
-        self2.hawk(options.hawk);
+      if (options2.hawk) {
+        self2.hawk(options2.hawk);
       }
-      if (options.httpSignature) {
-        self2.httpSignature(options.httpSignature);
+      if (options2.httpSignature) {
+        self2.httpSignature(options2.httpSignature);
       }
-      if (options.auth) {
-        if (Object.prototype.hasOwnProperty.call(options.auth, "username")) {
-          options.auth.user = options.auth.username;
+      if (options2.auth) {
+        if (Object.prototype.hasOwnProperty.call(options2.auth, "username")) {
+          options2.auth.user = options2.auth.username;
         }
-        if (Object.prototype.hasOwnProperty.call(options.auth, "password")) {
-          options.auth.pass = options.auth.password;
+        if (Object.prototype.hasOwnProperty.call(options2.auth, "password")) {
+          options2.auth.pass = options2.auth.password;
         }
         self2.auth(
-          options.auth.user,
-          options.auth.pass,
-          options.auth.sendImmediately,
-          options.auth.bearer
+          options2.auth.user,
+          options2.auth.pass,
+          options2.auth.sendImmediately,
+          options2.auth.bearer
         );
       }
       if (self2.gzip && !self2.hasHeader("accept-encoding")) {
@@ -37576,13 +37576,13 @@ var require_request2 = __commonJS({
       if (self2.proxy && !self2.tunnel) {
         self2.path = self2.uri.protocol + "//" + self2.uri.host + self2.path;
       }
-      if (options.json) {
-        self2.json(options.json);
+      if (options2.json) {
+        self2.json(options2.json);
       }
-      if (options.multipart) {
-        self2.multipart(options.multipart);
+      if (options2.multipart) {
+        self2.multipart(options2.multipart);
       }
-      if (options.time) {
+      if (options2.time) {
         self2.timing = true;
         self2.elapsedTime = self2.elapsedTime || 0;
       }
@@ -37611,8 +37611,8 @@ var require_request2 = __commonJS({
       if (self2.body && !isstream(self2.body)) {
         setContentLength();
       }
-      if (options.oauth) {
-        self2.oauth(options.oauth);
+      if (options2.oauth) {
+        self2.oauth(options2.oauth);
       } else if (self2._oauth.params && self2.hasHeader("authorization")) {
         self2.oauth(self2._oauth.params);
       }
@@ -37623,16 +37623,16 @@ var require_request2 = __commonJS({
       if (!self2.httpModule) {
         return self2.emit("error", new Error("Invalid protocol: " + protocol));
       }
-      if (options.ca) {
-        self2.ca = options.ca;
+      if (options2.ca) {
+        self2.ca = options2.ca;
       }
       if (!self2.agent) {
-        if (options.agentOptions) {
-          self2.agentOptions = options.agentOptions;
+        if (options2.agentOptions) {
+          self2.agentOptions = options2.agentOptions;
         }
-        if (options.agentClass) {
-          self2.agentClass = options.agentClass;
-        } else if (options.forever) {
+        if (options2.agentClass) {
+          self2.agentClass = options2.agentClass;
+        } else if (options2.forever) {
           var v = version();
           if (v.major === 0 && v.minor <= 10) {
             self2.agentClass = protocol === "http:" ? ForeverAgent : ForeverAgent.SSL;
@@ -37735,36 +37735,36 @@ var require_request2 = __commonJS({
     Request.prototype.getNewAgent = function() {
       var self2 = this;
       var Agent = self2.agentClass;
-      var options = {};
+      var options2 = {};
       if (self2.agentOptions) {
         for (var i in self2.agentOptions) {
-          options[i] = self2.agentOptions[i];
+          options2[i] = self2.agentOptions[i];
         }
       }
       if (self2.ca) {
-        options.ca = self2.ca;
+        options2.ca = self2.ca;
       }
       if (self2.ciphers) {
-        options.ciphers = self2.ciphers;
+        options2.ciphers = self2.ciphers;
       }
       if (self2.secureProtocol) {
-        options.secureProtocol = self2.secureProtocol;
+        options2.secureProtocol = self2.secureProtocol;
       }
       if (self2.secureOptions) {
-        options.secureOptions = self2.secureOptions;
+        options2.secureOptions = self2.secureOptions;
       }
       if (typeof self2.rejectUnauthorized !== "undefined") {
-        options.rejectUnauthorized = self2.rejectUnauthorized;
+        options2.rejectUnauthorized = self2.rejectUnauthorized;
       }
       if (self2.cert && self2.key) {
-        options.key = self2.key;
-        options.cert = self2.cert;
+        options2.key = self2.key;
+        options2.cert = self2.cert;
       }
       if (self2.pfx) {
-        options.pfx = self2.pfx;
+        options2.pfx = self2.pfx;
       }
       if (self2.passphrase) {
-        options.passphrase = self2.passphrase;
+        options2.passphrase = self2.passphrase;
       }
       var poolKey = "";
       if (Agent !== self2.httpModule.Agent) {
@@ -37776,55 +37776,55 @@ var require_request2 = __commonJS({
       }
       var isHttps = proxy && proxy.protocol === "https:" || this.uri.protocol === "https:";
       if (isHttps) {
-        if (options.ca) {
+        if (options2.ca) {
           if (poolKey) {
             poolKey += ":";
           }
-          poolKey += options.ca;
+          poolKey += options2.ca;
         }
-        if (typeof options.rejectUnauthorized !== "undefined") {
+        if (typeof options2.rejectUnauthorized !== "undefined") {
           if (poolKey) {
             poolKey += ":";
           }
-          poolKey += options.rejectUnauthorized;
+          poolKey += options2.rejectUnauthorized;
         }
-        if (options.cert) {
+        if (options2.cert) {
           if (poolKey) {
             poolKey += ":";
           }
-          poolKey += options.cert.toString("ascii") + options.key.toString("ascii");
+          poolKey += options2.cert.toString("ascii") + options2.key.toString("ascii");
         }
-        if (options.pfx) {
+        if (options2.pfx) {
           if (poolKey) {
             poolKey += ":";
           }
-          poolKey += options.pfx.toString("ascii");
+          poolKey += options2.pfx.toString("ascii");
         }
-        if (options.ciphers) {
+        if (options2.ciphers) {
           if (poolKey) {
             poolKey += ":";
           }
-          poolKey += options.ciphers;
+          poolKey += options2.ciphers;
         }
-        if (options.secureProtocol) {
+        if (options2.secureProtocol) {
           if (poolKey) {
             poolKey += ":";
           }
-          poolKey += options.secureProtocol;
+          poolKey += options2.secureProtocol;
         }
-        if (options.secureOptions) {
+        if (options2.secureOptions) {
           if (poolKey) {
             poolKey += ":";
           }
-          poolKey += options.secureOptions;
+          poolKey += options2.secureOptions;
         }
       }
-      if (self2.pool === globalPool && !poolKey && Object.keys(options).length === 0 && self2.httpModule.globalAgent) {
+      if (self2.pool === globalPool && !poolKey && Object.keys(options2).length === 0 && self2.httpModule.globalAgent) {
         return self2.httpModule.globalAgent;
       }
       poolKey = self2.uri.protocol + poolKey;
       if (!self2.pool[poolKey]) {
-        self2.pool[poolKey] = new Agent(options);
+        self2.pool[poolKey] = new Agent(options2);
         if (self2.pool.maxSockets) {
           self2.pool[poolKey].maxSockets = self2.pool.maxSockets;
         }
@@ -38324,7 +38324,7 @@ var require_request2 = __commonJS({
         return self2;
       }
       if (opts.sign_version === 4 || opts.sign_version === "4") {
-        var options = {
+        var options2 = {
           host: self2.uri.host,
           path: self2.uri.path,
           method: self2.method,
@@ -38332,9 +38332,9 @@ var require_request2 = __commonJS({
           body: self2.body
         };
         if (opts.service) {
-          options.service = opts.service;
+          options2.service = opts.service;
         }
-        var signRes = aws4.sign(options, {
+        var signRes = aws4.sign(options2, {
           accessKeyId: opts.key,
           secretAccessKey: opts.secret,
           sessionToken: opts.session
@@ -38512,13 +38512,13 @@ var require_request3 = __commonJS({
     var cookies = require_cookies();
     var helpers = require_helpers();
     var paramsHaveRequestBody = helpers.paramsHaveRequestBody;
-    function initParams(uri, options, callback) {
-      if (typeof options === "function") {
-        callback = options;
+    function initParams(uri, options2, callback) {
+      if (typeof options2 === "function") {
+        callback = options2;
       }
       var params = {};
-      if (options !== null && typeof options === "object") {
-        extend(params, options, { uri });
+      if (options2 !== null && typeof options2 === "object") {
+        extend(params, options2, { uri });
       } else if (typeof uri === "string") {
         extend(params, { uri });
       } else {
@@ -38527,11 +38527,11 @@ var require_request3 = __commonJS({
       params.callback = callback || params.callback;
       return params;
     }
-    function request2(uri, options, callback) {
+    function request2(uri, options2, callback) {
       if (typeof uri === "undefined") {
         throw new Error("undefined is not a valid uri or options object.");
       }
-      var params = initParams(uri, options, callback);
+      var params = initParams(uri, options2, callback);
       if (params.method === "HEAD" && paramsHaveRequestBody(params)) {
         throw new Error("HTTP HEAD requests MUST NOT include a request body.");
       }
@@ -38539,8 +38539,8 @@ var require_request3 = __commonJS({
     }
     function verbFunc(verb) {
       var method = verb.toUpperCase();
-      return function(uri, options, callback) {
-        var params = initParams(uri, options, callback);
+      return function(uri, options2, callback) {
+        var params = initParams(uri, options2, callback);
         params.method = method;
         return request2(params, params.callback);
       };
@@ -38559,12 +38559,12 @@ var require_request3 = __commonJS({
     request2.cookie = function(str) {
       return cookies.parse(str);
     };
-    function wrapRequestMethod(method, options, requester, verb) {
+    function wrapRequestMethod(method, options2, requester, verb) {
       return function(uri, opts, callback) {
         var params = initParams(uri, opts, callback);
         var target = {};
-        extend(true, target, options, params);
-        target.pool = params.pool || options.pool;
+        extend(true, target, options2, params);
+        target.pool = params.pool || options2.pool;
         if (verb) {
           target.method = verb.toUpperCase();
         }
@@ -38574,33 +38574,33 @@ var require_request3 = __commonJS({
         return method(target, target.callback);
       };
     }
-    request2.defaults = function(options, requester) {
+    request2.defaults = function(options2, requester) {
       var self2 = this;
-      options = options || {};
-      if (typeof options === "function") {
-        requester = options;
-        options = {};
+      options2 = options2 || {};
+      if (typeof options2 === "function") {
+        requester = options2;
+        options2 = {};
       }
-      var defaults = wrapRequestMethod(self2, options, requester);
+      var defaults = wrapRequestMethod(self2, options2, requester);
       var verbs = ["get", "head", "post", "put", "patch", "del", "delete"];
       verbs.forEach(function(verb) {
-        defaults[verb] = wrapRequestMethod(self2[verb], options, requester, verb);
+        defaults[verb] = wrapRequestMethod(self2[verb], options2, requester, verb);
       });
-      defaults.cookie = wrapRequestMethod(self2.cookie, options, requester);
+      defaults.cookie = wrapRequestMethod(self2.cookie, options2, requester);
       defaults.jar = self2.jar;
       defaults.defaults = self2.defaults;
       return defaults;
     };
     request2.forever = function(agentOptions, optionsArg) {
-      var options = {};
+      var options2 = {};
       if (optionsArg) {
-        extend(options, optionsArg);
+        extend(options2, optionsArg);
       }
       if (agentOptions) {
-        options.agentOptions = agentOptions;
+        options2.agentOptions = agentOptions;
       }
-      options.forever = true;
-      return request2.defaults(options);
+      options2.forever = true;
+      return request2.defaults(options2);
     };
     module2.exports = request2;
     request2.Request = require_request2();
@@ -38753,14 +38753,14 @@ var require_parse_options = __commonJS({
     "use strict";
     var looseOption = Object.freeze({ loose: true });
     var emptyOpts = Object.freeze({});
-    var parseOptions = (options) => {
-      if (!options) {
+    var parseOptions = (options2) => {
+      if (!options2) {
         return emptyOpts;
       }
-      if (typeof options !== "object") {
+      if (typeof options2 !== "object") {
         return looseOption;
       }
-      return options;
+      return options2;
     };
     module2.exports = parseOptions;
   }
@@ -38798,10 +38798,10 @@ var require_semver = __commonJS({
     var parseOptions = require_parse_options();
     var { compareIdentifiers } = require_identifiers();
     var SemVer = class _SemVer {
-      constructor(version, options) {
-        options = parseOptions(options);
+      constructor(version, options2) {
+        options2 = parseOptions(options2);
         if (version instanceof _SemVer) {
-          if (version.loose === !!options.loose && version.includePrerelease === !!options.includePrerelease) {
+          if (version.loose === !!options2.loose && version.includePrerelease === !!options2.includePrerelease) {
             return version;
           } else {
             version = version.version;
@@ -38814,11 +38814,11 @@ var require_semver = __commonJS({
             `version is longer than ${MAX_LENGTH} characters`
           );
         }
-        debug("SemVer", version, options);
-        this.options = options;
-        this.loose = !!options.loose;
-        this.includePrerelease = !!options.includePrerelease;
-        const m = version.trim().match(options.loose ? re[t.LOOSE] : re[t.FULL]);
+        debug("SemVer", version, options2);
+        this.options = options2;
+        this.loose = !!options2.loose;
+        this.includePrerelease = !!options2.includePrerelease;
+        const m = version.trim().match(options2.loose ? re[t.LOOSE] : re[t.FULL]);
         if (!m) {
           throw new TypeError(`Invalid Version: ${version}`);
         }
@@ -39054,12 +39054,12 @@ var require_parse2 = __commonJS({
   "node_modules/semver/functions/parse.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
-    var parse = (version, options, throwErrors = false) => {
+    var parse = (version, options2, throwErrors = false) => {
       if (version instanceof SemVer) {
         return version;
       }
       try {
-        return new SemVer(version, options);
+        return new SemVer(version, options2);
       } catch (er) {
         if (!throwErrors) {
           return null;
@@ -39076,8 +39076,8 @@ var require_valid = __commonJS({
   "node_modules/semver/functions/valid.js"(exports2, module2) {
     "use strict";
     var parse = require_parse2();
-    var valid = (version, options) => {
-      const v = parse(version, options);
+    var valid = (version, options2) => {
+      const v = parse(version, options2);
       return v ? v.version : null;
     };
     module2.exports = valid;
@@ -39089,8 +39089,8 @@ var require_clean = __commonJS({
   "node_modules/semver/functions/clean.js"(exports2, module2) {
     "use strict";
     var parse = require_parse2();
-    var clean = (version, options) => {
-      const s = parse(version.trim().replace(/^[=v]+/, ""), options);
+    var clean = (version, options2) => {
+      const s = parse(version.trim().replace(/^[=v]+/, ""), options2);
       return s ? s.version : null;
     };
     module2.exports = clean;
@@ -39102,16 +39102,16 @@ var require_inc = __commonJS({
   "node_modules/semver/functions/inc.js"(exports2, module2) {
     "use strict";
     var SemVer = require_semver();
-    var inc = (version, release2, options, identifier, identifierBase) => {
-      if (typeof options === "string") {
+    var inc = (version, release2, options2, identifier, identifierBase) => {
+      if (typeof options2 === "string") {
         identifierBase = identifier;
-        identifier = options;
-        options = void 0;
+        identifier = options2;
+        options2 = void 0;
       }
       try {
         return new SemVer(
           version instanceof SemVer ? version.version : version,
-          options
+          options2
         ).inc(release2, identifier, identifierBase).version;
       } catch (er) {
         return null;
@@ -39200,8 +39200,8 @@ var require_prerelease = __commonJS({
   "node_modules/semver/functions/prerelease.js"(exports2, module2) {
     "use strict";
     var parse = require_parse2();
-    var prerelease = (version, options) => {
-      const parsed = parse(version, options);
+    var prerelease = (version, options2) => {
+      const parsed = parse(version, options2);
       return parsed && parsed.prerelease.length ? parsed.prerelease : null;
     };
     module2.exports = prerelease;
@@ -39389,7 +39389,7 @@ var require_coerce = __commonJS({
     var SemVer = require_semver();
     var parse = require_parse2();
     var { safeRe: re, t } = require_re();
-    var coerce = (version, options) => {
+    var coerce = (version, options2) => {
       if (version instanceof SemVer) {
         return version;
       }
@@ -39399,12 +39399,12 @@ var require_coerce = __commonJS({
       if (typeof version !== "string") {
         return null;
       }
-      options = options || {};
+      options2 = options2 || {};
       let match = null;
-      if (!options.rtl) {
-        match = version.match(options.includePrerelease ? re[t.COERCEFULL] : re[t.COERCE]);
+      if (!options2.rtl) {
+        match = version.match(options2.includePrerelease ? re[t.COERCEFULL] : re[t.COERCE]);
       } else {
-        const coerceRtlRegex = options.includePrerelease ? re[t.COERCERTLFULL] : re[t.COERCERTL];
+        const coerceRtlRegex = options2.includePrerelease ? re[t.COERCERTLFULL] : re[t.COERCERTL];
         let next;
         while ((next = coerceRtlRegex.exec(version)) && (!match || match.index + match[0].length !== version.length)) {
           if (!match || next.index + next[0].length !== match.index + match[0].length) {
@@ -39420,9 +39420,9 @@ var require_coerce = __commonJS({
       const major = match[2];
       const minor = match[3] || "0";
       const patch = match[4] || "0";
-      const prerelease = options.includePrerelease && match[5] ? `-${match[5]}` : "";
-      const build = options.includePrerelease && match[6] ? `+${match[6]}` : "";
-      return parse(`${major}.${minor}.${patch}${prerelease}${build}`, options);
+      const prerelease = options2.includePrerelease && match[5] ? `-${match[5]}` : "";
+      const build = options2.includePrerelease && match[6] ? `+${match[6]}` : "";
+      return parse(`${major}.${minor}.${patch}${prerelease}${build}`, options2);
     };
     module2.exports = coerce;
   }
@@ -39472,13 +39472,13 @@ var require_range = __commonJS({
     "use strict";
     var SPACE_CHARACTERS = /\s+/g;
     var Range = class _Range {
-      constructor(range, options) {
-        options = parseOptions(options);
+      constructor(range, options2) {
+        options2 = parseOptions(options2);
         if (range instanceof _Range) {
-          if (range.loose === !!options.loose && range.includePrerelease === !!options.includePrerelease) {
+          if (range.loose === !!options2.loose && range.includePrerelease === !!options2.includePrerelease) {
             return range;
           } else {
-            return new _Range(range.raw, options);
+            return new _Range(range.raw, options2);
           }
         }
         if (range instanceof Comparator) {
@@ -39487,9 +39487,9 @@ var require_range = __commonJS({
           this.formatted = void 0;
           return this;
         }
-        this.options = options;
-        this.loose = !!options.loose;
-        this.includePrerelease = !!options.includePrerelease;
+        this.options = options2;
+        this.loose = !!options2.loose;
+        this.includePrerelease = !!options2.includePrerelease;
         this.raw = range.trim().replace(SPACE_CHARACTERS, " ");
         this.set = this.raw.split("||").map((r) => this.parseRange(r.trim())).filter((c) => c.length);
         if (!this.set.length) {
@@ -39575,15 +39575,15 @@ var require_range = __commonJS({
         cache.set(memoKey, result);
         return result;
       }
-      intersects(range, options) {
+      intersects(range, options2) {
         if (!(range instanceof _Range)) {
           throw new TypeError("a Range is required");
         }
         return this.set.some((thisComparators) => {
-          return isSatisfiable(thisComparators, options) && range.set.some((rangeComparators) => {
-            return isSatisfiable(rangeComparators, options) && thisComparators.every((thisComparator) => {
+          return isSatisfiable(thisComparators, options2) && range.set.some((rangeComparators) => {
+            return isSatisfiable(rangeComparators, options2) && thisComparators.every((thisComparator) => {
               return rangeComparators.every((rangeComparator) => {
-                return thisComparator.intersects(rangeComparator, options);
+                return thisComparator.intersects(rangeComparator, options2);
               });
             });
           });
@@ -39626,36 +39626,36 @@ var require_range = __commonJS({
     var { FLAG_INCLUDE_PRERELEASE, FLAG_LOOSE } = require_constants2();
     var isNullSet = (c) => c.value === "<0.0.0-0";
     var isAny = (c) => c.value === "";
-    var isSatisfiable = (comparators, options) => {
+    var isSatisfiable = (comparators, options2) => {
       let result = true;
       const remainingComparators = comparators.slice();
       let testComparator = remainingComparators.pop();
       while (result && remainingComparators.length) {
         result = remainingComparators.every((otherComparator) => {
-          return testComparator.intersects(otherComparator, options);
+          return testComparator.intersects(otherComparator, options2);
         });
         testComparator = remainingComparators.pop();
       }
       return result;
     };
-    var parseComparator = (comp, options) => {
-      debug("comp", comp, options);
-      comp = replaceCarets(comp, options);
+    var parseComparator = (comp, options2) => {
+      debug("comp", comp, options2);
+      comp = replaceCarets(comp, options2);
       debug("caret", comp);
-      comp = replaceTildes(comp, options);
+      comp = replaceTildes(comp, options2);
       debug("tildes", comp);
-      comp = replaceXRanges(comp, options);
+      comp = replaceXRanges(comp, options2);
       debug("xrange", comp);
-      comp = replaceStars(comp, options);
+      comp = replaceStars(comp, options2);
       debug("stars", comp);
       return comp;
     };
     var isX = (id) => !id || id.toLowerCase() === "x" || id === "*";
-    var replaceTildes = (comp, options) => {
-      return comp.trim().split(/\s+/).map((c) => replaceTilde(c, options)).join(" ");
+    var replaceTildes = (comp, options2) => {
+      return comp.trim().split(/\s+/).map((c) => replaceTilde(c, options2)).join(" ");
     };
-    var replaceTilde = (comp, options) => {
-      const r = options.loose ? re[t.TILDELOOSE] : re[t.TILDE];
+    var replaceTilde = (comp, options2) => {
+      const r = options2.loose ? re[t.TILDELOOSE] : re[t.TILDE];
       return comp.replace(r, (_, M, m, p, pr) => {
         debug("tilde", comp, _, M, m, p, pr);
         let ret;
@@ -39675,13 +39675,13 @@ var require_range = __commonJS({
         return ret;
       });
     };
-    var replaceCarets = (comp, options) => {
-      return comp.trim().split(/\s+/).map((c) => replaceCaret(c, options)).join(" ");
+    var replaceCarets = (comp, options2) => {
+      return comp.trim().split(/\s+/).map((c) => replaceCaret(c, options2)).join(" ");
     };
-    var replaceCaret = (comp, options) => {
-      debug("caret", comp, options);
-      const r = options.loose ? re[t.CARETLOOSE] : re[t.CARET];
-      const z = options.includePrerelease ? "-0" : "";
+    var replaceCaret = (comp, options2) => {
+      debug("caret", comp, options2);
+      const r = options2.loose ? re[t.CARETLOOSE] : re[t.CARET];
+      const z = options2.includePrerelease ? "-0" : "";
       return comp.replace(r, (_, M, m, p, pr) => {
         debug("caret", comp, _, M, m, p, pr);
         let ret;
@@ -39722,13 +39722,13 @@ var require_range = __commonJS({
         return ret;
       });
     };
-    var replaceXRanges = (comp, options) => {
-      debug("replaceXRanges", comp, options);
-      return comp.split(/\s+/).map((c) => replaceXRange(c, options)).join(" ");
+    var replaceXRanges = (comp, options2) => {
+      debug("replaceXRanges", comp, options2);
+      return comp.split(/\s+/).map((c) => replaceXRange(c, options2)).join(" ");
     };
-    var replaceXRange = (comp, options) => {
+    var replaceXRange = (comp, options2) => {
       comp = comp.trim();
-      const r = options.loose ? re[t.XRANGELOOSE] : re[t.XRANGE];
+      const r = options2.loose ? re[t.XRANGELOOSE] : re[t.XRANGE];
       return comp.replace(r, (ret, gtlt, M, m, p, pr) => {
         debug("xRange", comp, ret, gtlt, M, m, p, pr);
         const xM = isX(M);
@@ -39738,7 +39738,7 @@ var require_range = __commonJS({
         if (gtlt === "=" && anyX) {
           gtlt = "";
         }
-        pr = options.includePrerelease ? "-0" : "";
+        pr = options2.includePrerelease ? "-0" : "";
         if (xM) {
           if (gtlt === ">" || gtlt === "<") {
             ret = "<0.0.0-0";
@@ -39781,13 +39781,13 @@ var require_range = __commonJS({
         return ret;
       });
     };
-    var replaceStars = (comp, options) => {
-      debug("replaceStars", comp, options);
+    var replaceStars = (comp, options2) => {
+      debug("replaceStars", comp, options2);
       return comp.trim().replace(re[t.STAR], "");
     };
-    var replaceGTE0 = (comp, options) => {
-      debug("replaceGTE0", comp, options);
-      return comp.trim().replace(re[options.includePrerelease ? t.GTE0PRE : t.GTE0], "");
+    var replaceGTE0 = (comp, options2) => {
+      debug("replaceGTE0", comp, options2);
+      return comp.trim().replace(re[options2.includePrerelease ? t.GTE0PRE : t.GTE0], "");
     };
     var hyphenReplace = (incPr) => ($0, from, fM, fm, fp, fpr, fb, to, tM, tm, tp, tpr) => {
       if (isX(fM)) {
@@ -39816,13 +39816,13 @@ var require_range = __commonJS({
       }
       return `${from} ${to}`.trim();
     };
-    var testSet = (set, version, options) => {
+    var testSet = (set, version, options2) => {
       for (let i = 0; i < set.length; i++) {
         if (!set[i].test(version)) {
           return false;
         }
       }
-      if (version.prerelease.length && !options.includePrerelease) {
+      if (version.prerelease.length && !options2.includePrerelease) {
         for (let i = 0; i < set.length; i++) {
           debug(set[i].semver);
           if (set[i].semver === Comparator.ANY) {
@@ -39851,19 +39851,19 @@ var require_comparator = __commonJS({
       static get ANY() {
         return ANY;
       }
-      constructor(comp, options) {
-        options = parseOptions(options);
+      constructor(comp, options2) {
+        options2 = parseOptions(options2);
         if (comp instanceof _Comparator) {
-          if (comp.loose === !!options.loose) {
+          if (comp.loose === !!options2.loose) {
             return comp;
           } else {
             comp = comp.value;
           }
         }
         comp = comp.trim().split(/\s+/).join(" ");
-        debug("comparator", comp, options);
-        this.options = options;
-        this.loose = !!options.loose;
+        debug("comparator", comp, options2);
+        this.options = options2;
+        this.loose = !!options2.loose;
         this.parse(comp);
         if (this.semver === ANY) {
           this.value = "";
@@ -39905,7 +39905,7 @@ var require_comparator = __commonJS({
         }
         return cmp(version, this.operator, this.semver, this.options);
       }
-      intersects(comp, options) {
+      intersects(comp, options2) {
         if (!(comp instanceof _Comparator)) {
           throw new TypeError("a Comparator is required");
         }
@@ -39913,18 +39913,18 @@ var require_comparator = __commonJS({
           if (this.value === "") {
             return true;
           }
-          return new Range(comp.value, options).test(this.value);
+          return new Range(comp.value, options2).test(this.value);
         } else if (comp.operator === "") {
           if (comp.value === "") {
             return true;
           }
-          return new Range(this.value, options).test(comp.semver);
+          return new Range(this.value, options2).test(comp.semver);
         }
-        options = parseOptions(options);
-        if (options.includePrerelease && (this.value === "<0.0.0-0" || comp.value === "<0.0.0-0")) {
+        options2 = parseOptions(options2);
+        if (options2.includePrerelease && (this.value === "<0.0.0-0" || comp.value === "<0.0.0-0")) {
           return false;
         }
-        if (!options.includePrerelease && (this.value.startsWith("<0.0.0") || comp.value.startsWith("<0.0.0"))) {
+        if (!options2.includePrerelease && (this.value.startsWith("<0.0.0") || comp.value.startsWith("<0.0.0"))) {
           return false;
         }
         if (this.operator.startsWith(">") && comp.operator.startsWith(">")) {
@@ -39936,10 +39936,10 @@ var require_comparator = __commonJS({
         if (this.semver.version === comp.semver.version && this.operator.includes("=") && comp.operator.includes("=")) {
           return true;
         }
-        if (cmp(this.semver, "<", comp.semver, options) && this.operator.startsWith(">") && comp.operator.startsWith("<")) {
+        if (cmp(this.semver, "<", comp.semver, options2) && this.operator.startsWith(">") && comp.operator.startsWith("<")) {
           return true;
         }
-        if (cmp(this.semver, ">", comp.semver, options) && this.operator.startsWith("<") && comp.operator.startsWith(">")) {
+        if (cmp(this.semver, ">", comp.semver, options2) && this.operator.startsWith("<") && comp.operator.startsWith(">")) {
           return true;
         }
         return false;
@@ -39960,9 +39960,9 @@ var require_satisfies = __commonJS({
   "node_modules/semver/functions/satisfies.js"(exports2, module2) {
     "use strict";
     var Range = require_range();
-    var satisfies = (version, range, options) => {
+    var satisfies = (version, range, options2) => {
       try {
-        range = new Range(range, options);
+        range = new Range(range, options2);
       } catch (er) {
         return false;
       }
@@ -39977,7 +39977,7 @@ var require_to_comparators = __commonJS({
   "node_modules/semver/ranges/to-comparators.js"(exports2, module2) {
     "use strict";
     var Range = require_range();
-    var toComparators = (range, options) => new Range(range, options).set.map((comp) => comp.map((c) => c.value).join(" ").trim().split(" "));
+    var toComparators = (range, options2) => new Range(range, options2).set.map((comp) => comp.map((c) => c.value).join(" ").trim().split(" "));
     module2.exports = toComparators;
   }
 });
@@ -39988,12 +39988,12 @@ var require_max_satisfying = __commonJS({
     "use strict";
     var SemVer = require_semver();
     var Range = require_range();
-    var maxSatisfying = (versions, range, options) => {
+    var maxSatisfying = (versions, range, options2) => {
       let max = null;
       let maxSV = null;
       let rangeObj = null;
       try {
-        rangeObj = new Range(range, options);
+        rangeObj = new Range(range, options2);
       } catch (er) {
         return null;
       }
@@ -40001,7 +40001,7 @@ var require_max_satisfying = __commonJS({
         if (rangeObj.test(v)) {
           if (!max || maxSV.compare(v) === -1) {
             max = v;
-            maxSV = new SemVer(max, options);
+            maxSV = new SemVer(max, options2);
           }
         }
       });
@@ -40017,12 +40017,12 @@ var require_min_satisfying = __commonJS({
     "use strict";
     var SemVer = require_semver();
     var Range = require_range();
-    var minSatisfying = (versions, range, options) => {
+    var minSatisfying = (versions, range, options2) => {
       let min = null;
       let minSV = null;
       let rangeObj = null;
       try {
-        rangeObj = new Range(range, options);
+        rangeObj = new Range(range, options2);
       } catch (er) {
         return null;
       }
@@ -40030,7 +40030,7 @@ var require_min_satisfying = __commonJS({
         if (rangeObj.test(v)) {
           if (!min || minSV.compare(v) === 1) {
             min = v;
-            minSV = new SemVer(min, options);
+            minSV = new SemVer(min, options2);
           }
         }
       });
@@ -40104,9 +40104,9 @@ var require_valid2 = __commonJS({
   "node_modules/semver/ranges/valid.js"(exports2, module2) {
     "use strict";
     var Range = require_range();
-    var validRange = (range, options) => {
+    var validRange = (range, options2) => {
       try {
-        return new Range(range, options).range || "*";
+        return new Range(range, options2).range || "*";
       } catch (er) {
         return null;
       }
@@ -40128,9 +40128,9 @@ var require_outside = __commonJS({
     var lt2 = require_lt();
     var lte = require_lte();
     var gte = require_gte();
-    var outside = (version, range, hilo, options) => {
-      version = new SemVer(version, options);
-      range = new Range(range, options);
+    var outside = (version, range, hilo, options2) => {
+      version = new SemVer(version, options2);
+      range = new Range(range, options2);
       let gtfn, ltefn, ltfn, comp, ecomp;
       switch (hilo) {
         case ">":
@@ -40150,7 +40150,7 @@ var require_outside = __commonJS({
         default:
           throw new TypeError('Must provide a hilo val of "<" or ">"');
       }
-      if (satisfies(version, range, options)) {
+      if (satisfies(version, range, options2)) {
         return false;
       }
       for (let i = 0; i < range.set.length; ++i) {
@@ -40163,9 +40163,9 @@ var require_outside = __commonJS({
           }
           high = high || comparator;
           low = low || comparator;
-          if (gtfn(comparator.semver, high.semver, options)) {
+          if (gtfn(comparator.semver, high.semver, options2)) {
             high = comparator;
-          } else if (ltfn(comparator.semver, low.semver, options)) {
+          } else if (ltfn(comparator.semver, low.semver, options2)) {
             low = comparator;
           }
         });
@@ -40189,7 +40189,7 @@ var require_gtr = __commonJS({
   "node_modules/semver/ranges/gtr.js"(exports2, module2) {
     "use strict";
     var outside = require_outside();
-    var gtr = (version, range, options) => outside(version, range, ">", options);
+    var gtr = (version, range, options2) => outside(version, range, ">", options2);
     module2.exports = gtr;
   }
 });
@@ -40199,7 +40199,7 @@ var require_ltr = __commonJS({
   "node_modules/semver/ranges/ltr.js"(exports2, module2) {
     "use strict";
     var outside = require_outside();
-    var ltr = (version, range, options) => outside(version, range, "<", options);
+    var ltr = (version, range, options2) => outside(version, range, "<", options2);
     module2.exports = ltr;
   }
 });
@@ -40209,10 +40209,10 @@ var require_intersects = __commonJS({
   "node_modules/semver/ranges/intersects.js"(exports2, module2) {
     "use strict";
     var Range = require_range();
-    var intersects = (r1, r2, options) => {
-      r1 = new Range(r1, options);
-      r2 = new Range(r2, options);
-      return r1.intersects(r2, options);
+    var intersects = (r1, r2, options2) => {
+      r1 = new Range(r1, options2);
+      r2 = new Range(r2, options2);
+      return r1.intersects(r2, options2);
     };
     module2.exports = intersects;
   }
@@ -40224,13 +40224,13 @@ var require_simplify = __commonJS({
     "use strict";
     var satisfies = require_satisfies();
     var compare = require_compare();
-    module2.exports = (versions, range, options) => {
+    module2.exports = (versions, range, options2) => {
       const set = [];
       let first = null;
       let prev = null;
-      const v = versions.sort((a, b) => compare(a, b, options));
+      const v = versions.sort((a, b) => compare(a, b, options2));
       for (const version of v) {
-        const included = satisfies(version, range, options);
+        const included = satisfies(version, range, options2);
         if (included) {
           prev = version;
           if (!first) {
@@ -40277,16 +40277,16 @@ var require_subset = __commonJS({
     var { ANY } = Comparator;
     var satisfies = require_satisfies();
     var compare = require_compare();
-    var subset = (sub, dom, options = {}) => {
+    var subset = (sub, dom, options2 = {}) => {
       if (sub === dom) {
         return true;
       }
-      sub = new Range(sub, options);
-      dom = new Range(dom, options);
+      sub = new Range(sub, options2);
+      dom = new Range(dom, options2);
       let sawNonNull = false;
       OUTER: for (const simpleSub of sub.set) {
         for (const simpleDom of dom.set) {
-          const isSub = simpleSubset(simpleSub, simpleDom, options);
+          const isSub = simpleSubset(simpleSub, simpleDom, options2);
           sawNonNull = sawNonNull || isSub !== null;
           if (isSub) {
             continue OUTER;
@@ -40300,21 +40300,21 @@ var require_subset = __commonJS({
     };
     var minimumVersionWithPreRelease = [new Comparator(">=0.0.0-0")];
     var minimumVersion = [new Comparator(">=0.0.0")];
-    var simpleSubset = (sub, dom, options) => {
+    var simpleSubset = (sub, dom, options2) => {
       if (sub === dom) {
         return true;
       }
       if (sub.length === 1 && sub[0].semver === ANY) {
         if (dom.length === 1 && dom[0].semver === ANY) {
           return true;
-        } else if (options.includePrerelease) {
+        } else if (options2.includePrerelease) {
           sub = minimumVersionWithPreRelease;
         } else {
           sub = minimumVersion;
         }
       }
       if (dom.length === 1 && dom[0].semver === ANY) {
-        if (options.includePrerelease) {
+        if (options2.includePrerelease) {
           return true;
         } else {
           dom = minimumVersion;
@@ -40324,9 +40324,9 @@ var require_subset = __commonJS({
       let gt, lt2;
       for (const c of sub) {
         if (c.operator === ">" || c.operator === ">=") {
-          gt = higherGT(gt, c, options);
+          gt = higherGT(gt, c, options2);
         } else if (c.operator === "<" || c.operator === "<=") {
-          lt2 = lowerLT(lt2, c, options);
+          lt2 = lowerLT(lt2, c, options2);
         } else {
           eqSet.add(c.semver);
         }
@@ -40336,7 +40336,7 @@ var require_subset = __commonJS({
       }
       let gtltComp;
       if (gt && lt2) {
-        gtltComp = compare(gt.semver, lt2.semver, options);
+        gtltComp = compare(gt.semver, lt2.semver, options2);
         if (gtltComp > 0) {
           return null;
         } else if (gtltComp === 0 && (gt.operator !== ">=" || lt2.operator !== "<=")) {
@@ -40344,14 +40344,14 @@ var require_subset = __commonJS({
         }
       }
       for (const eq of eqSet) {
-        if (gt && !satisfies(eq, String(gt), options)) {
+        if (gt && !satisfies(eq, String(gt), options2)) {
           return null;
         }
-        if (lt2 && !satisfies(eq, String(lt2), options)) {
+        if (lt2 && !satisfies(eq, String(lt2), options2)) {
           return null;
         }
         for (const c of dom) {
-          if (!satisfies(eq, String(c), options)) {
+          if (!satisfies(eq, String(c), options2)) {
             return false;
           }
         }
@@ -40359,8 +40359,8 @@ var require_subset = __commonJS({
       }
       let higher, lower;
       let hasDomLT, hasDomGT;
-      let needDomLTPre = lt2 && !options.includePrerelease && lt2.semver.prerelease.length ? lt2.semver : false;
-      let needDomGTPre = gt && !options.includePrerelease && gt.semver.prerelease.length ? gt.semver : false;
+      let needDomLTPre = lt2 && !options2.includePrerelease && lt2.semver.prerelease.length ? lt2.semver : false;
+      let needDomGTPre = gt && !options2.includePrerelease && gt.semver.prerelease.length ? gt.semver : false;
       if (needDomLTPre && needDomLTPre.prerelease.length === 1 && lt2.operator === "<" && needDomLTPre.prerelease[0] === 0) {
         needDomLTPre = false;
       }
@@ -40374,11 +40374,11 @@ var require_subset = __commonJS({
             }
           }
           if (c.operator === ">" || c.operator === ">=") {
-            higher = higherGT(gt, c, options);
+            higher = higherGT(gt, c, options2);
             if (higher === c && higher !== gt) {
               return false;
             }
-          } else if (gt.operator === ">=" && !satisfies(gt.semver, String(c), options)) {
+          } else if (gt.operator === ">=" && !satisfies(gt.semver, String(c), options2)) {
             return false;
           }
         }
@@ -40389,11 +40389,11 @@ var require_subset = __commonJS({
             }
           }
           if (c.operator === "<" || c.operator === "<=") {
-            lower = lowerLT(lt2, c, options);
+            lower = lowerLT(lt2, c, options2);
             if (lower === c && lower !== lt2) {
               return false;
             }
-          } else if (lt2.operator === "<=" && !satisfies(lt2.semver, String(c), options)) {
+          } else if (lt2.operator === "<=" && !satisfies(lt2.semver, String(c), options2)) {
             return false;
           }
         }
@@ -40412,18 +40412,18 @@ var require_subset = __commonJS({
       }
       return true;
     };
-    var higherGT = (a, b, options) => {
+    var higherGT = (a, b, options2) => {
       if (!a) {
         return b;
       }
-      const comp = compare(a.semver, b.semver, options);
+      const comp = compare(a.semver, b.semver, options2);
       return comp > 0 ? a : comp < 0 ? b : b.operator === ">" && a.operator === ">=" ? b : a;
     };
-    var lowerLT = (a, b, options) => {
+    var lowerLT = (a, b, options2) => {
       if (!a) {
         return b;
       }
-      const comp = compare(a.semver, b.semver, options);
+      const comp = compare(a.semver, b.semver, options2);
       return comp < 0 ? a : comp > 0 ? b : b.operator === "<" && a.operator === "<=" ? b : a;
     };
     module2.exports = subset;
@@ -40533,10 +40533,10 @@ var require_posix = __commonJS({
     exports2.sync = exports2.isexe = void 0;
     var fs_1 = require("fs");
     var promises_1 = require("fs/promises");
-    var isexe = async (path5, options = {}) => {
-      const { ignoreErrors = false } = options;
+    var isexe = async (path5, options2 = {}) => {
+      const { ignoreErrors = false } = options2;
       try {
-        return checkStat(await (0, promises_1.stat)(path5), options);
+        return checkStat(await (0, promises_1.stat)(path5), options2);
       } catch (e) {
         const er = e;
         if (ignoreErrors || er.code === "EACCES")
@@ -40545,10 +40545,10 @@ var require_posix = __commonJS({
       }
     };
     exports2.isexe = isexe;
-    var sync2 = (path5, options = {}) => {
-      const { ignoreErrors = false } = options;
+    var sync2 = (path5, options2 = {}) => {
+      const { ignoreErrors = false } = options2;
       try {
-        return checkStat((0, fs_1.statSync)(path5), options);
+        return checkStat((0, fs_1.statSync)(path5), options2);
       } catch (e) {
         const er = e;
         if (ignoreErrors || er.code === "EACCES")
@@ -40557,11 +40557,11 @@ var require_posix = __commonJS({
       }
     };
     exports2.sync = sync2;
-    var checkStat = (stat, options) => stat.isFile() && checkMode(stat, options);
-    var checkMode = (stat, options) => {
-      const myUid = options.uid ?? process.getuid?.();
-      const myGroups = options.groups ?? process.getgroups?.() ?? [];
-      const myGid = options.gid ?? process.getgid?.() ?? myGroups[0];
+    var checkStat = (stat, options2) => stat.isFile() && checkMode(stat, options2);
+    var checkMode = (stat, options2) => {
+      const myUid = options2.uid ?? process.getuid?.();
+      const myGroups = options2.groups ?? process.getgroups?.() ?? [];
+      const myGid = options2.gid ?? process.getgid?.() ?? myGroups[0];
       if (myUid === void 0 || myGid === void 0) {
         throw new Error("cannot get uid or gid");
       }
@@ -40586,10 +40586,10 @@ var require_win32 = __commonJS({
     exports2.sync = exports2.isexe = void 0;
     var fs_1 = require("fs");
     var promises_1 = require("fs/promises");
-    var isexe = async (path5, options = {}) => {
-      const { ignoreErrors = false } = options;
+    var isexe = async (path5, options2 = {}) => {
+      const { ignoreErrors = false } = options2;
       try {
-        return checkStat(await (0, promises_1.stat)(path5), path5, options);
+        return checkStat(await (0, promises_1.stat)(path5), path5, options2);
       } catch (e) {
         const er = e;
         if (ignoreErrors || er.code === "EACCES")
@@ -40598,10 +40598,10 @@ var require_win32 = __commonJS({
       }
     };
     exports2.isexe = isexe;
-    var sync2 = (path5, options = {}) => {
-      const { ignoreErrors = false } = options;
+    var sync2 = (path5, options2 = {}) => {
+      const { ignoreErrors = false } = options2;
       try {
-        return checkStat((0, fs_1.statSync)(path5), path5, options);
+        return checkStat((0, fs_1.statSync)(path5), path5, options2);
       } catch (e) {
         const er = e;
         if (ignoreErrors || er.code === "EACCES")
@@ -40610,8 +40610,8 @@ var require_win32 = __commonJS({
       }
     };
     exports2.sync = sync2;
-    var checkPathExt = (path5, options) => {
-      const { pathExt = process.env.PATHEXT || "" } = options;
+    var checkPathExt = (path5, options2) => {
+      const { pathExt = process.env.PATHEXT || "" } = options2;
       const peSplit = pathExt.split(";");
       if (peSplit.indexOf("") !== -1) {
         return true;
@@ -40625,7 +40625,7 @@ var require_win32 = __commonJS({
       }
       return false;
     };
-    var checkStat = (stat, path5, options) => stat.isFile() && checkPathExt(path5, options);
+    var checkStat = (stat, path5, options2) => stat.isFile() && checkPathExt(path5, options2);
   }
 });
 
@@ -40849,16 +40849,16 @@ var Utils = class {
     return process.env[this.isWindows() ? "USERPROFILE" : "HOME"] || process.cwd();
   }
   static buildOptions(stdin) {
-    const options = {
+    const options2 = {
       windowsHide: true
     };
     if (stdin) {
-      options.stdio = ["pipe", "pipe", "pipe"];
+      options2.stdio = ["pipe", "pipe", "pipe"];
     }
     if (!this.isWindows() && !process.env.WAKATIME_HOME && !process.env.HOME) {
-      options["env"] = { ...process.env, WAKATIME_HOME: this.getHomeDirectory() };
+      options2["env"] = { ...process.env, WAKATIME_HOME: this.getHomeDirectory() };
     }
-    return options;
+    return options2;
   }
   static timestamp() {
     return Date.now() / 1e3;
@@ -41020,7 +41020,7 @@ var Options = class {
 };
 
 // src/version.ts
-var VERSION = "3.0.0";
+var VERSION = "3.0.1";
 
 // src/dependencies.ts
 var import_adm_zip = __toESM(require_adm_zip());
@@ -41032,7 +41032,7 @@ var request = __toESM(require_request3());
 var semver = __toESM(require_semver2());
 var which = __toESM(require_lib6());
 var Dependencies = class {
-  constructor(options, logger2) {
+  constructor(options2, logger2) {
     this.cliLocation = void 0;
     this.cliLocationGlobal = void 0;
     this.cliInstalled = false;
@@ -41041,9 +41041,9 @@ var Dependencies = class {
     this.legacyOperatingSystems = {
       ["darwin" /* darwin */]: [{ kernelLessThan: "17.0.0", tag: "v1.39.1-alpha.1" }]
     };
-    this.options = options;
+    this.options = options2;
     this.logger = logger2;
-    this.resourcesLocation = options.resourcesLocation;
+    this.resourcesLocation = options2.resourcesLocation;
   }
   getCliLocation() {
     if (this.cliLocation) return this.cliLocation;
@@ -41092,9 +41092,9 @@ var Dependencies = class {
       return;
     }
     let args = ["--version"];
-    const options = Utils.buildOptions();
+    const options2 = Utils.buildOptions();
     try {
-      child_process.execFile(this.getCliLocation(), args, options, (error, _stdout, stderr) => {
+      child_process.execFile(this.getCliLocation(), args, options2, (error, _stdout, stderr) => {
         if (!(error != null)) {
           let currentVersion = _stdout.toString().trim() + stderr.toString().trim();
           this.logger.debug(`Current wakatime-cli version is ${currentVersion}`);
@@ -41140,21 +41140,21 @@ var Dependencies = class {
   getLatestCliVersion(callback) {
     const proxy = this.options.getSetting("settings", "proxy");
     const noSSLVerify = this.options.getSetting("settings", "no_ssl_verify");
-    let options = {
+    let options2 = {
       url: this.githubReleasesUrl,
       json: true,
       headers: {
         "User-Agent": "github.com/wakatime/claude-code-wakatime"
       }
     };
-    this.logger.debug(`Fetching latest wakatime-cli version from GitHub API: ${options.url}`);
+    this.logger.debug(`Fetching latest wakatime-cli version from GitHub API: ${options2.url}`);
     if (proxy) {
       this.logger.debug(`Using Proxy: ${proxy}`);
-      options["proxy"] = proxy;
+      options2["proxy"] = proxy;
     }
-    if (noSSLVerify === "true") options["strictSSL"] = false;
+    if (noSSLVerify === "true") options2["strictSSL"] = false;
     try {
-      request.get(options, (error, response, json) => {
+      request.get(options2, (error, response, json) => {
         if (!error && response && response.statusCode == 200) {
           this.logger.debug(`GitHub API Response ${response.statusCode}`);
           const latestCliVersion = json["tag_name"];
@@ -41251,14 +41251,14 @@ var Dependencies = class {
   downloadFile(url, outputFile, callback, error) {
     const proxy = this.options.getSetting("settings", "proxy");
     const noSSLVerify = this.options.getSetting("settings", "no_ssl_verify");
-    let options = { url };
+    let options2 = { url };
     if (proxy) {
       this.logger.debug(`Using Proxy: ${proxy}`);
-      options["proxy"] = proxy;
+      options2["proxy"] = proxy;
     }
-    if (noSSLVerify === "true") options["strictSSL"] = false;
+    if (noSSLVerify === "true") options2["strictSSL"] = false;
     try {
-      let r = request.get(options);
+      let r = request.get(options2);
       r.on("error", (e) => {
         this.logger.warn(`Failed to download ${url}`);
         this.logger.warn(e.toString());
@@ -41356,11 +41356,11 @@ var Dependencies = class {
     const url = `https://api.wakatime.com/api/v1/cli-missing?osname=${osname}&architecture=${architecture}&plugin=claude-code`;
     const proxy = this.options.getSetting("settings", "proxy");
     const noSSLVerify = this.options.getSetting("settings", "no_ssl_verify");
-    let options = { url };
-    if (proxy) options["proxy"] = proxy;
-    if (noSSLVerify === "true") options["strictSSL"] = false;
+    let options2 = { url };
+    if (proxy) options2["proxy"] = proxy;
+    if (noSSLVerify === "true") options2["strictSSL"] = false;
     try {
-      request.get(options);
+      request.get(options2);
     } catch (e) {
     }
   }
@@ -41437,8 +41437,9 @@ var Logger = class {
 
 // src/index.ts
 var STATE_FILE = import_path2.default.join(import_os2.default.homedir(), ".wakatime", "claude-code.json");
-var WAKATIME_CLI = import_path2.default.join(import_os2.default.homedir(), ".wakatime", "wakatime-cli");
 var logger = new Logger();
+var options = new Options();
+var deps = new Dependencies(options, logger);
 function shouldSendHeartbeat(inp) {
   if (inp?.hook_event_name === "Stop") {
     return true;
@@ -41575,6 +41576,7 @@ function sendHeartbeat(inp) {
   try {
     const entity = getEntityFile(inp);
     if (!entity) return;
+    const wakatime_cli = deps.getCliLocation();
     const args = [
       "--entity",
       entity,
@@ -41596,9 +41598,9 @@ function sendHeartbeat(inp) {
         args.push(lineChanges.toString());
       }
     }
-    logger.debug(`Sending heartbeat: ${args}`);
-    const options = Utils.buildOptions();
-    (0, import_child_process.execFile)(WAKATIME_CLI, args, options, (error, stdout, stderr) => {
+    logger.debug(`Sending heartbeat: ${wakatime_cli} ${args}`);
+    const execOptions = Utils.buildOptions();
+    (0, import_child_process.execFile)(wakatime_cli, args, execOptions, (error, stdout, stderr) => {
       const output = stdout.toString().trim() + stderr.toString().trim();
       if (output) logger.error(output);
       if (error) logger.error(error.toString());
@@ -41609,19 +41611,15 @@ function sendHeartbeat(inp) {
 }
 function main() {
   const inp = parseInput();
-  const options = new Options();
   const debug = options.getSetting("settings", "debug");
   logger.setLevel(debug === "true" ? 0 /* DEBUG */ : 1 /* INFO */);
-  const deps = new Dependencies(options, logger);
   if (inp) {
     try {
       logger.debug(JSON.stringify(inp, null, 2));
     } catch (err) {
     }
   }
-  if (inp?.hook_event_name === "SessionStart") {
-    deps.checkAndInstallCli();
-  }
+  deps.checkAndInstallCli();
   if (shouldSendHeartbeat(inp)) {
     sendHeartbeat(inp);
     updateState();

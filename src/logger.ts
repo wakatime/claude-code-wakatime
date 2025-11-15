@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
-import { Utils } from './utils';
 
 export enum LogLevel {
   DEBUG = 0,
