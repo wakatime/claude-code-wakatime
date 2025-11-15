@@ -8,7 +8,8 @@
   "scripts": {
     "postinstall": "node dist/install-hooks.js",
     "prebuild": "node scripts/generate-version.js",
-    "build": "esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js",
+    "build:legacy": "esbuild src/install-hooks.ts --bundle --platform=node --outfile=dist/install-hooks.js",
+    "build": "npm run build:legacy && esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js",
     "watch": "npm run prebuild && tsc --watch",
     "release:major": "npm run build && npm version major && npm publish && git push && git push --tags",
     "release:minor": "npm run build && npm version minor && npm publish && git push && git push --tags",
