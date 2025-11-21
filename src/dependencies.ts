@@ -99,7 +99,7 @@ export class Dependencies {
     const options = buildOptions();
     try {
       child_process.execFile(this.getCliLocation(), args, options, (error, _stdout, stderr) => {
-        if (!(error != null)) {
+        if (!error) {
           let currentVersion = _stdout.toString().trim() + stderr.toString().trim();
           this.logger.debug(`Current wakatime-cli version is ${currentVersion}`);
 
@@ -288,7 +288,7 @@ export class Dependencies {
       });
     } catch (e) {
       this.logger.warnException(e);
-      callback();
+      error();
     }
   }
 
