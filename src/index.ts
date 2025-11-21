@@ -19,7 +19,7 @@ function sendHeartbeat(inp: Input | undefined): boolean {
 
   const wakatime_cli = deps.getCliLocation();
 
-  for (const [entity, lineChanges] of entities) {
+  for (const [entity, lineChanges] of entities.entries()) {
     const args: string[] = [
       '--entity',
       entity,

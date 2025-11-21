@@ -16,7 +16,7 @@ function sendHeartbeat(inp) {
     if (entities.size === 0)
         return false;
     const wakatime_cli = deps.getCliLocation();
-    for (const [entity, lineChanges] of entities) {
+    for (const [entity, lineChanges] of entities.entries()) {
         const args = [
             '--entity',
             entity,
