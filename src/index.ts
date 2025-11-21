@@ -6,21 +6,14 @@ import { VERSION } from './version';
 import { Dependencies } from './dependencies';
 import { Logger, LogLevel } from './logger';
 import { Input } from './types';
-import { buildOptions, calculateLineChanges, getModifiedFile, parseInput, shouldSendHeartbeat, timestamp, updateState } from './utils';
+import { buildOptions, calculateLineChanges, formatArguments, getEntityFile, parseInput, shouldSendHeartbeat, updateState } from './utils';
 
 const logger = new Logger();
 const options = new Options();
 const deps = new Dependencies(options, logger);
 
-function getEntityFile(inp: Input | undefined): string | undefined {
-  if (!inp?.transcript_path) return;
-  return getModifiedFile(inp.transcript_path);
-}
-
 function sendHeartbeat(inp: Input | undefined): boolean {
   const projectFolder = inp?.cwd;
-  logger.debug(`Project folder: ${projectFolder}`);
-  logger.debug('Getting entity...');
   const entity = getEntityFile(inp);
   logger.debug(`Entity: ${entity}`);
   if (!entity) return false;
@@ -50,7 +43,7 @@ function sendHeartbeat(inp: Input | undefined): boolean {
     }
   }
 
-  logger.debug(`Sending heartbeat: ${wakatime_cli} ${args}`);
+  logger.debug(`Sending heartbeat: ${formatArguments(wakatime_cli, args)}`);
 
   const execOptions = buildOptions();
   execFile(wakatime_cli, args, execOptions, (error, stdout, stderr) => {

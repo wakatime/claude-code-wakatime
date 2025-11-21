@@ -7,86 +7,17 @@ import path from 'path';
 
 const STATE_FILE = path.join(os.homedir(), '.wakatime', 'claude-code.json');
 
-export function quote(str: string): string {
-  if (str.includes(' ')) return `"${str.replace('"', '\\"')}"`;
-  return str;
-}
-
-export function apiKeyInvalid(key?: string): string {
-  const err = 'Invalid api key... check https://wakatime.com/api-key for your key';
-  if (!key) return err;
-  const re = new RegExp('^(waka_)?[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$', 'i');
-  if (!re.test(key)) return err;
-  return '';
-}
-
-export function formatDate(date: Date): String {
-  let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  let ampm = 'AM';
-  let hour = date.getHours();
-  if (hour > 11) {
-    ampm = 'PM';
-    hour = hour - 12;
+export function parseInput() {
+  try {
+    const stdinData = fs.readFileSync(0, 'utf-8');
+    if (stdinData.trim()) {
+      const input: Input = JSON.parse(stdinData);
+      return input;
+    }
+  } catch (err) {
+    console.error(err);
   }
-  if (hour == 0) {
-    hour = 12;
-  }
-  let minute = date.getMinutes();
-  return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} ${hour}:${minute < 10 ? `0${minute}` : minute} ${ampm}`;
-}
-
-export function obfuscateKey(key: string): string {
-  let newKey = '';
-  if (key) {
-    newKey = key;
-    if (key.length > 4) newKey = 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXX' + key.substring(key.length - 4);
-  }
-  return newKey;
-}
-
-function wrapArg(arg: string): string {
-  if (arg.indexOf(' ') > -1) return '"' + arg.replace(/"/g, '\\"') + '"';
-  return arg;
-}
-
-export function formatArguments(binary: string, args: string[]): string {
-  let clone = args.slice(0);
-  clone.unshift(wrapArg(binary));
-  let newCmds: string[] = [];
-  let lastCmd = '';
-  for (let i = 0; i < clone.length; i++) {
-    if (lastCmd == '--key') newCmds.push(wrapArg(obfuscateKey(clone[i])));
-    else newCmds.push(wrapArg(clone[i]));
-    lastCmd = clone[i];
-  }
-  return newCmds.join(' ');
-}
-
-export function isWindows(): boolean {
-  return os.platform() === 'win32';
-}
-
-export function getHomeDirectory(): string {
-  let home = process.env.WAKATIME_HOME;
-  if (home && home.trim() && fs.existsSync(home.trim())) return home.trim();
-  return process.env[isWindows() ? 'USERPROFILE' : 'HOME'] || process.cwd();
-}
-
-export function buildOptions(stdin?: boolean): Object {
-  const options: child_process.ExecFileOptions = {
-    windowsHide: true,
-  };
-  if (stdin) {
-    (options as any).stdio = ['pipe', 'pipe', 'pipe'] as StdioOptions;
-  }
-  if (!isWindows() && !process.env.WAKATIME_HOME && !process.env.HOME) {
-    options['env'] = { ...process.env, WAKATIME_HOME: getHomeDirectory() };
-  }
-  return options;
-}
-
-export function timestamp() {
-  return Date.now() / 1000;
+  return undefined;
 }
 
 export function shouldSendHeartbeat(inp?: Input): boolean {
@@ -107,29 +38,8 @@ export function updateState() {
   fs.writeFileSync(STATE_FILE, JSON.stringify({ lastHeartbeatAt: timestamp() } as State, null, 2));
 }
 
-export function parseInput() {
-  try {
-    const stdinData = fs.readFileSync(0, 'utf-8');
-    if (stdinData.trim()) {
-      const input: Input = JSON.parse(stdinData);
-      return input;
-    }
-  } catch (err) {
-    console.error(err);
-  }
-  return undefined;
-}
-
-export function getLastHeartbeat() {
-  try {
-    const stateData = JSON.parse(fs.readFileSync(STATE_FILE, 'utf-8')) as State;
-    return stateData.lastHeartbeatAt ?? 0;
-  } catch {
-    return 0;
-  }
-}
-
-export function getModifiedFile(transcriptPath: string): string | undefined {
+export function getEntityFile(inp: Input | undefined): string | undefined {
+  const transcriptPath = inp?.transcript_path;
   if (!transcriptPath || !fs.existsSync(transcriptPath)) {
     return undefined;
   }
@@ -238,4 +148,67 @@ export function calculateLineChanges(transcriptPath: string): number {
   } catch {
     return 0;
   }
+}
+
+export function formatArguments(binary: string, args: string[]): string {
+  let clone = args.slice(0);
+  clone.unshift(wrapArg(binary));
+  let newCmds: string[] = [];
+  let lastCmd = '';
+  for (let i = 0; i < clone.length; i++) {
+    if (lastCmd == '--key') newCmds.push(wrapArg(obfuscateKey(clone[i])));
+    else newCmds.push(wrapArg(clone[i]));
+    lastCmd = clone[i];
+  }
+  return newCmds.join(' ');
+}
+
+export function isWindows(): boolean {
+  return os.platform() === 'win32';
+}
+
+export function getHomeDirectory(): string {
+  let home = process.env.WAKATIME_HOME;
+  if (home && home.trim() && fs.existsSync(home.trim())) return home.trim();
+  return process.env[isWindows() ? 'USERPROFILE' : 'HOME'] || process.cwd();
+}
+
+export function buildOptions(stdin?: boolean): Object {
+  const options: child_process.ExecFileOptions = {
+    windowsHide: true,
+  };
+  if (stdin) {
+    (options as any).stdio = ['pipe', 'pipe', 'pipe'] as StdioOptions;
+  }
+  if (!isWindows() && !process.env.WAKATIME_HOME && !process.env.HOME) {
+    options['env'] = { ...process.env, WAKATIME_HOME: getHomeDirectory() };
+  }
+  return options;
+}
+
+function getLastHeartbeat() {
+  try {
+    const stateData = JSON.parse(fs.readFileSync(STATE_FILE, 'utf-8')) as State;
+    return stateData.lastHeartbeatAt ?? 0;
+  } catch {
+    return 0;
+  }
+}
+
+function timestamp() {
+  return Date.now() / 1000;
+}
+
+function wrapArg(arg: string): string {
+  if (arg.indexOf(' ') > -1) return '"' + arg.replace(/"/g, '\\"') + '"';
+  return arg;
+}
+
+function obfuscateKey(key: string): string {
+  let newKey = '';
+  if (key) {
+    newKey = key;
+    if (key.length > 4) newKey = 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXX' + key.substring(key.length - 4);
+  }
+  return newKey;
 }
