@@ -12,11 +12,11 @@ const deps = new dependencies_1.Dependencies(options, logger_1.logger);
 function sendHeartbeat(inp) {
     const projectFolder = inp?.cwd;
     const { entities, claudeVersion } = (0, utils_1.getEntityFiles)(inp);
-    logger_1.logger.debug(`Entities: ${entities}`);
     if (entities.size === 0)
         return false;
     const wakatime_cli = deps.getCliLocation();
     for (const [entity, lineChanges] of entities.entries()) {
+        logger_1.logger.debug(`Entity: ${entity}`);
         const args = [
             '--entity',
             entity,
