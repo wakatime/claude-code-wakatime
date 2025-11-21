@@ -65,12 +65,9 @@ function main() {
             logger.debug(JSON.stringify(inp, null, 2));
         deps.checkAndInstallCli();
         if ((0, utils_1.shouldSendHeartbeat)(inp)) {
-            logger.debug('Sending heartbeat...');
-            if (sendHeartbeat(inp))
+            if (sendHeartbeat(inp)) {
                 (0, utils_1.updateState)();
-        }
-        else {
-            logger.debug('Skip sending heartbeat');
+            }
         }
     }
     catch (err) {
