@@ -1,5 +1,8 @@
 {
   "name": "wakatime",
+  "metadata": {
+    "description": "WakaTime plugin for Claude Code - Track your AI usage, lines of code generated, and time spent prompting AI"
+  },
   "owner": {
     "name": "WakaTime"
   },
@@ -7,7 +10,7 @@
     {
       "name": "claude-code-wakatime",
       "source": "./",
-      "description": "Track your AI usage, lines of code generated, and time spent prompting AI",
+      "description": "WakaTime plugin for Claude Code - Track your AI usage, lines of code generated, and time spent prompting AI",
       "version": "3.0.0",
       "homepage": "https://github.com/wakatime/claude-code-wakatime",
       "repository": "https://github.com/wakatime/claude-code-wakatime",
