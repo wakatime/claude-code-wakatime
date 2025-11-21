@@ -74,3 +74,11 @@ export class Logger {
     }
   }
 }
+
+const global = globalThis as unknown as {
+  logger: Logger | undefined;
+};
+
+export const logger = global.logger ?? new Logger();
+
+global.logger = logger;

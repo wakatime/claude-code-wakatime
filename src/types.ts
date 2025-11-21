@@ -8,3 +8,43 @@ export type Input = {
   cwd: string;
   hook_event_name: string;
 };
+
+export type TranscriptLog = {
+  parentUuid?: string;
+  isSidechain?: boolean;
+  userType?: string;
+  cwd?: string;
+  sessionId?: string;
+  version?: string;
+  gitBranch?: string;
+  type?: string;
+  message?: {
+    role?: string;
+    content?: [
+      {
+        tool_use_id: string;
+        type: string;
+        content: string;
+      },
+    ];
+  };
+  uuid?: string;
+  timestamp?: string;
+  toolUseResult: {
+    filePath?: string;
+    oldString?: string;
+    newString?: string;
+    originalFile?: string;
+    structuredPatch?: [
+      {
+        oldStart: number;
+        oldLines: number;
+        newStart: number;
+        newLines: number;
+        lines: string[];
+      },
+    ];
+    userModified?: string;
+    replaceAll?: string;
+  };
+};
