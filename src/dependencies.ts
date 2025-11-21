@@ -8,8 +8,8 @@ import * as semver from 'semver';
 import * as which from 'which';
 
 import { Options, Setting } from './options';
-import { Utils } from './utils';
 import { Logger } from './logger';
+import { buildOptions, isWindows } from './utils';
 
 enum osName {
   darwin = 'darwin',
@@ -49,7 +49,7 @@ export class Dependencies {
 
     const osname = this.osName();
     const arch = this.architecture();
-    const ext = Utils.isWindows() ? '.exe' : '';
+    const ext = isWindows() ? '.exe' : '';
     const binary = `wakatime-cli-${osname}-${arch}${ext}`;
     this.cliLocation = path.join(this.resourcesLocation, binary);
 
@@ -59,7 +59,7 @@ export class Dependencies {
   public getCliLocationGlobal(): string | undefined {
     if (this.cliLocationGlobal) return this.cliLocationGlobal;
 
-    const binaryName = `wakatime-cli${Utils.isWindows() ? '.exe' : ''}`;
+    const binaryName = `wakatime-cli${isWindows() ? '.exe' : ''}`;
     const path = which.sync(binaryName, { nothrow: true });
     if (path) {
       this.cliLocationGlobal = path;
@@ -96,7 +96,7 @@ export class Dependencies {
     }
 
     let args = ['--version'];
-    const options = Utils.buildOptions();
+    const options = buildOptions();
     try {
       child_process.execFile(this.getCliLocation(), args, options, (error, _stdout, stderr) => {
         if (!(error != null)) {
@@ -212,7 +212,7 @@ export class Dependencies {
     this.unzip(zipFile, this.resourcesLocation, (unzipped) => {
       if (!unzipped) {
         this.restoreCli();
-      } else if (!Utils.isWindows()) {
+      } else if (!isWindows()) {
         this.removeCli();
         const cli = this.getCliLocation();
         try {
@@ -221,7 +221,7 @@ export class Dependencies {
         } catch (e) {
           this.logger.warnException(e);
         }
-        const ext = Utils.isWindows() ? '.exe' : '';
+        const ext = isWindows() ? '.exe' : '';
         const link = path.join(this.resourcesLocation, `wakatime-cli${ext}`);
         if (!this.isSymlink(link)) {
           try {

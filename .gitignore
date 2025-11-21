@@ -26,3 +26,8 @@ yarn-error.log*
 
 # auto-generated files
 src/version.ts
+
+
+dist/*
+!dist/index.js
+!dist/install-hooks.js

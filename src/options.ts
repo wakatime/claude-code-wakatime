@@ -1,8 +1,7 @@
 import * as child_process from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
-
-import { Utils } from './utils';
+import { getHomeDirectory } from './utils';
 
 export interface Setting {
   key: string;
@@ -17,7 +16,7 @@ export class Options {
   public resourcesLocation: string;
 
   constructor() {
-    const home = Utils.getHomeDirectory();
+    const home = getHomeDirectory();
     const wakaFolder = path.join(home, '.wakatime');
     try {
       if (!fs.existsSync(wakaFolder)) {
