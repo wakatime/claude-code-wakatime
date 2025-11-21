@@ -17,13 +17,13 @@ function getEntityFile(inp: Input | undefined): string | undefined {
   return getModifiedFile(inp.transcript_path);
 }
 
-function sendHeartbeat(inp: Input | undefined) {
+function sendHeartbeat(inp: Input | undefined): boolean {
   const projectFolder = inp?.cwd;
   logger.debug(`Project folder: ${projectFolder}`);
   logger.debug('Getting entity...');
   const entity = getEntityFile(inp);
   logger.debug(`Entity: ${entity}`);
-  if (!entity) return;
+  if (!entity) return false;
 
   const wakatime_cli = deps.getCliLocation();
 
@@ -58,6 +58,8 @@ function sendHeartbeat(inp: Input | undefined) {
     if (output) logger.error(output);
     if (error) logger.error(error.toString());
   });
+
+  return true;
 }
 
 function main() {
@@ -73,8 +75,7 @@ function main() {
 
     if (shouldSendHeartbeat(inp)) {
       logger.debug('Sending heartbeat...');
-      sendHeartbeat(inp);
-      updateState();
+      if (sendHeartbeat(inp)) updateState();
     } else {
       logger.debug('Skip sending heartbeat');
     }

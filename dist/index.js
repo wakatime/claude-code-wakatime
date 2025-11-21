@@ -22,7 +22,7 @@ function sendHeartbeat(inp) {
     const entity = getEntityFile(inp);
     logger.debug(`Entity: ${entity}`);
     if (!entity)
-        return;
+        return false;
     const wakatime_cli = deps.getCliLocation();
     const args = [
         '--entity',
@@ -54,6 +54,7 @@ function sendHeartbeat(inp) {
         if (error)
             logger.error(error.toString());
     });
+    return true;
 }
 function main() {
     const inp = (0, utils_1.parseInput)();
@@ -65,8 +66,8 @@ function main() {
         deps.checkAndInstallCli();
         if ((0, utils_1.shouldSendHeartbeat)(inp)) {
             logger.debug('Sending heartbeat...');
-            sendHeartbeat(inp);
-            (0, utils_1.updateState)();
+            if (sendHeartbeat(inp))
+                (0, utils_1.updateState)();
         }
         else {
             logger.debug('Skip sending heartbeat');
