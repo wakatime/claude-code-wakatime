@@ -40987,22 +40987,26 @@ var Options = class {
     this.logFile = path3.join(this.resourcesLocation, "wakatime.log");
   }
   getSetting(section, key, internal) {
-    const content = fs3.readFileSync(this.getConfigFile(internal ?? false), "utf-8");
-    if (content.trim()) {
-      let currentSection = "";
-      let lines = content.split("\n");
-      for (var i = 0; i < lines.length; i++) {
-        let line = lines[i];
-        if (this.startsWith(line.trim(), "[") && this.endsWith(line.trim(), "]")) {
-          currentSection = line.trim().substring(1, line.trim().length - 1).toLowerCase();
-        } else if (currentSection === section) {
-          let parts = line.split("=");
-          let currentKey = parts[0].trim();
-          if (currentKey === key && parts.length > 1) {
-            return this.removeNulls(parts[1].trim());
+    try {
+      const content = fs3.readFileSync(this.getConfigFile(internal ?? false), "utf-8");
+      if (content.trim()) {
+        let currentSection = "";
+        let lines = content.split("\n");
+        for (var i = 0; i < lines.length; i++) {
+          let line = lines[i];
+          if (this.startsWith(line.trim(), "[") && this.endsWith(line.trim(), "]")) {
+            currentSection = line.trim().substring(1, line.trim().length - 1).toLowerCase();
+          } else if (currentSection === section) {
+            let parts = line.split("=");
+            let currentKey = parts[0].trim();
+            if (currentKey === key && parts.length > 1) {
+              return this.removeNulls(parts[1].trim());
+            }
           }
         }
+        return void 0;
       }
+    } catch (_) {
       return void 0;
     }
   }
@@ -41123,7 +41127,7 @@ var Options = class {
 };
 
 // src/version.ts
-var VERSION = "3.0.2";
+var VERSION = "3.0.3";
 
 // src/dependencies.ts
 var import_adm_zip = __toESM(require_adm_zip());
