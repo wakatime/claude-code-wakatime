@@ -34,26 +34,30 @@ export class Options {
   }
 
   public getSetting(section: string, key: string, internal?: boolean): string | undefined {
-    const content = fs.readFileSync(this.getConfigFile(internal ?? false), 'utf-8');
-    if (content.trim()) {
-      let currentSection = '';
-      let lines = content.split('\n');
-      for (var i = 0; i < lines.length; i++) {
-        let line = lines[i];
-        if (this.startsWith(line.trim(), '[') && this.endsWith(line.trim(), ']')) {
-          currentSection = line
-            .trim()
-            .substring(1, line.trim().length - 1)
-            .toLowerCase();
-        } else if (currentSection === section) {
-          let parts = line.split('=');
-          let currentKey = parts[0].trim();
-          if (currentKey === key && parts.length > 1) {
-            return this.removeNulls(parts[1].trim());
+    try {
+      const content = fs.readFileSync(this.getConfigFile(internal ?? false), 'utf-8');
+      if (content.trim()) {
+        let currentSection = '';
+        let lines = content.split('\n');
+        for (var i = 0; i < lines.length; i++) {
+          let line = lines[i];
+          if (this.startsWith(line.trim(), '[') && this.endsWith(line.trim(), ']')) {
+            currentSection = line
+              .trim()
+              .substring(1, line.trim().length - 1)
+              .toLowerCase();
+          } else if (currentSection === section) {
+            let parts = line.split('=');
+            let currentKey = parts[0].trim();
+            if (currentKey === key && parts.length > 1) {
+              return this.removeNulls(parts[1].trim());
+            }
           }
         }
-      }
 
+        return undefined;
+      }
+    } catch (_) {
       return undefined;
     }
   }
