@@ -18,15 +18,9 @@ Track your AI usage, lines of code generated, time spent prompting AI, etc. usin
    api_key = waka_123
    ```
 
-### NPM Installation (Legacy)
+## Upgrading
 
-1. `npm install -g claude-code-wakatime`
-
-2. Add your [API key][api-key] to `~/.wakatime.cfg`:
-   ```
-   [settings]
-   api_key = waka_123
-   ```
+    claude plugin marketplace update
 
 ## Usage
 
