@@ -4,7 +4,7 @@ import { execFile } from 'child_process';
 import { Options } from './options';
 import { VERSION } from './version';
 import { Dependencies } from './dependencies';
-import { logger, Logger, LogLevel } from './logger';
+import { logger, LogLevel } from './logger';
 import { Input } from './types';
 import { buildOptions, formatArguments, getEntityFiles, parseInput, shouldSendHeartbeat, updateState } from './utils';
 
@@ -53,7 +53,7 @@ function sendHeartbeat(inp: Input | undefined): boolean {
   return true;
 }
 
-function main() {
+async function main() {
   const inp = parseInput();
 
   const debug = options.getSetting('settings', 'debug');
@@ -66,7 +66,7 @@ function main() {
 
     if (shouldSendHeartbeat(inp)) {
       if (sendHeartbeat(inp)) {
-        updateState();
+        await updateState(inp);
       }
     }
   } catch (err) {

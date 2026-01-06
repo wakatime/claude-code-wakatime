@@ -3,10 +3,7 @@ import * as os from 'os';
 import * as child_process from 'child_process';
 import { StdioOptions } from 'child_process';
 import { Input, State, TranscriptLog } from './types';
-import path from 'path';
 import { logger } from './logger';
-
-const STATE_FILE = path.join(os.homedir(), '.wakatime', 'claude-code.json');
 
 export function parseInput() {
   try {
@@ -21,22 +18,29 @@ export function parseInput() {
   return undefined;
 }
 
+function getStateFile(inp: Input): string {
+  return `${inp.transcript_path}.wakatime`;
+}
+
 export function shouldSendHeartbeat(inp?: Input): boolean {
   if (inp?.hook_event_name === 'Stop') {
     return true;
   }
 
+  if (!inp) return false;
+
   try {
-    const last = (JSON.parse(fs.readFileSync(STATE_FILE, 'utf-8')) as State).lastHeartbeatAt ?? timestamp();
+    const last = (JSON.parse(fs.readFileSync(getStateFile(inp), 'utf-8')) as State).lastHeartbeatAt ?? timestamp();
     return timestamp() - last >= 60;
   } catch {
     return true;
   }
 }
 
-export function updateState() {
-  fs.mkdirSync(path.dirname(STATE_FILE), { recursive: true });
-  fs.writeFileSync(STATE_FILE, JSON.stringify({ lastHeartbeatAt: timestamp() } as State, null, 2));
+export async function updateState(inp?: Input) {
+  if (!inp) return;
+  const file = getStateFile(inp);
+  await fs.promises.writeFile(file, JSON.stringify({ lastHeartbeatAt: timestamp() } as State, null, 2));
 }
 
 export function getEntityFiles(inp: Input | undefined): { entities: Map<string, number>; claudeVersion: string } {
@@ -48,7 +52,7 @@ export function getEntityFiles(inp: Input | undefined): { entities: Map<string, 
     return { entities, claudeVersion };
   }
 
-  const lastHeartbeatAt = getLastHeartbeat();
+  const lastHeartbeatAt = getLastHeartbeat(inp);
 
   const content = fs.readFileSync(transcriptPath, 'utf-8');
   for (const logLine of content.split('\n')) {
@@ -116,9 +120,9 @@ export function buildOptions(stdin?: boolean): Object {
   return options;
 }
 
-function getLastHeartbeat() {
+function getLastHeartbeat(inp: Input) {
   try {
-    const stateData = JSON.parse(fs.readFileSync(STATE_FILE, 'utf-8')) as State;
+    const stateData = JSON.parse(fs.readFileSync(getStateFile(inp), 'utf-8')) as State;
     return stateData.lastHeartbeatAt ?? 0;
   } catch {
     return 0;
