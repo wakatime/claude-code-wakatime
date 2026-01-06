@@ -1,7 +1,7 @@
 {
   "name": "claude-code-wakatime",
   "description": "WakaTime plugin for Claude Code - Track your AI usage, lines of code generated, and time spent prompting AI",
-  "version": "3.0.0",
+  "version": "3.0.5",
   "author": {
     "name": "WakaTime"
   },
