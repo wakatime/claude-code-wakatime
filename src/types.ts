@@ -2,11 +2,23 @@ export type State = {
   lastHeartbeatAt?: number;
 };
 
+export type HookEvent =
+  | 'PreToolUse'
+  | 'PermissionRequest'
+  | 'PostToolUse'
+  | 'Notification'
+  | 'UserPromptSubmit'
+  | 'Stop'
+  | 'SubagentStop'
+  | 'PreCompact'
+  | 'SessionStart'
+  | 'SessionEnd';
+
 export type Input = {
   session_id: string;
   transcript_path: string;
   cwd: string;
-  hook_event_name: string;
+  hook_event_name: HookEvent;
 };
 
 export type TranscriptLog = {
@@ -48,3 +60,10 @@ export type TranscriptLog = {
     replaceAll?: string;
   };
 };
+
+export type Entity = {
+  type: 'file' | 'app';
+  lineChanges: number;
+};
+
+export type EntityMap = Map<string, Entity>;

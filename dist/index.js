@@ -9,19 +9,19 @@ const logger_1 = require("./logger");
 const utils_1 = require("./utils");
 const options = new options_1.Options();
 const deps = new dependencies_1.Dependencies(options, logger_1.logger);
-function sendHeartbeat(inp) {
+async function sendHeartbeat(inp) {
     const projectFolder = inp?.cwd;
-    const { entities, claudeVersion } = (0, utils_1.getEntityFiles)(inp);
+    const { entities, claudeVersion } = await (0, utils_1.getEntityFiles)(inp);
     if (entities.size === 0)
         return false;
     const wakatime_cli = deps.getCliLocation();
-    for (const [entity, lineChanges] of entities.entries()) {
-        logger_1.logger.debug(`Entity: ${entity}`);
+    for (const [entityFile, entityData] of entities.entries()) {
+        logger_1.logger.debug(`Entity: ${entityFile}`);
         const args = [
             '--entity',
-            entity,
+            entityFile,
             '--entity-type',
-            'file',
+            entityData.type,
             '--category',
             'ai coding',
             '--plugin',
@@ -31,9 +31,9 @@ function sendHeartbeat(inp) {
             args.push('--project-folder');
             args.push(projectFolder);
         }
-        if (lineChanges) {
+        if (entityData.lineChanges) {
             args.push('--ai-line-changes');
-            args.push(lineChanges.toString());
+            args.push(entityData.lineChanges.toString());
         }
         logger_1.logger.debug(`Sending heartbeat: ${(0, utils_1.formatArguments)(wakatime_cli, args)}`);
         const execOptions = (0, utils_1.buildOptions)();
@@ -56,7 +56,7 @@ async function main() {
             logger_1.logger.debug(JSON.stringify(inp, null, 2));
         deps.checkAndInstallCli();
         if ((0, utils_1.shouldSendHeartbeat)(inp)) {
-            if (sendHeartbeat(inp)) {
+            if (await sendHeartbeat(inp)) {
                 await (0, utils_1.updateState)(inp);
             }
         }

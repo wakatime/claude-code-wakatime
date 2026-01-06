@@ -11,20 +11,20 @@ import { buildOptions, formatArguments, getEntityFiles, parseInput, shouldSendHe
 const options = new Options();
 const deps = new Dependencies(options, logger);
 
-function sendHeartbeat(inp: Input | undefined): boolean {
+async function sendHeartbeat(inp: Input | undefined): Promise<boolean> {
   const projectFolder = inp?.cwd;
-  const { entities, claudeVersion } = getEntityFiles(inp);
+  const { entities, claudeVersion } = await getEntityFiles(inp);
   if (entities.size === 0) return false;
 
   const wakatime_cli = deps.getCliLocation();
 
-  for (const [entity, lineChanges] of entities.entries()) {
-    logger.debug(`Entity: ${entity}`);
+  for (const [entityFile, entityData] of entities.entries()) {
+    logger.debug(`Entity: ${entityFile}`);
     const args: string[] = [
       '--entity',
-      entity,
+      entityFile,
       '--entity-type',
-      'file',
+      entityData.type,
       '--category',
       'ai coding',
       '--plugin',
@@ -35,9 +35,9 @@ function sendHeartbeat(inp: Input | undefined): boolean {
       args.push(projectFolder);
     }
 
-    if (lineChanges) {
+    if (entityData.lineChanges) {
       args.push('--ai-line-changes');
-      args.push(lineChanges.toString());
+      args.push(entityData.lineChanges.toString());
     }
 
     logger.debug(`Sending heartbeat: ${formatArguments(wakatime_cli, args)}`);
@@ -65,7 +65,7 @@ async function main() {
     deps.checkAndInstallCli();
 
     if (shouldSendHeartbeat(inp)) {
-      if (sendHeartbeat(inp)) {
+      if (await sendHeartbeat(inp)) {
         await updateState(inp);
       }
     }

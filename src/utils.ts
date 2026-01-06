@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as child_process from 'child_process';
 import { StdioOptions } from 'child_process';
-import { Input, State, TranscriptLog } from './types';
+import { Entity, EntityMap, Input, State, TranscriptLog } from './types';
 import { logger } from './logger';
 
 export function parseInput() {
@@ -43,8 +43,8 @@ export async function updateState(inp?: Input) {
   await fs.promises.writeFile(file, JSON.stringify({ lastHeartbeatAt: timestamp() } as State, null, 2));
 }
 
-export function getEntityFiles(inp: Input | undefined): { entities: Map<string, number>; claudeVersion: string } {
-  const entities = new Map<string, number>();
+export async function getEntityFiles(inp: Input | undefined): Promise<{ entities: EntityMap; claudeVersion: string }> {
+  const entities = new Map<string, Entity>() as EntityMap;
   let claudeVersion = '';
 
   const transcriptPath = inp?.transcript_path;
@@ -52,7 +52,7 @@ export function getEntityFiles(inp: Input | undefined): { entities: Map<string, 
     return { entities, claudeVersion };
   }
 
-  const lastHeartbeatAt = getLastHeartbeat(inp);
+  const lastHeartbeatAt = await getLastHeartbeat(inp);
 
   const content = fs.readFileSync(transcriptPath, 'utf-8');
   for (const logLine of content.split('\n')) {
@@ -75,10 +75,15 @@ export function getEntityFiles(inp: Input | undefined): { entities: Map<string, 
 
       const lineChanges = patches.map((patch) => patch.newLines - patch.oldLines).reduce((p, c) => p + c, 0);
 
-      entities.set(filePath, (entities.get(filePath) ?? 0) + lineChanges);
+      const prevLineChanges = (entities.get(filePath) ?? ({ lineChanges: 0 } as Entity)).lineChanges;
+      entities.set(filePath, { lineChanges: prevLineChanges + lineChanges, type: 'file' });
     } catch (err) {
       logger.warnException(err);
     }
+  }
+
+  if (inp.hook_event_name == 'UserPromptSubmit' && entities.size === 0) {
+    entities.set(inp.cwd, { lineChanges: 0, type: 'app' });
   }
 
   return { entities, claudeVersion };
@@ -120,9 +125,9 @@ export function buildOptions(stdin?: boolean): Object {
   return options;
 }
 
-function getLastHeartbeat(inp: Input) {
+async function getLastHeartbeat(inp: Input) {
   try {
-    const stateData = JSON.parse(fs.readFileSync(getStateFile(inp), 'utf-8')) as State;
+    const stateData = JSON.parse(await fs.promises.readFile(getStateFile(inp), 'utf-8')) as State;
     return stateData.lastHeartbeatAt ?? 0;
   } catch {
     return 0;
