@@ -1,6 +1,6 @@
 {
   "name": "claude-code-wakatime",
-  "version": "3.0.5",
+  "version": "3.1.0",
   "description": "WakaTime plugin for Claude Code",
   "bin": {
     "claude-code-wakatime": "dist/index.js"
