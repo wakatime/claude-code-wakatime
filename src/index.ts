@@ -11,9 +11,41 @@ import { buildOptions, formatArguments, getEntityFiles, parseInput, shouldSendHe
 const options = new Options();
 const deps = new Dependencies(options, logger);
 
+function sendProjectHeartbeat(projectFolder: string, claudeVersion: string): void {
+  const wakatime_cli = deps.getCliLocation();
+
+  const args: string[] = [
+    '--entity',
+    projectFolder,
+    '--entity-type',
+    'app',
+    '--category',
+    'ai coding',
+    '--plugin',
+    `claude/${claudeVersion} claude-code-wakatime/${VERSION}`,
+    '--project-folder',
+    projectFolder,
+  ];
+
+  logger.debug(`Sending project heartbeat: ${formatArguments(wakatime_cli, args)}`);
+
+  const execOptions = buildOptions();
+  execFile(wakatime_cli, args, execOptions, (error, stdout, stderr) => {
+    const output = stdout.toString().trim() + stderr.toString().trim();
+    if (output) logger.error(output);
+    if (error) logger.error(error.toString());
+  });
+}
+
 function sendHeartbeat(inp: Input | undefined): boolean {
   const projectFolder = inp?.cwd;
   const { entities, claudeVersion } = getEntityFiles(inp);
+
+  if (inp?.hook_event_name === 'UserPromptSubmit' && projectFolder) {
+    sendProjectHeartbeat(projectFolder, claudeVersion);
+    return true;
+  }
+
   if (entities.size === 0) return false;
 
   const wakatime_cli = deps.getCliLocation();
