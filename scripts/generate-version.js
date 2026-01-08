@@ -20,10 +20,12 @@ export const VERSION = '${version}';
   console.log(`Generated version.ts with version ${version}`);
 
   const marketplace = JSON.parse(fs.readFileSync(marketplaceFilePath, 'utf8'));
+  marketplace.plugins[0].version = version;
   fs.writeFileSync(marketplaceFilePath, JSON.stringify(marketplace, null, 2));
   console.log(`Generated marketplace.json with version ${version}`);
 
   const plugin = JSON.parse(fs.readFileSync(pluginFilePath, 'utf8'));
+  plugin.version = version;
   fs.writeFileSync(pluginFilePath, JSON.stringify(plugin, null, 2));
   console.log(`Generated plugin.json with version ${version}`);
 } catch (error) {
