@@ -18,7 +18,8 @@ if command -v nix >/dev/null 2>&1; then
   exec nix run nixpkgs#nodejs -- node "$ROOT/dist/index.js" "$@"
 fi
 
-echo "Error: Node.js not found. On NixOS either:
-- set NODE_BIN=/absolute/path/to/node, or
+echo "Error: Node.js not found. Is node in your PATH?
+- The WakaTime Claude Code plugin requires Node to run.
+- set NODE_BIN=/absolute/path/to/node, or if using NixOS
 - ensure 'nix' is available and flakes are enabled." >&2
 exit 127
