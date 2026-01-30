@@ -3,6 +3,11 @@ set -eu
 
 ROOT="${CLAUDE_PLUGIN_ROOT:-$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)}"
 
+# Avoid project-specific NODE_OPTIONS breaking plugin hooks.
+if [ -n "${NODE_OPTIONS:-}" ]; then
+  unset NODE_OPTIONS
+fi
+
 # If user provides an explicit node path, use it
 if [ -n "${NODE_BIN:-}" ] && [ -x "${NODE_BIN}" ]; then
   exec "${NODE_BIN}" "$ROOT/dist/index.js" "$@"
