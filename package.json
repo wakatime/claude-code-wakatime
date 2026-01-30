@@ -6,10 +6,9 @@
     "claude-code-wakatime": "dist/index.js"
   },
   "scripts": {
-    "postinstall": "node dist/install-hooks.js",
+    "postinstall": "claude plugin marketplace add https://github.com/wakatime/claude-code-wakatime.git && claude plugin i claude-code-wakatime@wakatime",
     "prebuild": "node scripts/generate-version.js",
-    "build:legacy": "esbuild src/install-hooks.ts --bundle --platform=node --outfile=dist/install-hooks.js",
-    "build": "npm run build:legacy && esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js",
+    "build": "esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js",
     "watch": "npm run prebuild && tsc --watch",
     "release:major": "npm version major && npm run build && npm publish && git commit -am \"build release\" && git push && git push --tags",
     "release:minor": "npm version minor && npm run build && npm publish && git commit -am \"build release\" && git push && git push --tags",

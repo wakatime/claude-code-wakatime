@@ -6,8 +6,6 @@ Track your AI usage, lines of code generated, time spent prompting AI, etc. usin
 
 ## Installation
 
-### Using the Claude Code Plugin System (Recommended)
-
 1. `claude plugin marketplace add https://github.com/wakatime/claude-code-wakatime.git`
 
 2. `claude plugin i claude-code-wakatime@wakatime`
