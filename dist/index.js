@@ -41347,9 +41347,9 @@ var Dependencies = class {
           }
         }
       }
+      this.logger.debug("Finished extracting wakatime-cli.");
       callback();
     });
-    this.logger.debug("Finished extracting wakatime-cli.");
   }
   backupCli() {
     if (fs4.existsSync(this.getCliLocation())) {
@@ -41497,6 +41497,7 @@ async function sendHeartbeat(inp) {
   const { entities, claudeVersion } = await getEntityFiles(inp);
   if (entities.size === 0) return false;
   const wakatime_cli = deps.getCliLocation();
+  const promises2 = [];
   for (const [entityFile, entityData] of entities.entries()) {
     logger.debug(`Entity: ${entityFile}`);
     const args = [
@@ -41519,12 +41520,18 @@ async function sendHeartbeat(inp) {
     }
     logger.debug(`Sending heartbeat: ${formatArguments(wakatime_cli, args)}`);
     const execOptions = buildOptions();
-    (0, import_child_process.execFile)(wakatime_cli, args, execOptions, (error, stdout, stderr) => {
-      const output = stdout.toString().trim() + stderr.toString().trim();
-      if (output) logger.error(output);
-      if (error) logger.error(error.toString());
-    });
+    promises2.push(
+      new Promise((resolve) => {
+        (0, import_child_process.execFile)(wakatime_cli, args, execOptions, (error, stdout, stderr) => {
+          const output = stdout.toString().trim() + stderr.toString().trim();
+          if (output) logger.error(output);
+          if (error) logger.error(error.toString());
+          resolve();
+        });
+      })
+    );
   }
+  await Promise.all(promises2);
   return true;
 }
 async function main() {

@@ -18,6 +18,8 @@ async function sendHeartbeat(inp: Input | undefined): Promise<boolean> {
 
   const wakatime_cli = deps.getCliLocation();
 
+  const promises: Promise<void>[] = [];
+
   for (const [entityFile, entityData] of entities.entries()) {
     logger.debug(`Entity: ${entityFile}`);
     const args: string[] = [
@@ -43,12 +45,19 @@ async function sendHeartbeat(inp: Input | undefined): Promise<boolean> {
     logger.debug(`Sending heartbeat: ${formatArguments(wakatime_cli, args)}`);
 
     const execOptions = buildOptions();
-    execFile(wakatime_cli, args, execOptions, (error, stdout, stderr) => {
-      const output = stdout.toString().trim() + stderr.toString().trim();
-      if (output) logger.error(output);
-      if (error) logger.error(error.toString());
-    });
+    promises.push(
+      new Promise<void>((resolve) => {
+        execFile(wakatime_cli, args, execOptions, (error, stdout, stderr) => {
+          const output = stdout.toString().trim() + stderr.toString().trim();
+          if (output) logger.error(output);
+          if (error) logger.error(error.toString());
+          resolve();
+        });
+      }),
+    );
   }
+
+  await Promise.all(promises);
 
   return true;
 }

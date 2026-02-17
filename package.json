@@ -6,7 +6,6 @@
     "claude-code-wakatime": "dist/index.js"
   },
   "scripts": {
-    "postinstall": "claude plugin marketplace add https://github.com/wakatime/claude-code-wakatime.git && claude plugin i claude-code-wakatime@wakatime",
     "prebuild": "node scripts/generate-version.js",
     "build": "esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js",
     "watch": "npm run prebuild && tsc --watch",
@@ -26,10 +25,8 @@
   ],
   "devDependencies": {
     "@types/adm-zip": "^0.5.7",
-    "@types/azdata": "^1.46.6",
     "@types/eslint": "^8.44.7",
     "@types/node": "^20.9.2",
-    "@types/pidusage": "^2.0.5",
     "@types/prettier": "^2.7.3",
     "@types/request": "^2.48.12",
     "@types/semver": "^7.7.0",
@@ -37,7 +34,6 @@
     "@typescript-eslint/eslint-plugin": "6.11.0",
     "@typescript-eslint/parser": "6.11.0",
     "adm-zip": "0.5.16",
-    "azdata": "^1.0.0",
     "esbuild": "^0.25.12",
     "eslint": "^8.54.0",
     "prettier": "^3.1.0",

@@ -238,9 +238,9 @@ export class Dependencies {
           }
         }
       }
+      this.logger.debug('Finished extracting wakatime-cli.');
       callback();
     });
-    this.logger.debug('Finished extracting wakatime-cli.');
   }
 
   private backupCli() {
