@@ -10,9 +10,9 @@
     "prebuild": "node scripts/generate-version.js",
     "build": "esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js",
     "watch": "npm run prebuild && tsc --watch",
-    "release:major": "npm version major && npm run build && npm publish && git commit -am \"build release\" && git push && git push --tags",
-    "release:minor": "npm version minor && npm run build && npm publish && git commit -am \"build release\" && git push && git push --tags",
-    "release:patch": "npm version patch && npm run build && npm publish && git commit -am \"build release\" && git push && git push --tags"
+    "release:major": "npm version major && npm run build && git commit -am \"build release\" && git push && git push --tags",
+    "release:minor": "npm version minor && npm run build && git commit -am \"build release\" && git push && git push --tags",
+    "release:patch": "npm version patch && npm run build && git commit -am \"build release\" && git push && git push --tags"
   },
   "repository": {
     "type": "git",
