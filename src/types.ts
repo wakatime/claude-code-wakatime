@@ -46,6 +46,7 @@ export type TranscriptLog = {
     filePath?: string;
     oldString?: string;
     newString?: string;
+    content?: string;
     originalFile?: string;
     structuredPatch?: [
       {

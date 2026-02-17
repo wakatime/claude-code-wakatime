@@ -40905,9 +40905,15 @@ async function getEntityFiles(inp) {
       if (timestamp2 < lastHeartbeatAt) continue;
       const filePath = log.toolUseResult?.filePath;
       if (!filePath) continue;
-      const patches = log.toolUseResult?.structuredPatch;
-      if (!patches) continue;
-      const lineChanges = patches.map((patch) => patch.newLines - patch.oldLines).reduce((p, c) => p + c, 0);
+      const patches = log.toolUseResult?.structuredPatch ?? [];
+      let lineChanges;
+      if (patches.length > 0) {
+        lineChanges = patches.map((patch) => patch.newLines - patch.oldLines).reduce((p, c) => p + c, 0);
+      } else if (log.toolUseResult?.content && !log.toolUseResult?.originalFile) {
+        lineChanges = log.toolUseResult.content.split("\n").length;
+      } else {
+        continue;
+      }
       const prevLineChanges = (entities.get(filePath) ?? { lineChanges: 0 }).lineChanges;
       entities.set(filePath, { lineChanges: prevLineChanges + lineChanges, type: "file" });
     } catch (err) {

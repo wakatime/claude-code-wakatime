@@ -70,10 +70,16 @@ export async function getEntityFiles(inp: Input | undefined): Promise<{ entities
       const filePath = log.toolUseResult?.filePath;
       if (!filePath) continue;
 
-      const patches = log.toolUseResult?.structuredPatch;
-      if (!patches) continue;
+      const patches = log.toolUseResult?.structuredPatch ?? [];
 
-      const lineChanges = patches.map((patch) => patch.newLines - patch.oldLines).reduce((p, c) => p + c, 0);
+      let lineChanges: number;
+      if (patches.length > 0) {
+        lineChanges = patches.map((patch) => patch.newLines - patch.oldLines).reduce((p, c) => p + c, 0);
+      } else if (log.toolUseResult?.content && !log.toolUseResult?.originalFile) {
+        lineChanges = log.toolUseResult.content.split('\n').length;
+      } else {
+        continue;
+      }
 
       const prevLineChanges = (entities.get(filePath) ?? ({ lineChanges: 0 } as Entity)).lineChanges;
       entities.set(filePath, { lineChanges: prevLineChanges + lineChanges, type: 'file' });
