@@ -67,7 +67,7 @@ export async function getEntityFiles(inp: Input | undefined): Promise<{ entities
       const timestamp = new Date(log.timestamp).getTime() / 1000;
       if (timestamp < lastHeartbeatAt) continue;
 
-      const filePath = log.toolUseResult?.filePath;
+      const filePath = log.toolUseResult?.filePath ?? log.toolUseResult?.file?.filePath;
       if (!filePath) continue;
 
       const patches = log.toolUseResult?.structuredPatch ?? [];
@@ -78,7 +78,7 @@ export async function getEntityFiles(inp: Input | undefined): Promise<{ entities
       } else if (log.toolUseResult?.content && !log.toolUseResult?.originalFile) {
         lineChanges = log.toolUseResult.content.split('\n').length;
       } else {
-        continue;
+        lineChanges = 0;
       }
 
       const prevLineChanges = (entities.get(filePath) ?? ({ lineChanges: 0 } as Entity)).lineChanges;

@@ -40903,7 +40903,7 @@ async function getEntityFiles(inp) {
       if (log.version) claudeVersion = log.version;
       const timestamp2 = new Date(log.timestamp).getTime() / 1e3;
       if (timestamp2 < lastHeartbeatAt) continue;
-      const filePath = log.toolUseResult?.filePath;
+      const filePath = log.toolUseResult?.filePath ?? log.toolUseResult?.file?.filePath;
       if (!filePath) continue;
       const patches = log.toolUseResult?.structuredPatch ?? [];
       let lineChanges;
@@ -40912,7 +40912,7 @@ async function getEntityFiles(inp) {
       } else if (log.toolUseResult?.content && !log.toolUseResult?.originalFile) {
         lineChanges = log.toolUseResult.content.split("\n").length;
       } else {
-        continue;
+        lineChanges = 0;
       }
       const prevLineChanges = (entities.get(filePath) ?? { lineChanges: 0 }).lineChanges;
       entities.set(filePath, { lineChanges: prevLineChanges + lineChanges, type: "file" });

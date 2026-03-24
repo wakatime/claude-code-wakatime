@@ -44,6 +44,9 @@ export type TranscriptLog = {
   timestamp?: string;
   toolUseResult: {
     filePath?: string;
+    file?: {
+      filePath?: string;
+    };
     oldString?: string;
     newString?: string;
     content?: string;
