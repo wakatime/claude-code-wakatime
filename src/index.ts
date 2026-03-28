@@ -23,6 +23,7 @@ async function sendHeartbeat(inp: Input | undefined): Promise<boolean> {
   for (const [entityFile, entityData] of entities.entries()) {
     logger.debug(`Entity: ${entityFile}`);
     const args: string[] = [
+      '--sync-ai-disable',
       '--entity',
       entityFile,
       '--entity-type',
