@@ -41140,7 +41140,7 @@ var Options = class {
 };
 
 // src/version.ts
-var VERSION = "3.1.5";
+var VERSION = "3.1.6";
 
 // src/dependencies.ts
 var import_adm_zip = __toESM(require_adm_zip());
@@ -41501,6 +41501,7 @@ async function sendHeartbeat(inp) {
   for (const [entityFile, entityData] of entities.entries()) {
     logger.debug(`Entity: ${entityFile}`);
     const args = [
+      "--sync-ai-disable",
       "--entity",
       entityFile,
       "--entity-type",
