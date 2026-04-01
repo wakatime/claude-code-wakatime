@@ -41501,7 +41501,7 @@ async function sendHeartbeat(inp) {
   for (const [entityFile, entityData] of entities.entries()) {
     logger.debug(`Entity: ${entityFile}`);
     const args = [
-      "--sync-ai-disable",
+      "--sync-ai-disabled",
       "--entity",
       entityFile,
       "--entity-type",
