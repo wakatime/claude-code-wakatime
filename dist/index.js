@@ -4936,9 +4936,6 @@ function getStateFile(inp) {
   return `${inp.transcript_path}.wakatime`;
 }
 function shouldSendHeartbeat(inp) {
-  if (inp?.hook_event_name === "Stop") {
-    return true;
-  }
   if (!inp) return false;
   try {
     const last = JSON.parse(fs2.readFileSync(getStateFile(inp), "utf-8")).lastHeartbeatAt ?? timestamp();
