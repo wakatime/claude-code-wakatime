@@ -1,13 +1,17 @@
 import adm_zip from 'adm-zip';
 import * as child_process from 'child_process';
 import * as fs from 'fs';
+import * as http from 'http';
+import * as https from 'https';
+import * as net from 'net';
 import * as os from 'os';
 import * as path from 'path';
-import * as request from 'request';
 import * as semver from 'semver';
+import { pipeline } from 'stream/promises';
+import * as tls from 'tls';
 import * as which from 'which';
 
-import { Options, Setting } from './options';
+import { Options } from './options';
 import { Logger } from './logger';
 import { buildOptions, isWindows } from './utils';
 
@@ -39,6 +43,194 @@ export class Dependencies {
     this.options = options;
     this.logger = logger;
     this.resourcesLocation = options.resourcesLocation;
+  }
+
+  private getRequestHeaders(): Record<string, string> {
+    return {
+      'User-Agent': 'github.com/wakatime/claude-code-wakatime',
+    };
+  }
+
+  private getProxyAuthorizationHeader(proxyUrl: URL): string | undefined {
+    if (!proxyUrl.username && !proxyUrl.password) return;
+    return `Basic ${Buffer.from(`${decodeURIComponent(proxyUrl.username)}:${decodeURIComponent(proxyUrl.password)}`).toString('base64')}`;
+  }
+
+  private async createProxyTunnel(proxyUrl: URL, targetUrl: URL, rejectUnauthorized: boolean): Promise<net.Socket> {
+    const proxyPort = proxyUrl.port ? parseInt(proxyUrl.port, 10) : proxyUrl.protocol === 'https:' ? 443 : 80;
+    const baseSocket =
+      proxyUrl.protocol === 'https:'
+        ? tls.connect({
+            host: proxyUrl.hostname,
+            port: proxyPort,
+            rejectUnauthorized,
+            servername: proxyUrl.hostname,
+          })
+        : net.connect(proxyPort, proxyUrl.hostname);
+
+    return new Promise<net.Socket>((resolve, reject) => {
+      const auth = this.getProxyAuthorizationHeader(proxyUrl);
+
+      const cleanup = () => {
+        baseSocket.removeListener('error', onError);
+        baseSocket.removeListener('data', onData);
+      };
+
+      const onError = (error: Error) => {
+        cleanup();
+        reject(error);
+      };
+
+      let response = '';
+      const onData = (chunk: Buffer) => {
+        response += chunk.toString('utf8');
+        if (!response.includes('\r\n\r\n')) return;
+
+        cleanup();
+        const statusLine = response.split('\r\n', 1)[0];
+        if (!statusLine.includes(' 200 ')) {
+          baseSocket.destroy();
+          reject(new Error(`Proxy CONNECT failed: ${statusLine}`));
+          return;
+        }
+
+        resolve(baseSocket);
+      };
+
+      const connectRequest = `CONNECT ${targetUrl.hostname}:${targetUrl.port || 443} HTTP/1.1\r\nHost: ${targetUrl.hostname}:${targetUrl.port || 443}\r\n${auth ? `Proxy-Authorization: ${auth}\r\n` : ''}Connection: close\r\n\r\n`;
+
+      baseSocket.once('error', onError);
+      baseSocket.on('data', onData);
+      if (proxyUrl.protocol === 'https:') {
+        baseSocket.once('secureConnect', () => {
+          baseSocket.write(connectRequest);
+        });
+      } else {
+        baseSocket.once('connect', () => {
+          baseSocket.write(connectRequest);
+        });
+      }
+    });
+  }
+
+  private async sendRequest(url: string, options?: { headers?: Record<string, string>; proxy?: string; noSSLVerify?: boolean }): Promise<http.IncomingMessage> {
+    const targetUrl = new URL(url);
+    const proxy = options?.proxy ? new URL(options.proxy) : undefined;
+    const headers = { ...options?.headers };
+    const rejectUnauthorized = !options?.noSSLVerify;
+
+    return new Promise<http.IncomingMessage>(async (resolve, reject) => {
+      let req: http.ClientRequest | undefined;
+      try {
+        if (proxy) {
+          this.logger.debug(`Using Proxy: ${proxy.toString()}`);
+        }
+
+        if (proxy && targetUrl.protocol === 'https:') {
+          const tunnel = await this.createProxyTunnel(proxy, targetUrl, rejectUnauthorized);
+          const secureSocket = tls.connect({
+            socket: tunnel,
+            servername: targetUrl.hostname,
+            rejectUnauthorized,
+          });
+          secureSocket.once('error', reject);
+          req = https.request(
+            {
+              host: targetUrl.hostname,
+              port: targetUrl.port ? parseInt(targetUrl.port, 10) : 443,
+              path: `${targetUrl.pathname}${targetUrl.search}`,
+              method: 'GET',
+              headers,
+              agent: false,
+              createConnection: () => secureSocket,
+            },
+            (response) => resolve(response),
+          );
+        } else {
+          const isHttpsRequest = proxy ? proxy.protocol === 'https:' : targetUrl.protocol === 'https:';
+          const requestModule = isHttpsRequest ? https : http;
+          const requestUrl = proxy ?? targetUrl;
+          const requestOptions: https.RequestOptions = {
+            host: requestUrl.hostname,
+            port: requestUrl.port ? parseInt(requestUrl.port, 10) : isHttpsRequest ? 443 : 80,
+            path: proxy ? targetUrl.toString() : `${targetUrl.pathname}${targetUrl.search}`,
+            method: 'GET',
+            headers: proxy
+              ? {
+                  Host: targetUrl.host,
+                  ...headers,
+                  ...(this.getProxyAuthorizationHeader(proxy) ? { 'Proxy-Authorization': this.getProxyAuthorizationHeader(proxy)! } : {}),
+                }
+              : headers,
+          };
+
+          if (isHttpsRequest) {
+            requestOptions.rejectUnauthorized = rejectUnauthorized;
+            requestOptions.servername = requestUrl.hostname;
+          }
+
+          req = requestModule.request(requestOptions, (response) => resolve(response));
+        }
+
+        req.once('error', reject);
+        req.end();
+      } catch (error) {
+        req?.destroy();
+        reject(error);
+      }
+    });
+  }
+
+  private async requestWithRedirects(
+    url: string,
+    options?: { headers?: Record<string, string>; proxy?: string; noSSLVerify?: boolean },
+    redirectsLeft = 5,
+  ): Promise<http.IncomingMessage> {
+    const response = await this.sendRequest(url, options);
+    const statusCode = response.statusCode ?? 0;
+    const location = response.headers.location;
+
+    if (statusCode >= 300 && statusCode < 400 && location && redirectsLeft > 0) {
+      response.resume();
+      const nextUrl = new URL(location, url).toString();
+      return this.requestWithRedirects(nextUrl, options, redirectsLeft - 1);
+    }
+
+    return response;
+  }
+
+  private async getJson(
+    url: string,
+    options?: { headers?: Record<string, string>; proxy?: string; noSSLVerify?: boolean },
+  ): Promise<{ statusCode: number; body: any }> {
+    const response = await this.requestWithRedirects(url, options);
+    const statusCode = response.statusCode ?? 0;
+    const chunks: Buffer[] = [];
+
+    for await (const chunk of response) {
+      chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
+    }
+
+    const bodyText = Buffer.concat(chunks).toString('utf8');
+    return {
+      statusCode,
+      body: bodyText ? JSON.parse(bodyText) : {},
+    };
+  }
+
+  private async downloadToFile(
+    url: string,
+    outputFile: string,
+    options?: { headers?: Record<string, string>; proxy?: string; noSSLVerify?: boolean },
+  ): Promise<void> {
+    const response = await this.requestWithRedirects(url, options);
+    const statusCode = response.statusCode ?? 0;
+    if (statusCode < 200 || statusCode >= 300) {
+      response.resume();
+      throw new Error(`Unexpected status code ${statusCode}`);
+    }
+
+    await pipeline(response, fs.createWriteStream(outputFile));
   }
 
   public getCliLocation(): string {
@@ -149,40 +341,29 @@ export class Dependencies {
   private getLatestCliVersion(callback: (arg0: string) => void): void {
     const proxy = this.options.getSetting('settings', 'proxy');
     const noSSLVerify = this.options.getSetting('settings', 'no_ssl_verify');
-    let options: request.CoreOptions & { url: string } = {
-      url: this.githubReleasesUrl,
-      json: true,
-      headers: {
-        'User-Agent': 'github.com/wakatime/claude-code-wakatime',
-      },
-    };
-    this.logger.debug(`Fetching latest wakatime-cli version from GitHub API: ${options.url}`);
-    if (proxy) {
-      this.logger.debug(`Using Proxy: ${proxy}`);
-      options['proxy'] = proxy;
-    }
-    if (noSSLVerify === 'true') options['strictSSL'] = false;
-    try {
-      request.get(options, (error, response, json) => {
-        if (!error && response && response.statusCode == 200) {
-          this.logger.debug(`GitHub API Response ${response.statusCode}`);
-          const latestCliVersion = json['tag_name'];
+    this.logger.debug(`Fetching latest wakatime-cli version from GitHub API: ${this.githubReleasesUrl}`);
+
+    this.getJson(this.githubReleasesUrl, {
+      headers: this.getRequestHeaders(),
+      proxy: proxy ?? undefined,
+      noSSLVerify: noSSLVerify === 'true',
+    })
+      .then(({ statusCode, body }) => {
+        if (statusCode == 200) {
+          this.logger.debug(`GitHub API Response ${statusCode}`);
+          const latestCliVersion = body['tag_name'];
           this.logger.debug(`Latest wakatime-cli version from GitHub: ${latestCliVersion}`);
           this.options.setSetting('internal', 'cli_version_last_accessed', String(Math.round(Date.now() / 1000)), true);
           callback(latestCliVersion);
         } else {
-          if (response) {
-            this.logger.warn(`GitHub API Response ${response.statusCode}: ${error}`);
-          } else {
-            this.logger.warn(`GitHub API Response Error: ${error}`);
-          }
+          this.logger.warn(`GitHub API Response ${statusCode}`);
           callback('');
         }
+      })
+      .catch((e) => {
+        this.logger.warn(`GitHub API Response Error: ${e}`);
+        callback('');
       });
-    } catch (e) {
-      this.logger.warnException(e);
-      callback('');
-    }
   }
 
   private installCli(callback: () => void): void {
@@ -266,30 +447,19 @@ export class Dependencies {
   private downloadFile(url: string, outputFile: string, callback: () => void, error: () => void): void {
     const proxy = this.options.getSetting('settings', 'proxy');
     const noSSLVerify = this.options.getSetting('settings', 'no_ssl_verify');
-    let options: request.CoreOptions & { url: string } = { url: url };
-    if (proxy) {
-      this.logger.debug(`Using Proxy: ${proxy}`);
-      options['proxy'] = proxy;
-    }
-    if (noSSLVerify === 'true') options['strictSSL'] = false;
-    try {
-      let r = request.get(options);
-      r.on('error', (e) => {
+    this.downloadToFile(url, outputFile, {
+      headers: this.getRequestHeaders(),
+      proxy: proxy ?? undefined,
+      noSSLVerify: noSSLVerify === 'true',
+    })
+      .then(() => {
+        callback();
+      })
+      .catch((e) => {
         this.logger.warn(`Failed to download ${url}`);
         this.logger.warn(e.toString());
         error();
       });
-      let out = fs.createWriteStream(outputFile);
-      r.pipe(out);
-      r.on('end', () => {
-        out.on('finish', () => {
-          callback();
-        });
-      });
-    } catch (e) {
-      this.logger.warnException(e);
-      error();
-    }
   }
 
   private unzip(file: string, outputDir: string, callback: (unzipped: boolean) => void): void {
@@ -381,12 +551,15 @@ export class Dependencies {
     const url = `https://api.wakatime.com/api/v1/cli-missing?osname=${osname}&architecture=${architecture}&plugin=claude-code`;
     const proxy = this.options.getSetting('settings', 'proxy');
     const noSSLVerify = this.options.getSetting('settings', 'no_ssl_verify');
-    let options: request.CoreOptions & { url: string } = { url: url };
-    if (proxy) options['proxy'] = proxy;
-    if (noSSLVerify === 'true') options['strictSSL'] = false;
-    try {
-      request.get(options);
-    } catch (e) {}
+    this.requestWithRedirects(url, {
+      headers: this.getRequestHeaders(),
+      proxy: proxy ?? undefined,
+      noSSLVerify: noSSLVerify === 'true',
+    })
+      .then((response) => {
+        response.resume();
+      })
+      .catch(() => {});
   }
 
   private randStr(): string {
