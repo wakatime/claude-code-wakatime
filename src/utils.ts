@@ -23,10 +23,6 @@ function getStateFile(inp: Input): string {
 }
 
 export function shouldSendHeartbeat(inp?: Input): boolean {
-  if (inp?.hook_event_name === 'Stop') {
-    return true;
-  }
-
   if (!inp) return false;
 
   try {

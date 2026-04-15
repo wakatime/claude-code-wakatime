@@ -8,7 +8,6 @@ export type HookEvent =
   | 'PostToolUse'
   | 'Notification'
   | 'UserPromptSubmit'
-  | 'Stop'
   | 'SubagentStop'
   | 'PreCompact'
   | 'SessionStart'
