@@ -1,64 +1,40 @@
 #!/usr/bin/env node
 
 import { execFile } from 'child_process';
+import { promisify } from 'util';
 import { Options } from './options';
 import { VERSION } from './version';
 import { Dependencies } from './dependencies';
 import { logger, LogLevel } from './logger';
 import { Input } from './types';
-import { buildOptions, formatArguments, getEntityFiles, parseInput, shouldSendHeartbeat, updateState } from './utils';
+import { buildOptions, formatArguments, getClaudeVersion, parseInput, shouldSendHeartbeat, updateState } from './utils';
 
 const options = new Options();
 const deps = new Dependencies(options, logger);
+const execFileAsync = promisify(execFile);
 
 async function sendHeartbeat(inp: Input | undefined): Promise<boolean> {
   const projectFolder = inp?.cwd;
-  const { entities, claudeVersion } = await getEntityFiles(inp);
-  if (entities.size === 0) return false;
+  const claudeVersion = await getClaudeVersion(inp);
 
   const wakatime_cli = deps.getCliLocation();
 
-  const promises: Promise<void>[] = [];
-
-  for (const [entityFile, entityData] of entities.entries()) {
-    logger.debug(`Entity: ${entityFile}`);
-    const args: string[] = [
-      '--sync-ai-disabled',
-      '--entity',
-      entityFile,
-      '--entity-type',
-      entityData.type,
-      '--category',
-      'ai coding',
-      '--plugin',
-      `claude/${claudeVersion} claude-code-wakatime/${VERSION}`,
-    ];
-    if (projectFolder) {
-      args.push('--project-folder');
-      args.push(projectFolder);
-    }
-
-    if (entityData.lineChanges) {
-      args.push('--ai-line-changes');
-      args.push(entityData.lineChanges.toString());
-    }
-
-    logger.debug(`Sending heartbeat: ${formatArguments(wakatime_cli, args)}`);
-
-    const execOptions = buildOptions();
-    promises.push(
-      new Promise<void>((resolve) => {
-        execFile(wakatime_cli, args, execOptions, (error, stdout, stderr) => {
-          const output = stdout.toString().trim() + stderr.toString().trim();
-          if (output) logger.error(output);
-          if (error) logger.error(error.toString());
-          resolve();
-        });
-      }),
-    );
+  const args: string[] = ['--sync-ai-activity', '--plugin', `claude-code/${claudeVersion} claude-code-wakatime/${VERSION}`];
+  if (projectFolder) {
+    args.push('--project-folder');
+    args.push(projectFolder);
   }
 
-  await Promise.all(promises);
+  logger.debug(`Syncing AI activity: ${formatArguments(wakatime_cli, args)}`);
+
+  const execOptions = buildOptions();
+  try {
+    const { stdout, stderr } = await execFileAsync(wakatime_cli, args, execOptions);
+    const output = stdout.toString().trim() + stderr.toString().trim();
+    if (output) logger.error(output);
+  } catch (e) {
+    if (e) logger.error(e.toString());
+  }
 
   return true;
 }

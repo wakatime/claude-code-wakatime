@@ -43,56 +43,24 @@ export async function updateState(inp?: Input) {
   await fs.promises.writeFile(file, JSON.stringify({ lastHeartbeatAt: timestamp() } as State, null, 2));
 }
 
-export async function getEntityFiles(inp: Input | undefined): Promise<{ entities: EntityMap; claudeVersion: string }> {
-  const entities = new Map<string, Entity>() as EntityMap;
-  let claudeVersion = '';
-
+export async function getClaudeVersion(inp: Input | undefined): Promise<string> {
   const transcriptPath = inp?.transcript_path;
   if (!transcriptPath || !fs.existsSync(transcriptPath)) {
-    return { entities, claudeVersion };
+    return '';
   }
-
-  const lastHeartbeatAt = await getLastHeartbeat(inp);
 
   const content = fs.readFileSync(transcriptPath, 'utf-8');
   for (const logLine of content.split('\n')) {
     if (!logLine.trim()) continue;
-
     try {
       const log = JSON.parse(logLine) as TranscriptLog;
-      if (!log.timestamp) continue;
-
-      if (log.version) claudeVersion = log.version;
-
-      const timestamp = new Date(log.timestamp).getTime() / 1000;
-      if (timestamp < lastHeartbeatAt) continue;
-
-      const filePath = log.toolUseResult?.filePath;
-      if (!filePath) continue;
-
-      const patches = log.toolUseResult?.structuredPatch ?? [];
-
-      let lineChanges: number;
-      if (patches.length > 0) {
-        lineChanges = patches.map((patch) => patch.newLines - patch.oldLines).reduce((p, c) => p + c, 0);
-      } else if (log.toolUseResult?.content && !log.toolUseResult?.originalFile) {
-        lineChanges = log.toolUseResult.content.split('\n').length;
-      } else {
-        continue;
-      }
-
-      const prevLineChanges = (entities.get(filePath) ?? ({ lineChanges: 0 } as Entity)).lineChanges;
-      entities.set(filePath, { lineChanges: prevLineChanges + lineChanges, type: 'file' });
+      if (log.version) return log.version;
     } catch (err) {
       logger.warnException(err);
     }
   }
 
-  if (inp.hook_event_name == 'UserPromptSubmit' && entities.size === 0) {
-    entities.set(inp.cwd, { lineChanges: 0, type: 'app' });
-  }
-
-  return { entities, claudeVersion };
+  return '';
 }
 
 export function formatArguments(binary: string, args: string[]): string {
@@ -129,15 +97,6 @@ export function buildOptions(stdin?: boolean): Object {
     options['env'] = { ...process.env, WAKATIME_HOME: getHomeDirectory() };
   }
   return options;
-}
-
-async function getLastHeartbeat(inp: Input) {
-  try {
-    const stateData = JSON.parse(await fs.promises.readFile(getStateFile(inp), 'utf-8')) as State;
-    return stateData.lastHeartbeatAt ?? 0;
-  } catch {
-    return 0;
-  }
 }
 
 function timestamp() {
