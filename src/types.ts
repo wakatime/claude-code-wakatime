@@ -60,10 +60,3 @@ export type TranscriptLog = {
     replaceAll?: string;
   };
 };
-
-export type Entity = {
-  type: 'file' | 'app';
-  lineChanges: number;
-};
-
-export type EntityMap = Map<string, Entity>;

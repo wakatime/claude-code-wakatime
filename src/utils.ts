@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as child_process from 'child_process';
 import { StdioOptions } from 'child_process';
-import { Entity, EntityMap, Input, State, TranscriptLog } from './types';
+import { Input, State, TranscriptLog } from './types';
 import { logger } from './logger';
 
 export function parseInput() {
