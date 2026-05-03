@@ -16,8 +16,15 @@ export type HookEvent =
 export type Input = {
   session_id: string;
   transcript_path: string;
+  agent_transcript_path?: string;
   cwd: string;
   hook_event_name: HookEvent;
+  isSidechain?: boolean;
+  isSideChain?: boolean;
+  parentUuid?: string;
+  parent_uuid?: string;
+  parentSessionId?: string;
+  parent_session_id?: string;
 };
 
 export type TranscriptLog = {

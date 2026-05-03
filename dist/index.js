@@ -352,25 +352,25 @@ var require_utils = __commonJS({
       }
       mkdirSync2(folder);
     };
-    Utils.prototype.writeFileTo = function(path4, content, overwrite, attr) {
+    Utils.prototype.writeFileTo = function(path5, content, overwrite, attr) {
       const self = this;
-      if (self.fs.existsSync(path4)) {
+      if (self.fs.existsSync(path5)) {
         if (!overwrite) return false;
-        var stat = self.fs.statSync(path4);
+        var stat = self.fs.statSync(path5);
         if (stat.isDirectory()) {
           return false;
         }
       }
-      var folder = pth.dirname(path4);
+      var folder = pth.dirname(path5);
       if (!self.fs.existsSync(folder)) {
         self.makeDir(folder);
       }
       var fd;
       try {
-        fd = self.fs.openSync(path4, "w", 438);
+        fd = self.fs.openSync(path5, "w", 438);
       } catch (e) {
-        self.fs.chmodSync(path4, 438);
-        fd = self.fs.openSync(path4, "w", 438);
+        self.fs.chmodSync(path5, 438);
+        fd = self.fs.openSync(path5, "w", 438);
       }
       if (fd) {
         try {
@@ -379,31 +379,31 @@ var require_utils = __commonJS({
           self.fs.closeSync(fd);
         }
       }
-      self.fs.chmodSync(path4, attr || 438);
+      self.fs.chmodSync(path5, attr || 438);
       return true;
     };
-    Utils.prototype.writeFileToAsync = function(path4, content, overwrite, attr, callback) {
+    Utils.prototype.writeFileToAsync = function(path5, content, overwrite, attr, callback) {
       if (typeof attr === "function") {
         callback = attr;
         attr = void 0;
       }
       const self = this;
-      self.fs.exists(path4, function(exist) {
+      self.fs.exists(path5, function(exist) {
         if (exist && !overwrite) return callback(false);
-        self.fs.stat(path4, function(err, stat) {
+        self.fs.stat(path5, function(err, stat) {
           if (exist && stat.isDirectory()) {
             return callback(false);
           }
-          var folder = pth.dirname(path4);
+          var folder = pth.dirname(path5);
           self.fs.exists(folder, function(exists) {
             if (!exists) self.makeDir(folder);
-            self.fs.open(path4, "w", 438, function(err2, fd) {
+            self.fs.open(path5, "w", 438, function(err2, fd) {
               if (err2) {
-                self.fs.chmod(path4, 438, function() {
-                  self.fs.open(path4, "w", 438, function(err3, fd2) {
+                self.fs.chmod(path5, 438, function() {
+                  self.fs.open(path5, "w", 438, function(err3, fd2) {
                     self.fs.write(fd2, content, 0, content.length, 0, function() {
                       self.fs.close(fd2, function() {
-                        self.fs.chmod(path4, attr || 438, function() {
+                        self.fs.chmod(path5, attr || 438, function() {
                           callback(true);
                         });
                       });
@@ -413,13 +413,13 @@ var require_utils = __commonJS({
               } else if (fd) {
                 self.fs.write(fd, content, 0, content.length, 0, function() {
                   self.fs.close(fd, function() {
-                    self.fs.chmod(path4, attr || 438, function() {
+                    self.fs.chmod(path5, attr || 438, function() {
                       callback(true);
                     });
                   });
                 });
               } else {
-                self.fs.chmod(path4, attr || 438, function() {
+                self.fs.chmod(path5, attr || 438, function() {
                   callback(true);
                 });
               }
@@ -428,7 +428,7 @@ var require_utils = __commonJS({
         });
       });
     };
-    Utils.prototype.findFiles = function(path4) {
+    Utils.prototype.findFiles = function(path5) {
       const self = this;
       function findSync(dir, pattern, recursive) {
         if (typeof pattern === "boolean") {
@@ -437,16 +437,16 @@ var require_utils = __commonJS({
         }
         let files = [];
         self.fs.readdirSync(dir).forEach(function(file) {
-          const path5 = pth.join(dir, file);
-          const stat = self.fs.statSync(path5);
-          if (!pattern || pattern.test(path5)) {
-            files.push(pth.normalize(path5) + (stat.isDirectory() ? self.sep : ""));
+          const path6 = pth.join(dir, file);
+          const stat = self.fs.statSync(path6);
+          if (!pattern || pattern.test(path6)) {
+            files.push(pth.normalize(path6) + (stat.isDirectory() ? self.sep : ""));
           }
-          if (stat.isDirectory() && recursive) files = files.concat(findSync(path5, pattern, recursive));
+          if (stat.isDirectory() && recursive) files = files.concat(findSync(path6, pattern, recursive));
         });
         return files;
       }
-      return findSync(path4, void 0, true);
+      return findSync(path5, void 0, true);
     };
     Utils.prototype.findFilesAsync = function(dir, cb) {
       const self = this;
@@ -501,14 +501,14 @@ var require_utils = __commonJS({
           return "UNSUPPORTED (" + method + ")";
       }
     };
-    Utils.canonical = function(path4) {
-      if (!path4) return "";
-      const safeSuffix = pth.posix.normalize("/" + path4.split("\\").join("/"));
+    Utils.canonical = function(path5) {
+      if (!path5) return "";
+      const safeSuffix = pth.posix.normalize("/" + path5.split("\\").join("/"));
       return pth.join(".", safeSuffix);
     };
-    Utils.zipnamefix = function(path4) {
-      if (!path4) return "";
-      const safeSuffix = pth.posix.normalize("/" + path4.split("\\").join("/"));
+    Utils.zipnamefix = function(path5) {
+      if (!path5) return "";
+      const safeSuffix = pth.posix.normalize("/" + path5.split("\\").join("/"));
       return pth.posix.join(".", safeSuffix);
     };
     Utils.findLast = function(arr, callback) {
@@ -525,9 +525,9 @@ var require_utils = __commonJS({
       prefix = pth.resolve(pth.normalize(prefix));
       var parts = name.split("/");
       for (var i = 0, l = parts.length; i < l; i++) {
-        var path4 = pth.normalize(pth.join(prefix, parts.slice(i, l).join(pth.sep)));
-        if (path4.indexOf(prefix) === 0) {
-          return path4;
+        var path5 = pth.normalize(pth.join(prefix, parts.slice(i, l).join(pth.sep)));
+        if (path5.indexOf(prefix) === 0) {
+          return path5;
         }
       }
       return pth.normalize(pth.join(prefix, pth.basename(name)));
@@ -567,8 +567,8 @@ var require_utils = __commonJS({
 var require_fattr = __commonJS({
   "node_modules/adm-zip/util/fattr.js"(exports2, module2) {
     var pth = require("path");
-    module2.exports = function(path4, { fs: fs5 }) {
-      var _path = path4 || "", _obj = newAttr(), _stat = null;
+    module2.exports = function(path5, { fs: fs5 }) {
+      var _path = path5 || "", _obj = newAttr(), _stat = null;
       function newAttr() {
         return {
           directory: false,
@@ -1955,8 +1955,8 @@ var require_adm_zip = __commonJS({
         return null;
       }
       function fixPath(zipPath) {
-        const { join: join3, normalize, sep } = pth.posix;
-        return join3(".", normalize(sep + zipPath.split("\\").join(sep) + sep));
+        const { join: join4, normalize, sep: sep2 } = pth.posix;
+        return join4(".", normalize(sep2 + zipPath.split("\\").join(sep2) + sep2));
       }
       function filenameFilter(filterfn) {
         if (filterfn instanceof RegExp) {
@@ -2351,10 +2351,10 @@ var require_adm_zip = __commonJS({
          * @param {function|string} [props.namefix] - optional function to help fix filename
          */
         addLocalFolderPromise: function(localPath2, props) {
-          return new Promise((resolve, reject) => {
+          return new Promise((resolve2, reject) => {
             this.addLocalFolderAsync2(Object.assign({ localPath: localPath2 }, props), (err, done) => {
               if (err) reject(err);
-              if (done) resolve(this);
+              if (done) resolve2(this);
             });
           });
         },
@@ -2541,12 +2541,12 @@ var require_adm_zip = __commonJS({
           keepOriginalPermission = get_Bool(false, keepOriginalPermission);
           overwrite = get_Bool(false, overwrite);
           if (!callback) {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve2, reject) => {
               this.extractAllToAsync(targetPath, overwrite, keepOriginalPermission, function(err) {
                 if (err) {
                   reject(err);
                 } else {
-                  resolve(this);
+                  resolve2(this);
                 }
               });
             });
@@ -2644,11 +2644,11 @@ var require_adm_zip = __commonJS({
                  */
         writeZipPromise: function(targetFileName, props) {
           const { overwrite, perm } = Object.assign({ overwrite: true }, props);
-          return new Promise((resolve, reject) => {
+          return new Promise((resolve2, reject) => {
             if (!targetFileName && opts.filename) targetFileName = opts.filename;
             if (!targetFileName) reject("ADM-ZIP: ZIP File Name Missing");
             this.toBufferPromise().then((zipData) => {
-              const ret = (done) => done ? resolve(done) : reject("ADM-ZIP: Wasn't able to write zip file");
+              const ret = (done) => done ? resolve2(done) : reject("ADM-ZIP: Wasn't able to write zip file");
               filetools.writeFileToAsync(targetFileName, zipData, overwrite, perm, ret);
             }, reject);
           });
@@ -2657,8 +2657,8 @@ var require_adm_zip = __commonJS({
          * @returns {Promise<Buffer>} A promise to the Buffer.
          */
         toBufferPromise: function() {
-          return new Promise((resolve, reject) => {
-            _zip.toAsyncBuffer(resolve, reject);
+          return new Promise((resolve2, reject) => {
+            _zip.toAsyncBuffer(resolve2, reject);
           });
         },
         /**
@@ -4598,10 +4598,10 @@ var require_posix = __commonJS({
     exports2.sync = exports2.isexe = void 0;
     var fs_1 = require("fs");
     var promises_1 = require("fs/promises");
-    var isexe = async (path4, options2 = {}) => {
+    var isexe = async (path5, options2 = {}) => {
       const { ignoreErrors = false } = options2;
       try {
-        return checkStat(await (0, promises_1.stat)(path4), options2);
+        return checkStat(await (0, promises_1.stat)(path5), options2);
       } catch (e) {
         const er = e;
         if (ignoreErrors || er.code === "EACCES")
@@ -4610,10 +4610,10 @@ var require_posix = __commonJS({
       }
     };
     exports2.isexe = isexe;
-    var sync2 = (path4, options2 = {}) => {
+    var sync2 = (path5, options2 = {}) => {
       const { ignoreErrors = false } = options2;
       try {
-        return checkStat((0, fs_1.statSync)(path4), options2);
+        return checkStat((0, fs_1.statSync)(path5), options2);
       } catch (e) {
         const er = e;
         if (ignoreErrors || er.code === "EACCES")
@@ -4651,10 +4651,10 @@ var require_win32 = __commonJS({
     exports2.sync = exports2.isexe = void 0;
     var fs_1 = require("fs");
     var promises_1 = require("fs/promises");
-    var isexe = async (path4, options2 = {}) => {
+    var isexe = async (path5, options2 = {}) => {
       const { ignoreErrors = false } = options2;
       try {
-        return checkStat(await (0, promises_1.stat)(path4), path4, options2);
+        return checkStat(await (0, promises_1.stat)(path5), path5, options2);
       } catch (e) {
         const er = e;
         if (ignoreErrors || er.code === "EACCES")
@@ -4663,10 +4663,10 @@ var require_win32 = __commonJS({
       }
     };
     exports2.isexe = isexe;
-    var sync2 = (path4, options2 = {}) => {
+    var sync2 = (path5, options2 = {}) => {
       const { ignoreErrors = false } = options2;
       try {
-        return checkStat((0, fs_1.statSync)(path4), path4, options2);
+        return checkStat((0, fs_1.statSync)(path5), path5, options2);
       } catch (e) {
         const er = e;
         if (ignoreErrors || er.code === "EACCES")
@@ -4675,7 +4675,7 @@ var require_win32 = __commonJS({
       }
     };
     exports2.sync = sync2;
-    var checkPathExt = (path4, options2) => {
+    var checkPathExt = (path5, options2) => {
       const { pathExt = process.env.PATHEXT || "" } = options2;
       const peSplit = pathExt.split(";");
       if (peSplit.indexOf("") !== -1) {
@@ -4683,14 +4683,14 @@ var require_win32 = __commonJS({
       }
       for (let i = 0; i < peSplit.length; i++) {
         const p = peSplit[i].toLowerCase();
-        const ext = path4.substring(path4.length - p.length).toLowerCase();
+        const ext = path5.substring(path5.length - p.length).toLowerCase();
         if (p && ext === p) {
           return true;
         }
       }
       return false;
     };
-    var checkStat = (stat, path4, options2) => stat.isFile() && checkPathExt(path4, options2);
+    var checkStat = (stat, path5, options2) => stat.isFile() && checkPathExt(path5, options2);
   }
 });
 
@@ -4754,9 +4754,9 @@ var require_cjs = __commonJS({
 var require_lib = __commonJS({
   "node_modules/which/lib/index.js"(exports2, module2) {
     var { isexe, sync: isexeSync } = require_cjs();
-    var { join: join3, delimiter, sep, posix } = require("path");
+    var { join: join4, delimiter, sep: sep2, posix } = require("path");
     var isWindows2 = process.platform === "win32";
-    var rSlash = new RegExp(`[${posix.sep}${sep === posix.sep ? "" : sep}]`.replace(/(\\)/g, "\\$1"));
+    var rSlash = new RegExp(`[${posix.sep}${sep2 === posix.sep ? "" : sep2}]`.replace(/(\\)/g, "\\$1"));
     var rRel = new RegExp(`^\\.${rSlash.source}`);
     var getNotFoundError = (cmd) => Object.assign(new Error(`not found: ${cmd}`), { code: "ENOENT" });
     var getPathInfo = (cmd, {
@@ -4783,7 +4783,7 @@ var require_lib = __commonJS({
     var getPathPart = (raw, cmd) => {
       const pathPart = /^".*"$/.test(raw) ? raw.slice(1, -1) : raw;
       const prefix = !pathPart && rRel.test(cmd) ? cmd.slice(0, 2) : "";
-      return prefix + join3(pathPart, cmd);
+      return prefix + join4(pathPart, cmd);
     };
     var which2 = async (cmd, opt = {}) => {
       const { pathEnv, pathExt, pathExtExe } = getPathInfo(cmd, opt);
@@ -4844,11 +4844,12 @@ var import_util = require("util");
 
 // src/options.ts
 var fs3 = __toESM(require("fs"));
-var path2 = __toESM(require("path"));
+var path3 = __toESM(require("path"));
 
 // src/utils.ts
 var fs2 = __toESM(require("fs"));
 var os2 = __toESM(require("os"));
+var path2 = __toESM(require("path"));
 
 // src/logger.ts
 var import_fs = __toESM(require("fs"));
@@ -4933,7 +4934,9 @@ function parseInput() {
   return void 0;
 }
 function getStateFile(inp) {
-  return `${inp.transcript_path}.wakatime`;
+  const transcriptPath = getStateTranscriptPath(inp);
+  if (transcriptPath) return `${transcriptPath}.wakatime`;
+  return path2.join(getHomeDirectory(), ".wakatime", "claude-code", `${sanitizeFileName(getFallbackStateId(inp))}.wakatime`);
 }
 function shouldSendHeartbeat(inp) {
   if (!inp) return false;
@@ -4947,14 +4950,20 @@ function shouldSendHeartbeat(inp) {
 async function updateState(inp) {
   if (!inp) return;
   const file = getStateFile(inp);
+  await fs2.promises.mkdir(path2.dirname(file), { recursive: true });
   await fs2.promises.writeFile(file, JSON.stringify({ lastHeartbeatAt: timestamp() }, null, 2));
 }
 async function getClaudeVersion(inp) {
-  const transcriptPath = inp?.transcript_path;
-  if (!transcriptPath || !fs2.existsSync(transcriptPath)) {
+  const transcriptPath = inp?.transcript_path?.trim();
+  if (!transcriptPath) {
     return "";
   }
-  const content = fs2.readFileSync(transcriptPath, "utf-8");
+  let content;
+  try {
+    content = fs2.readFileSync(transcriptPath, "utf-8");
+  } catch {
+    return "";
+  }
   for (const logLine of content.split("\n")) {
     if (!logLine.trim()) continue;
     try {
@@ -5001,6 +5010,95 @@ function buildOptions(stdin) {
 function timestamp() {
   return Date.now() / 1e3;
 }
+function getStateTranscriptPath(inp) {
+  const transcriptPath = inp.transcript_path?.trim();
+  const parentTranscriptPath = getParentStateTranscriptPath(inp);
+  if (parentTranscriptPath) return parentTranscriptPath;
+  if (transcriptPath && directoryExists(path2.dirname(transcriptPath))) return transcriptPath;
+  return void 0;
+}
+function getParentStateTranscriptPath(inp) {
+  const transcriptPath = inp.transcript_path?.trim();
+  if (inp.hook_event_name === "SubagentStop" && inp.agent_transcript_path && transcriptPath && directoryExists(path2.dirname(transcriptPath))) {
+    return transcriptPath;
+  }
+  const parentSessionId = getInputParentSessionId(inp);
+  if (parentSessionId && transcriptPath) {
+    const projectDir = getClaudeProjectDirectoryFromTranscriptPath(transcriptPath);
+    if (projectDir && directoryExists(projectDir)) return path2.join(projectDir, `${parentSessionId}.jsonl`);
+  }
+  const parentFromPath = getParentTranscriptPathFromSubagentPath(transcriptPath);
+  if (parentFromPath && directoryExists(path2.dirname(parentFromPath))) return parentFromPath;
+  return void 0;
+}
+function getParentTranscriptPathFromSubagentPath(transcriptPath) {
+  if (!transcriptPath) return void 0;
+  const normalized = path2.resolve(transcriptPath);
+  const parts = normalized.split(path2.sep);
+  const subagentsIndex = parts.lastIndexOf("subagents");
+  if (subagentsIndex < 2) return void 0;
+  const parentSessionId = parts[subagentsIndex - 1];
+  const projectDir = joinPathParts(parts.slice(0, subagentsIndex - 1));
+  return path2.join(projectDir, `${parentSessionId}.jsonl`);
+}
+function getClaudeProjectDirectoryFromTranscriptPath(transcriptPath) {
+  if (!transcriptPath) return void 0;
+  const normalized = path2.resolve(transcriptPath);
+  const marker = `${path2.sep}.claude${path2.sep}projects${path2.sep}`;
+  const index = normalized.indexOf(marker);
+  if (index === -1) return void 0;
+  const afterProjects = normalized.substring(index + marker.length);
+  const projectDir = afterProjects.split(path2.sep)[0];
+  if (!projectDir) return void 0;
+  return path2.join(normalized.substring(0, index + marker.length - 1), projectDir);
+}
+function getSidechainParentUuid(inp) {
+  const inputParentUuid = inp.parentUuid || inp.parent_uuid;
+  if (inputParentUuid) return inputParentUuid;
+  const transcriptPath = inp.transcript_path?.trim();
+  if (!isSidechainInput(inp) || !transcriptPath || !fs2.existsSync(transcriptPath)) return void 0;
+  let content;
+  try {
+    content = fs2.readFileSync(transcriptPath, "utf-8");
+  } catch {
+    return void 0;
+  }
+  for (const logLine of content.split("\n")) {
+    if (!logLine.trim()) continue;
+    try {
+      const log = JSON.parse(logLine);
+      if (log.isSidechain && log.parentUuid) return log.parentUuid;
+    } catch (err) {
+      logger.warnException(err);
+    }
+  }
+  return void 0;
+}
+function directoryExists(dir) {
+  try {
+    return fs2.statSync(dir).isDirectory();
+  } catch {
+    return false;
+  }
+}
+function getFallbackStateId(inp) {
+  const parentUuid = getSidechainParentUuid(inp);
+  if (parentUuid) return `parent-${parentUuid}`;
+  return inp.session_id || "unknown";
+}
+function getInputParentSessionId(inp) {
+  return inp.parentSessionId || inp.parent_session_id;
+}
+function isSidechainInput(inp) {
+  return inp.isSidechain === true || inp.isSideChain === true || inp.hook_event_name === "SubagentStop";
+}
+function joinPathParts(parts) {
+  if (parts.length && parts[0] === "") return path2.join(path2.sep, ...parts.slice(1));
+  return path2.join(...parts);
+}
+function sanitizeFileName(name) {
+  return name.replace(/[^A-Za-z0-9._-]/g, "_").substring(0, 255);
+}
 function wrapArg(arg) {
   if (arg.indexOf(" ") > -1) return '"' + arg.replace(/"/g, '\\"') + '"';
   return arg;
@@ -5018,7 +5116,7 @@ function obfuscateKey(key) {
 var Options = class {
   constructor() {
     const home = getHomeDirectory();
-    const wakaFolder = path2.join(home, ".wakatime");
+    const wakaFolder = path3.join(home, ".wakatime");
     try {
       if (!fs3.existsSync(wakaFolder)) {
         fs3.mkdirSync(wakaFolder, { recursive: true });
@@ -5028,9 +5126,9 @@ var Options = class {
       console.error(e);
       throw e;
     }
-    this.configFile = path2.join(home, ".wakatime.cfg");
-    this.internalConfigFile = path2.join(this.resourcesLocation, "wakatime-internal.cfg");
-    this.logFile = path2.join(this.resourcesLocation, "wakatime.log");
+    this.configFile = path3.join(home, ".wakatime.cfg");
+    this.internalConfigFile = path3.join(this.resourcesLocation, "wakatime-internal.cfg");
+    this.logFile = path3.join(this.resourcesLocation, "wakatime.log");
   }
   getSetting(section, key, internal) {
     try {
@@ -5183,7 +5281,7 @@ var http = __toESM(require("http"));
 var https = __toESM(require("https"));
 var net = __toESM(require("net"));
 var os3 = __toESM(require("os"));
-var path3 = __toESM(require("path"));
+var path4 = __toESM(require("path"));
 var semver = __toESM(require_semver2());
 var import_promises = require("stream/promises");
 var tls = __toESM(require("tls"));
@@ -5219,7 +5317,7 @@ var Dependencies = class {
       rejectUnauthorized,
       servername: proxyUrl.hostname
     }) : net.connect(proxyPort, proxyUrl.hostname);
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve2, reject) => {
       const auth = this.getProxyAuthorizationHeader(proxyUrl);
       const cleanup = () => {
         baseSocket.removeListener("error", onError);
@@ -5240,7 +5338,7 @@ var Dependencies = class {
           reject(new Error(`Proxy CONNECT failed: ${statusLine}`));
           return;
         }
-        resolve(baseSocket);
+        resolve2(baseSocket);
       };
       const connectRequest = `CONNECT ${targetUrl.hostname}:${targetUrl.port || 443} HTTP/1.1\r
 Host: ${targetUrl.hostname}:${targetUrl.port || 443}\r
@@ -5266,7 +5364,7 @@ ${auth ? `Proxy-Authorization: ${auth}\r
     const proxy = options2?.proxy ? new URL(options2.proxy) : void 0;
     const headers = { ...options2?.headers };
     const rejectUnauthorized = !options2?.noSSLVerify;
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve2, reject) => {
       let req;
       try {
         if (proxy) {
@@ -5290,7 +5388,7 @@ ${auth ? `Proxy-Authorization: ${auth}\r
               agent: false,
               createConnection: () => secureSocket
             },
-            (response) => resolve(response)
+            (response) => resolve2(response)
           );
         } else {
           const isHttpsRequest = proxy ? proxy.protocol === "https:" : targetUrl.protocol === "https:";
@@ -5311,7 +5409,7 @@ ${auth ? `Proxy-Authorization: ${auth}\r
             requestOptions.rejectUnauthorized = rejectUnauthorized;
             requestOptions.servername = requestUrl.hostname;
           }
-          req = requestModule.request(requestOptions, (response) => resolve(response));
+          req = requestModule.request(requestOptions, (response) => resolve2(response));
         }
         req.once("error", reject);
         req.end();
@@ -5362,16 +5460,16 @@ ${auth ? `Proxy-Authorization: ${auth}\r
     const arch2 = this.architecture();
     const ext = isWindows() ? ".exe" : "";
     const binary = `wakatime-cli-${osname}-${arch2}${ext}`;
-    this.cliLocation = path3.join(this.resourcesLocation, binary);
+    this.cliLocation = path4.join(this.resourcesLocation, binary);
     return this.cliLocation;
   }
   getCliLocationGlobal() {
     if (this.cliLocationGlobal) return this.cliLocationGlobal;
     const binaryName = `wakatime-cli${isWindows() ? ".exe" : ""}`;
-    const path4 = which.sync(binaryName, { nothrow: true });
-    if (path4) {
-      this.cliLocationGlobal = path4;
-      this.logger.debug(`Using global wakatime-cli location: ${path4}`);
+    const path5 = which.sync(binaryName, { nothrow: true });
+    if (path5) {
+      this.cliLocationGlobal = path5;
+      this.logger.debug(`Using global wakatime-cli location: ${path5}`);
     }
     return this.cliLocationGlobal;
   }
@@ -5473,7 +5571,7 @@ ${auth ? `Proxy-Authorization: ${auth}\r
   installCli(callback) {
     this.logger.debug(`Downloading wakatime-cli from GitHub...`);
     const url = this.cliDownloadUrl();
-    let zipFile = path3.join(this.resourcesLocation, "wakatime-cli" + this.randStr() + ".zip");
+    let zipFile = path4.join(this.resourcesLocation, "wakatime-cli" + this.randStr() + ".zip");
     this.downloadFile(
       url,
       zipFile,
@@ -5506,7 +5604,7 @@ ${auth ? `Proxy-Authorization: ${auth}\r
           this.logger.warnException(e);
         }
         const ext = isWindows() ? ".exe" : "";
-        const link = path3.join(this.resourcesLocation, `wakatime-cli${ext}`);
+        const link = path4.join(this.resourcesLocation, `wakatime-cli${ext}`);
         if (!this.isSymlink(link)) {
           try {
             this.logger.debug(`Create symlink from wakatime-cli to ${cli}`);
