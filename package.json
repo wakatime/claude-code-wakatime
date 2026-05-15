@@ -9,9 +9,10 @@
     "prebuild": "node scripts/generate-version.js",
     "build": "esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js",
     "watch": "npm run prebuild && tsc --watch",
-    "release:major": "npm version major && npm run build && git commit -am \"build release\" && git push && git push --tags",
-    "release:minor": "npm version minor && npm run build && git commit -am \"build release\" && git push && git push --tags",
-    "release:patch": "npm version patch && npm run build && git commit -am \"build release\" && git push && git push --tags"
+    "version": "npm run build && git add src/version.ts .claude-plugin/plugin.json .claude-plugin/marketplace.json dist/index.js",
+    "release:major": "npm version major && git push && git push --tags",
+    "release:minor": "npm version minor && git push && git push --tags",
+    "release:patch": "npm version patch && git push && git push --tags"
   },
   "repository": {
     "type": "git",

@@ -5271,7 +5271,7 @@ var Options = class {
 };
 
 // src/version.ts
-var VERSION = "3.1.6";
+var VERSION = "4.1.0";
 
 // src/dependencies.ts
 var import_adm_zip = __toESM(require_adm_zip());
