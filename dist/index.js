@@ -5532,8 +5532,8 @@ ${auth ? `Proxy-Authorization: ${auth}\r
               this.logger.debug(`Found an updated wakatime-cli ${latestVersion}`);
               callback(false);
             } else {
-              this.logger.debug("Unable to find latest wakatime-cli version");
-              callback(false);
+              this.logger.debug("Unable to find latest wakatime-cli version; keeping installed CLI");
+              callback(true);
             }
           });
         } else {
@@ -5553,11 +5553,11 @@ ${auth ? `Proxy-Authorization: ${auth}\r
       proxy: proxy ?? void 0,
       noSSLVerify: noSSLVerify === "true"
     }).then(({ statusCode, body }) => {
+      this.recordCliVersionCheck();
       if (statusCode == 200) {
         this.logger.debug(`GitHub API Response ${statusCode}`);
         const latestCliVersion = body["tag_name"];
         this.logger.debug(`Latest wakatime-cli version from GitHub: ${latestCliVersion}`);
-        this.options.setSetting("internal", "cli_version_last_accessed", String(Math.round(Date.now() / 1e3)), true);
         callback(latestCliVersion);
       } else {
         this.logger.warn(`GitHub API Response ${statusCode}`);
@@ -5565,8 +5565,12 @@ ${auth ? `Proxy-Authorization: ${auth}\r
       }
     }).catch((e) => {
       this.logger.warn(`GitHub API Response Error: ${e}`);
+      this.recordCliVersionCheck();
       callback("");
     });
+  }
+  recordCliVersionCheck() {
+    this.options.setSetting("internal", "cli_version_last_accessed", String(Math.round(Date.now() / 1e3)), true);
   }
   installCli(callback) {
     this.logger.debug(`Downloading wakatime-cli from GitHub...`);
