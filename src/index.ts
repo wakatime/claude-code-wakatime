@@ -48,7 +48,7 @@ async function main() {
   try {
     if (inp) logger.debug(JSON.stringify(inp, null, 2));
 
-    deps.checkAndInstallCli();
+    await new Promise<void>((resolve) => deps.checkAndInstallCli(resolve));
 
     if (shouldSendHeartbeat(inp)) {
       if (await sendHeartbeat(inp)) {

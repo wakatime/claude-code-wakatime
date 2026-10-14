@@ -5444,13 +5444,18 @@ ${auth ? `Proxy-Authorization: ${auth}\r
     };
   }
   async downloadToFile(url, outputFile, options2) {
-    const response = await this.requestWithRedirects(url, options2);
-    const statusCode = response.statusCode ?? 0;
-    if (statusCode < 200 || statusCode >= 300) {
-      response.resume();
-      throw new Error(`Unexpected status code ${statusCode}`);
+    try {
+      const response = await this.requestWithRedirects(url, options2);
+      const statusCode = response.statusCode ?? 0;
+      if (statusCode < 200 || statusCode >= 300) {
+        response.resume();
+        throw new Error(`Unexpected status code ${statusCode}`);
+      }
+      await (0, import_promises.pipeline)(response, fs4.createWriteStream(outputFile));
+    } catch (error) {
+      this.cleanupFile(outputFile);
+      throw error;
     }
-    await (0, import_promises.pipeline)(response, fs4.createWriteStream(outputFile));
   }
   getCliLocation() {
     if (this.cliLocation) return this.cliLocation;
@@ -5572,18 +5577,84 @@ ${auth ? `Proxy-Authorization: ${auth}\r
   recordCliVersionCheck() {
     this.options.setSetting("internal", "cli_version_last_accessed", String(Math.round(Date.now() / 1e3)), true);
   }
+  cleanupFile(file) {
+    try {
+      fs4.unlinkSync(file);
+    } catch (error) {
+      if (error.code !== "ENOENT") this.logger.warnException(error);
+    }
+  }
   installCli(callback) {
-    this.logger.debug(`Downloading wakatime-cli from GitHub...`);
-    const url = this.cliDownloadUrl();
-    let zipFile = path4.join(this.resourcesLocation, "wakatime-cli" + this.randStr() + ".zip");
-    this.downloadFile(
-      url,
-      zipFile,
-      () => {
-        this.extractCli(zipFile, callback);
-      },
-      callback
-    );
+    const lock = path4.join(this.resourcesLocation, "cli-install.lock");
+    const failure = path4.join(this.resourcesLocation, "cli-install-last-failed");
+    let lockFd;
+    try {
+      try {
+        const stat = fs4.statSync(lock);
+        if (Date.now() - stat.mtimeMs > 10 * 60 * 1e3) {
+          const pid = Number(fs4.readFileSync(lock, "utf8"));
+          if (Number.isInteger(pid) && pid > 0) {
+            try {
+              process.kill(pid, 0);
+            } catch (error) {
+              if (error.code === "ESRCH") fs4.unlinkSync(lock);
+            }
+          } else {
+            fs4.unlinkSync(lock);
+          }
+        }
+      } catch (error) {
+        if (error.code !== "ENOENT") throw error;
+      }
+      lockFd = fs4.openSync(lock, "wx");
+    } catch (error) {
+      if (error.code === "EEXIST") {
+        this.logger.debug("Skip installing wakatime-cli because another process is installing it.");
+      } else {
+        this.logger.warnException(error);
+      }
+      callback();
+      return;
+    }
+    let zipFile;
+    let finished = false;
+    const finish = (success) => {
+      if (finished) return;
+      finished = true;
+      if (zipFile) this.cleanupFile(zipFile);
+      try {
+        if (success === false) fs4.writeFileSync(failure, String(Date.now()));
+        else if (success === true) this.cleanupFile(failure);
+      } catch (error) {
+        this.logger.warnException(error);
+      } finally {
+        try {
+          fs4.closeSync(lockFd);
+        } catch (error) {
+          this.logger.warnException(error);
+        }
+        this.cleanupFile(lock);
+      }
+      callback();
+    };
+    try {
+      fs4.writeFileSync(lockFd, String(process.pid));
+      if (fs4.existsSync(failure) && Date.now() - fs4.statSync(failure).mtimeMs < 3600 * 1e3) {
+        this.logger.debug("Skip installing wakatime-cli because an installation failed within the last hour.");
+        finish();
+        return;
+      }
+      this.logger.debug("Downloading wakatime-cli from GitHub...");
+      const url = this.cliDownloadUrl();
+      zipFile = path4.join(this.resourcesLocation, "wakatime-cli" + this.randStr() + ".zip");
+      this.downloadFile(url, zipFile, () => {
+        this.extractCli(zipFile, finish);
+      }, () => finish(false));
+    } catch (error) {
+      this.logger.warn("Failed to install wakatime-cli");
+      this.logger.warnException(error);
+      finish(false);
+    }
   }
   isSymlink(file) {
     try {
@@ -5594,38 +5665,46 @@ ${auth ? `Proxy-Authorization: ${auth}\r
   }
   extractCli(zipFile, callback) {
     this.logger.debug(`Extracting wakatime-cli into "${this.resourcesLocation}"...`);
-    this.backupCli();
+    try {
+      this.backupCli();
+    } catch (error) {
+      this.logger.warn("Failed to install wakatime-cli: could not back up the existing binary");
+      this.logger.warnException(error);
+      callback(false);
+      return;
+    }
     this.unzip(zipFile, this.resourcesLocation, (unzipped) => {
       if (!unzipped) {
         this.restoreCli();
-      } else if (!isWindows()) {
-        this.removeCli();
-        const cli = this.getCliLocation();
-        try {
-          this.logger.debug("Chmod 755 wakatime-cli...");
+        callback(false);
+        return;
+      }
+      try {
+        if (!isWindows()) {
+          const cli = this.getCliLocation();
           fs4.chmodSync(cli, 493);
-        } catch (e) {
-          this.logger.warnException(e);
-        }
-        const ext = isWindows() ? ".exe" : "";
-        const link = path4.join(this.resourcesLocation, `wakatime-cli${ext}`);
-        if (!this.isSymlink(link)) {
-          try {
-            this.logger.debug(`Create symlink from wakatime-cli to ${cli}`);
-            fs4.symlinkSync(cli, link);
-          } catch (e) {
-            this.logger.warnException(e);
+          const link = path4.join(this.resourcesLocation, "wakatime-cli");
+          if (!this.isSymlink(link)) {
             try {
+              fs4.symlinkSync(cli, link);
+            } catch (error) {
+              this.logger.warnException(error);
               fs4.copyFileSync(cli, link);
               fs4.chmodSync(link, 493);
-            } catch (e2) {
-              this.logger.warnException(e2);
             }
           }
         }
+      } catch (error) {
+        this.logger.warn("Failed to install wakatime-cli");
+        this.logger.warnException(error);
+        this.restoreCli();
+        callback(false);
+        return;
       }
+      this.removeCli();
+      this.cliInstalled = true;
       this.logger.debug("Finished extracting wakatime-cli.");
-      callback();
+      callback(true);
     });
   }
   backupCli() {
@@ -5635,15 +5714,15 @@ ${auth ? `Proxy-Authorization: ${auth}\r
   }
   restoreCli() {
     const backup = `${this.getCliLocation()}.backup`;
-    if (fs4.existsSync(backup)) {
-      fs4.renameSync(backup, this.getCliLocation());
+    try {
+      if (fs4.existsSync(backup)) fs4.renameSync(backup, this.getCliLocation());
+    } catch (error) {
+      this.logger.warn("Failed to restore wakatime-cli backup");
+      this.logger.warnException(error);
     }
   }
   removeCli() {
-    const backup = `${this.getCliLocation()}.backup`;
-    if (fs4.existsSync(backup)) {
-      fs4.unlinkSync(backup);
-    }
+    this.cleanupFile(`${this.getCliLocation()}.backup`);
   }
   downloadFile(url, outputFile, callback, error) {
     const proxy = this.options.getSetting("settings", "proxy");
@@ -5652,32 +5731,23 @@ ${auth ? `Proxy-Authorization: ${auth}\r
       headers: this.getRequestHeaders(),
       proxy: proxy ?? void 0,
       noSSLVerify: noSSLVerify === "true"
-    }).then(() => {
-      callback();
-    }).catch((e) => {
+    }).then(callback, (e) => {
       this.logger.warn(`Failed to download ${url}`);
       this.logger.warn(e.toString());
       error();
     });
   }
   unzip(file, outputDir, callback) {
-    if (fs4.existsSync(file)) {
-      try {
-        let zip = new import_adm_zip.default(file);
-        zip.extractAllTo(outputDir, true);
-        fs4.unlinkSync(file);
-        callback(true);
-        return;
-      } catch (e) {
-        this.logger.warnException(e);
-      }
-      try {
-        fs4.unlinkSync(file);
-      } catch (e2) {
-        this.logger.warnException(e2);
-      }
-      callback(false);
+    let success = false;
+    try {
+      const zip = new import_adm_zip.default(file);
+      zip.extractAllTo(outputDir, true);
+      success = true;
+    } catch (error) {
+      this.logger.warn("Failed to extract wakatime-cli archive");
+      this.logger.warnException(error);
     }
+    callback(success);
   }
   legacyReleaseTag() {
     const osname = this.osName();
@@ -5784,7 +5854,7 @@ async function main() {
   logger.setLevel(debug === "true" ? 0 /* DEBUG */ : 1 /* INFO */);
   try {
     if (inp) logger.debug(JSON.stringify(inp, null, 2));
-    deps.checkAndInstallCli();
+    await new Promise((resolve2) => deps.checkAndInstallCli(resolve2));
     if (shouldSendHeartbeat(inp)) {
       if (await sendHeartbeat(inp)) {
         await updateState(inp);
