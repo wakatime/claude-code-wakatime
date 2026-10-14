@@ -6,6 +6,7 @@
     "claude-code-wakatime": "dist/index.js"
   },
   "scripts": {
+    "test": "node --test tests/*.test.cjs",
     "prebuild": "node scripts/generate-version.js",
     "build": "esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js",
     "watch": "npm run prebuild && tsc --watch",
