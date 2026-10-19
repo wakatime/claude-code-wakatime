@@ -4850,6 +4850,7 @@ var path3 = __toESM(require("path"));
 var fs2 = __toESM(require("fs"));
 var os2 = __toESM(require("os"));
 var path2 = __toESM(require("path"));
+var readline = __toESM(require("readline"));
 
 // src/logger.ts
 var import_fs = __toESM(require("fs"));
@@ -4958,22 +4959,34 @@ async function getClaudeVersion(inp) {
   if (!transcriptPath) {
     return "";
   }
-  let content;
-  try {
-    content = fs2.readFileSync(transcriptPath, "utf-8");
-  } catch {
-    return "";
-  }
-  for (const logLine of content.split("\n")) {
-    if (!logLine.trim()) continue;
-    try {
-      const log = JSON.parse(logLine);
-      if (log.version) return log.version;
-    } catch (err) {
-      logger.warnException(err);
-    }
-  }
-  return "";
+  return new Promise((resolve2) => {
+    const stream = fs2.createReadStream(transcriptPath, { encoding: "utf-8" });
+    const lines = readline.createInterface({ input: stream, crlfDelay: Infinity });
+    let lineCount = 0;
+    let finished = false;
+    const finish = (version = "") => {
+      if (finished) return;
+      finished = true;
+      lines.close();
+      stream.destroy();
+      resolve2(version);
+    };
+    stream.on("error", () => finish());
+    lines.on("error", () => finish());
+    lines.on("close", () => finish());
+    lines.on("line", (logLine) => {
+      lineCount++;
+      if (logLine.trim()) {
+        try {
+          const log = JSON.parse(logLine);
+          if (log.version) return finish(log.version);
+        } catch (err) {
+          logger.warnException(err);
+        }
+      }
+      if (lineCount >= 20) finish();
+    });
+  });
 }
 function formatArguments(binary, args) {
   let clone = args.slice(0);

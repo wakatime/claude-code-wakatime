@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import * as child_process from 'child_process';
+import * as readline from 'readline';
 import { StdioOptions } from 'child_process';
 import { Input, State, TranscriptLog } from './types';
 import { logger } from './logger';
@@ -50,24 +51,36 @@ export async function getClaudeVersion(inp: Input | undefined): Promise<string> 
     return '';
   }
 
-  let content: string;
-  try {
-    content = fs.readFileSync(transcriptPath, 'utf-8');
-  } catch {
-    return '';
-  }
+  return new Promise<string>((resolve) => {
+    const stream = fs.createReadStream(transcriptPath, { encoding: 'utf-8' });
+    const lines = readline.createInterface({ input: stream, crlfDelay: Infinity });
+    let lineCount = 0;
+    let finished = false;
 
-  for (const logLine of content.split('\n')) {
-    if (!logLine.trim()) continue;
-    try {
-      const log = JSON.parse(logLine) as TranscriptLog;
-      if (log.version) return log.version;
-    } catch (err) {
-      logger.warnException(err);
-    }
-  }
+    const finish = (version = '') => {
+      if (finished) return;
+      finished = true;
+      lines.close();
+      stream.destroy();
+      resolve(version);
+    };
 
-  return '';
+    stream.on('error', () => finish());
+    lines.on('error', () => finish());
+    lines.on('close', () => finish());
+    lines.on('line', (logLine) => {
+      lineCount++;
+      if (logLine.trim()) {
+        try {
+          const log = JSON.parse(logLine) as TranscriptLog;
+          if (log.version) return finish(log.version);
+        } catch (err) {
+          logger.warnException(err);
+        }
+      }
+      if (lineCount >= 20) finish();
+    });
+  });
 }
 
 export function formatArguments(binary: string, args: string[]): string {
@@ -122,7 +135,12 @@ function getStateTranscriptPath(inp: Input): string | undefined {
 
 function getParentStateTranscriptPath(inp: Input): string | undefined {
   const transcriptPath = inp.transcript_path?.trim();
-  if (inp.hook_event_name === 'SubagentStop' && inp.agent_transcript_path && transcriptPath && directoryExists(path.dirname(transcriptPath))) {
+  if (
+    inp.hook_event_name === 'SubagentStop' &&
+    inp.agent_transcript_path &&
+    transcriptPath &&
+    directoryExists(path.dirname(transcriptPath))
+  ) {
     return transcriptPath;
   }
 
